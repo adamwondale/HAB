@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="100%" height="100%">
+  <!-- HAB Business PLC Official Logo -->
+  <defs>
+    <style>
+      .hab-mark { fill: #121212; }
+      .hab-yellow { fill: #FFDE00; }
+      .hab-amharic { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 26px; fill: #121212; letter-spacing: 0.5px; }
+      .hab-english { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 700; font-size: 20px; fill: #1E293B; letter-spacing: 8px; }
+    </style>
+  </defs>
+
+  <g transform="translate(60, 20)">
+    <!-- Yellow Inner Insets of H -->
+    <path class="hab-yellow" d="M 76 20 L 128 20 L 128 95 C 128 120, 76 120, 76 95 Z" />
+    <path class="hab-yellow" d="M 76 175 C 76 150, 128 150, 128 175 L 128 250 L 76 250 L 76 218 L 54 218 L 54 202 L 76 202 Z" />
+
+    <!-- Main Black Monogram -->
+    <path class="hab-mark" fill-rule="evenodd" d="
+      M 28 20 L 76 20 L 76 95 C 76 120, 128 120, 128 95 L 128 20 L 205 20 C 238 20, 256 38, 256 74 C 256 102, 240 120, 218 132 C 244 144, 260 166, 260 198 C 260 234, 238 250, 205 250 L 28 250 L 28 20 Z
+      
+      M 76 175 C 76 150, 128 150, 128 175 L 128 250 L 76 250 L 76 218 L 54 218 L 54 202 L 76 202 L 76 175 Z
+      
+      M 166 54 L 196 54 C 212 54, 222 62, 222 74 C 222 86, 212 96, 196 96 L 166 96 Z
+      
+      M 166 170 L 198 170 C 216 170, 226 180, 226 196 C 226 212, 216 222, 198 222 L 166 222 Z
+    " />
+  </g>
+
+  <!-- Typography Underneath -->
+  <!-- Line 1: Amharic Official Legal Registration Name -->
+  <text x="200" y="360" text-anchor="middle" class="hab-amharic">ሀብ ቢዝነስ ኃ/የተ/የግል/ማህበር</text>
+
+  <!-- Line 2: English Corporate Name -->
+  <text x="204" y="405" text-anchor="middle" class="hab-english">HAB BUSINESS PLC</text>
+</svg>

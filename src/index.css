@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #ffffff;
+    color: #0e1525;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dark body {
+    background-color: #080c14;
+    color: #f1f5f9;
+  }
+
+  /* Ensure tabular nums on all numeric elements */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* HAB Business PLC Yellow-Green (#DFE16A / #EBE834) & Deep Navy (#0E1525) Global Theme */
+html:not(.dark) thead {
+  background-color: #DFE16A !important;
+  color: #0E1525 !important;
+  border-color: #C8CB54 !important;
+}
+
+html:not(.dark) thead th {
+  color: #0E1525 !important;
+  font-weight: 700 !important;
+}
+
+html:not(.dark) tbody tr:hover {
+  background-color: rgba(223, 225, 106, 0.18) !important;
+}
+
+/* Primary action buttons and amber accents unified to HAB Yellow-Green & Deep Navy */
+html:not(.dark) .bg-amber-600,
+html:not(.dark) .bg-amber-500 {
+  background-color: #0E1525 !important;
+  color: #FFF500 !important;
+}
+
+html:not(.dark) .hover\:bg-amber-700:hover,
+html:not(.dark) .hover\:bg-amber-600:hover {
+  background-color: #19233C !important;
+  color: #FFF500 !important;
+}
+
+html:not(.dark) .bg-amber-50,
+html:not(.dark) .bg-amber-50\/80,
+html:not(.dark) .bg-amber-50\/60,
+html:not(.dark) .bg-amber-100 {
+  background-color: #EBE834 !important;
+  color: #0E1525 !important;
+}
+
+html:not(.dark) .border-amber-200,
+html:not(.dark) .border-amber-300 {
+  border-color: #C8CB54 !important;
+}
+
+html:not(.dark) .text-amber-700,
+html:not(.dark) .text-amber-800,
+html:not(.dark) .text-amber-900 {
+  color: #0E1525 !important;
+}
+
+/* Dark mode theme overrides for consistent enterprise cards, tables, and inputs */
+.dark .bg-white {
+  background-color: #0f172a;
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-50\/80,
+.dark .bg-slate-50\/70,
+.dark .bg-slate-50\/60,
+.dark .bg-slate-50\/50 {
+  background-color: #0b0f19;
+}
+
+.dark .bg-slate-100,
+.dark .bg-slate-100\/90,
+.dark .bg-slate-100\/80 {
+  background-color: #172033;
+}
+
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-slate-200:hover {
+  background-color: #1e293b;
+}
+
+.dark .border-slate-200,
+.dark .border-slate-200\/80,
+.dark .border-slate-200\/60 {
+  border-color: #1e293b;
+}
+
+.dark .border-slate-100 {
+  border-color: #172033;
+}
+
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-150 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b;
+}
+
+.dark .text-slate-900 {
+  color: #f8fafc;
+}
+
+.dark .text-slate-800 {
+  color: #f1f5f9;
+}
+
+.dark .text-slate-700 {
+  color: #cbd5e1;
+}
+
+.dark .text-slate-600 {
+  color: #94a3b8;
+}
+
+.dark .text-slate-500 {
+  color: #94a3b8;
+}
+
+/* Dark mode table headings & alternating striped rows */
+.dark thead {
+  background-color: #172033 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+.dark thead th {
+  color: #f8fafc !important;
+}
+
+.dark tr.odd\:bg-white:nth-child(odd) {
+  background-color: #0f172a;
+}
+
+.dark tr.even\:bg-slate-50\/80:nth-child(even),
+.dark tr.even\:bg-slate-50\/70:nth-child(even) {
+  background-color: #131b2e;
+}
+
+.dark tbody tr:hover {
+  background-color: #1a253a !important;
+}
+
+/* Dark mode inputs, selects, textareas */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  background-color: #131b2e;
+  border-color: #1e293b;
+  color: #f8fafc;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b;
+}
+
+/* Subtle scrollbars for enterprise data tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

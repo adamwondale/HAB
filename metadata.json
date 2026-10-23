@@ -1,0 +1,6 @@
+{
+  "name": "HAB Business PLC - Corporate HRM & Workforce Deployment ERP",
+  "description": "Enterprise Human Resource Management and Client Site Workforce Deployment system for HAB Business PLC Cleaning & Security Services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

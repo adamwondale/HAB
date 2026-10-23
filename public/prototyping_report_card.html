@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HAB Business PLC - Prototyping Report Card & Key Outcome Metrics</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 14mm 14mm;
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #111827;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+    font-size: 10.5pt;
+  }
+  .header {
+    border-bottom: 3.5px solid #111111;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .title-group h1 {
+    font-size: 20pt;
+    font-weight: 800;
+    margin: 0;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+  }
+  .title-group p {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #d97706;
+    margin: 3px 0 0 0;
+  }
+  .doc-meta {
+    text-align: right;
+    font-size: 8.5pt;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  .box-prototype {
+    border: 2px solid #111111;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    background: #f8fafc;
+  }
+  .box-prototype h3 {
+    margin: 0 0 3px 0;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    font-weight: 700;
+  }
+  .box-prototype .proto-name {
+    font-size: 12.5pt;
+    font-weight: 800;
+    color: #111111;
+    margin-bottom: 3px;
+  }
+  .box-prototype .proto-desc {
+    font-size: 9pt;
+    color: #334155;
+    margin: 0;
+    line-height: 1.35;
+  }
+  .section-tag {
+    background: #111111;
+    color: #ffffff;
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .card {
+    border: 1.5px solid #111111;
+    padding: 10px 12px;
+    background: #ffffff;
+    min-height: 125px;
+  }
+  .card-title {
+    font-size: 8.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #111111;
+    margin: 0 0 6px 0;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 3px;
+    letter-spacing: 0.2px;
+  }
+  .card ul {
+    margin: 0;
+    padding-left: 14px;
+    font-size: 8.5pt;
+    color: #1e293b;
+    line-height: 1.35;
+  }
+  .card ul li {
+    margin-bottom: 4px;
+  }
+  table.metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+    font-size: 8.5pt;
+  }
+  table.metrics-table th {
+    background: #111111;
+    color: #ffffff;
+    text-align: left;
+    padding: 6px 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 7.5pt;
+    letter-spacing: 0.3px;
+  }
+  table.metrics-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #cbd5e1;
+    color: #1e293b;
+    vertical-align: top;
+  }
+  table.metrics-table tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+  .target-badge {
+    font-weight: 700;
+    color: #047857;
+  }
+  .footer {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.5pt;
+    color: #64748b;
+  }
+  .action-bar {
+    background: #fef3c7;
+    border: 1.5px solid #d97706;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .action-bar p {
+    margin: 0;
+    font-size: 9pt;
+    color: #92400e;
+    font-weight: 600;
+  }
+  .print-btn {
+    background: #111111;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    font-size: 9pt;
+    border-radius: 4px;
+  }
+  @media print {
+    .action-bar { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="action-bar">
+  <p>&blacktriangleright; Click <strong>"Save as PDF"</strong> to generate your ready-to-share PDF document.</p>
+  <button class="print-btn" onclick="window.print()">Save as PDF / Print</button>
+</div>
+
+<div class="header">
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <img src="/hab-monogram.svg" style="height: 48px; width: 48px;" alt="HAB Logo" />
+    <div class="title-group">
+      <h1>Prototyping Report Card</h1>
+      <p>HAB Business PLC &middot; ሀብ ቢዝነስ ኃ/የተ/የግል/ማህበር</p>
+    </div>
+  </div>
+  <div class="doc-meta">
+    Build &amp; Run Prototypes<br>
+    HCD Method Worksheet<br>
+    October 2026
+  </div>
+</div>
+
+<div class="box-prototype">
+  <h3>Prototype Name &amp; Description</h3>
+  <div class="proto-name">HAB Business PLC Operations &amp; HRM ERP (Bilingual Web Prototype)</div>
+  <p class="proto-desc">
+    A specialized operational and Human Resource platform designed to manage 24/7 commercial Security Guards and Industrial Cleaning operations across major institutional client facilities in Addis Ababa (Commercial Bank of Ethiopia Tower, Ethiopian Airlines Cargo Hub, Hyatt Regency, St. Paul's Hospital, Bole Medhanialem Complex).
+  </p>
+</div>
+
+<div class="section-tag">Before Prototyping &mdash; Your Learning Plan</div>
+
+<div class="grid-2x2">
+  <div class="card">
+    <div class="card-title">Top 3 Learning Questions Tested</div>
+    <ul>
+      <li><strong>Q1:</strong> Does involving the Store Keeper directly in the digital exit clearance workflow reduce lost uniforms, boots, and gear?</li>
+      <li><strong>Q2:</strong> Can field Site Supervisors and Shift Leaders accurately log daily shift attendance using the simplified Amharic interface without continuous IT support?</li>
+      <li><strong>Q3:</strong> Does the automated Monday shift rotation eliminate shift clashes and double-booking for hospital and commercial cleaning crews?</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Key Metrics for Success (Target Outcomes)</div>
+    <ul>
+      <li><strong>Fulfillment Rate:</strong> &ge; 98% of contracted guard and cleaner posts staffed on time each shift.</li>
+      <li><strong>Property Return:</strong> &ge; 95% uniform and protective gear retrieval rate upon employee separation.</li>
+      <li><strong>Clearance Speed:</strong> Exit clearance sign-off time reduced from 10 days to under 48 hours.</li>
+      <li><strong>Usability:</strong> &ge; 90% independent roll-call completion rate by non-technical field supervisors in Amharic.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Testing Method &amp; Setup</div>
+    <ul>
+      <li><strong>Live Role-Based Testing:</strong> Simulated daily operations with 8 distinct user personas (CEO, Legal, Operations Head, HR Head, HR Officers, Store Keeper, Site Supervisor).</li>
+      <li><strong>Simulation Scenarios:</strong> Executed end-to-end employee exit clearance, Monday shift rotation, and 24h duty / 48h rest cyclic scheduling.</li>
+      <li><strong>Task Observation:</strong> Measured time required to verify Kebele legal guarantors and generate official bilingual service certificates.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Core Assumptions</div>
+    <ul>
+      <li><strong>Device Access:</strong> Field supervisors have basic mobile smartphone or tablet access at client sites.</li>
+      <li><strong>Physical Custody:</strong> Store Keepers inspect physical uniforms and safety boots prior to HR authorizing final severance pay.</li>
+      <li><strong>Legal Standard:</strong> 48-hour recovery periods between 24-hour guard shifts comply with Ethiopian Labor Proclamation No. 1156/2019.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-tag">Outcome Metrics Matrix (Target vs. Baseline)</div>
+
+<table class="metrics-table">
+  <thead>
+    <tr>
+      <th style="width: 8%;">ID</th>
+      <th style="width: 28%;">Outcome Indicator</th>
+      <th style="width: 24%;">Baseline (Manual Operations)</th>
+      <th style="width: 22%;">Target Prototype Outcome</th>
+      <th style="width: 18%;">Responsible Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>M-01</strong></td>
+      <td>Client Post Shift Fulfillment</td>
+      <td>82% &ndash; 88% (frequent post vacancies)</td>
+      <td><span class="target-badge">&ge; 98% On-Time Coverage</span></td>
+      <td>HR Ops &amp; Site Supervisors</td>
+    </tr>
+    <tr>
+      <td><strong>M-02</strong></td>
+      <td>Exit Clearance Turnaround</td>
+      <td>7 &ndash; 14 working days</td>
+      <td><span class="target-badge">&lt; 48 Hours Digital Approval</span></td>
+      <td>Store Keeper &amp; HR Head</td>
+    </tr>
+    <tr>
+      <td><strong>M-03</strong></td>
+      <td>Company Property Recovery Rate</td>
+      <td>65% &ndash; 70% (high loss on boots/uniforms)</td>
+      <td><span class="target-badge">&ge; 95% Verified Returns</span></td>
+      <td>Store Keeper &amp; Gear Controller</td>
+    </tr>
+    <tr>
+      <td><strong>M-04</strong></td>
+      <td>Weekly Cleaning Shift Conflicts</td>
+      <td>~15% shift handover disputes</td>
+      <td><span class="target-badge">0% Shift Collisions (Automated)</span></td>
+      <td>HR Operations Officer</td>
+    </tr>
+    <tr>
+      <td><strong>M-05</strong></td>
+      <td>Guarantor &amp; Vetting Turnaround</td>
+      <td>5 &ndash; 7 days per recruit</td>
+      <td><span class="target-badge">&le; 24 Hours</span></td>
+      <td>Talent Acquisition Officer</td>
+    </tr>
+    <tr>
+      <td><strong>M-06</strong></td>
+      <td>Amharic UI Adoption by Field Staff</td>
+      <td>Low digital adoption / high errors</td>
+      <td><span class="target-badge">&ge; 90% Independent Completion</span></td>
+      <td>Operations Department Head</td>
+    </tr>
+    <tr>
+      <td><strong>M-07</strong></td>
+      <td>Labor Proclamation Compliance</td>
+      <td>Periodic dispute over 48h rest / pension</td>
+      <td><span class="target-badge">100% Audit Compliance</span></td>
+      <td>Legal Advisor</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  <div>HAB Business PLC &middot; Human Resource &amp; Operations Management System</div>
+  <div>Human-Centered Design (HCD) &middot; Prototyping Report Card Template</div>
+</div>
+
+</body>
+</html>

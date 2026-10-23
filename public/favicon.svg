@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Rounded container background for crisp favicon visibility on dark or light browser tabs -->
+  <rect width="64" height="64" rx="14" fill="#0F172A"/>
+  
+  <g transform="translate(6, 6) scale(0.8125)">
+    <!-- Yellow negative space / accents inside H -->
+    <!-- Top yellow cutout -->
+    <path d="M 14 4 L 26 4 L 26 21 C 26 27 14 27 14 21 Z" fill="#FFDE00"/>
+    
+    <!-- Bottom yellow cutout with distinctive brand notch -->
+    <path d="M 14 43 C 14 37 26 37 26 43 L 26 60 L 14 60 L 14 49 L 9 49 L 9 45 L 14 45 Z" fill="#FFDE00"/>
+    
+    <!-- Unified Black HB Monogram -->
+    <path fill-rule="evenodd" clip-rule="evenodd" d="
+      M 4 4 L 14 4 L 14 21 C 14 27 26 27 26 21 L 26 4 L 43 4 C 54 4 60 9 60 18 C 60 25 55 29 48 31 C 56 33 62 38 62 47 C 62 56 54 60 43 60 L 4 60 L 4 4 Z
+      
+      M 14 45 L 9 45 L 9 49 L 14 49 L 14 60 L 26 60 L 26 43 C 26 37 14 37 14 43 Z
+      
+      M 34 13 L 41 13 C 47 13 50 15 50 19 C 50 23 47 25 41 25 L 34 25 Z
+      
+      M 34 37 L 42 37 C 49 37 52 39 52 44 C 52 49 49 51 42 51 L 34 51 Z
+    " fill="#FFFFFF"/>
+  </g>
+</svg>

@@ -46,6 +46,7 @@ export function getRoleAllowedTabs(userId?: string): string[] | 'ALL' {
       return ['overview', 'deployment', 'attendance', 'leave', 'transfers', 'store', 'management', 'payroll'];
     case 'mgmt-legal':
       return ['overview', 'clearance', 'experience', 'management'];
+    case 'mgmt-gm':
     case 'mgmt-ceo':
     case 'mgmt-ops-head':
     case 'mgmt-hr-head':
@@ -214,6 +215,7 @@ export function getRoleConfig(person?: ManagementPerson): RoleConfig {
         ]
       };
 
+    case 'mgmt-gm':
     case 'mgmt-ceo':
     case 'mgmt-ops-head':
     case 'mgmt-hr-head':

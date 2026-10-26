@@ -1606,6 +1606,33 @@ export const INITIAL_WORK_EXPERIENCES: WorkExperienceRecord[] = [
 
 export const INITIAL_MANAGEMENT_PERSONS: ManagementPerson[] = [
   {
+    id: 'mgmt-gm',
+    name: 'Ato Hailemariam Bekele',
+    amharicName: 'ኃይለማርያም በቀለ',
+    title: 'General Manager (GM)',
+    department: 'Executive Office',
+    officeLocation: 'Executive Suite, 6th Floor, Bole, Addis Ababa',
+    phone: '+251 911 200 100',
+    email: 'gm@hab-business.com',
+    roleCategory: 'Executive',
+    responsibilities: [
+      'Comprehensive executive oversight of HAB Business PLC operations, revenues, and client satisfaction',
+      'Strategic monitoring of business inputs (payroll, recruitment, central store inventory) vs outputs (client SLA billing, profit margin)',
+      'High-level resource allocation across Security, Cleaning, Property Management, and Head Office divisions',
+      'Regulatory compliance with Ethiopian Labor Proclamation No. 1156/2019 and corporate governance'
+    ],
+    permissions: {
+      canApproveClearance: true,
+      canApprovePayroll: true,
+      canManageShiftsAndDeployments: true,
+      canManageRecruitmentAndGuarantors: true,
+      canVerifyInventoryReturn: true,
+      canSignWorkExperience: true,
+      canEditEmployees: true
+    },
+    avatarColor: 'from-amber-600 to-amber-800'
+  },
+  {
     id: 'mgmt-ceo',
     name: 'Ato Hailemariam Bekele',
     amharicName: 'ኃይለማርያም በቀለ',

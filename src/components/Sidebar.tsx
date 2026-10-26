@@ -252,11 +252,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       )}
 
-      {/* Sidebar Container - Solid Yellow-Green (#DFE16A) & Sticky on Desktop */}
+      {/* Sidebar Container - Light Golden Yellow Very Very Light (#FFFDE8) & Sticky on Desktop */}
       <aside
         onMouseLeave={hideTooltip}
         className={`
-          fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#DFE16A] border-r border-[#C8CB54] flex flex-col justify-between
+          fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#FFFDE8] dark:bg-slate-900 border-r border-[#EFE1AA] dark:border-slate-800 flex flex-col justify-between
           transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:z-30 shrink-0 select-none
           ${isOpenMobile ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:shadow-none'}
         `}
@@ -281,7 +281,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             type="button"
             onClick={onCloseMobile}
-            className="lg:hidden absolute right-4 top-4 p-1.5 rounded-lg text-[#0E1525]/70 hover:text-[#0E1525] hover:bg-black/10"
+            className="lg:hidden absolute right-4 top-4 p-1.5 rounded-lg text-[#0E1525]/70 hover:text-[#0E1525] hover:bg-black/5 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             <X className="w-4 h-4" />
           </button>
@@ -301,14 +301,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             title={overviewFullName}
             className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] border-l-4 transition-all duration-200 ease-in-out text-left cursor-pointer ${
               isOverviewActive
-                ? 'bg-[#0E1525] text-[#FFF500] border-[#FFF500] font-bold shadow-sm'
-                : 'border-transparent text-[#0E1525] hover:bg-slate-100 hover:border-[#0E1525]/60 font-semibold'
+                ? 'bg-[#0E1525] text-[#FFF9DB] border-[#EBE834] font-bold shadow-sm'
+                : 'border-transparent text-[#0E1525] dark:text-slate-200 hover:bg-[#F6EBB8]/60 dark:hover:bg-slate-800 hover:border-[#0E1525]/60 font-semibold'
             }`}
           >
             <div className="flex items-center gap-2.5 min-w-0">
               <LayoutDashboard
                 className={`w-4 h-4 shrink-0 transition-colors duration-200 ${
-                  isOverviewActive ? 'text-[#FFF500]' : 'text-[#0E1525]'
+                  isOverviewActive ? 'text-[#EBE834]' : 'text-[#0E1525] dark:text-slate-300'
                 }`}
               />
               <span className="truncate">{i18n.language === 'am' ? t('nav.dashboard') : 'Overview'}</span>
@@ -333,16 +333,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   title={category.fullName}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] border-l-4 transition-all duration-200 ease-in-out text-left cursor-pointer ${
                     hasActiveChild && !isOpen
-                      ? 'bg-[#0E1525] text-[#FFF500] border-[#FFF500] font-bold shadow-xs'
+                      ? 'bg-[#0E1525] text-[#FFF9DB] border-[#EBE834] font-bold shadow-xs'
                       : isOpen
-                      ? 'bg-black/12 text-[#0E1525] border-[#0E1525] font-bold hover:bg-slate-100'
-                      : 'border-transparent text-[#0E1525] hover:bg-slate-100 hover:border-[#0E1525]/60 font-semibold'
+                      ? 'bg-[#F4E8B4]/65 dark:bg-slate-800 text-[#0E1525] dark:text-white border-[#D4AF37] font-bold hover:bg-[#EFE2A8]/70'
+                      : 'border-transparent text-[#0E1525] dark:text-slate-200 hover:bg-[#F6EBB8]/60 dark:hover:bg-slate-800 hover:border-[#0E1525]/60 font-semibold'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <CatIcon
                       className={`w-4 h-4 shrink-0 transition-colors duration-200 ${
-                        hasActiveChild && !isOpen ? 'text-[#FFF500]' : 'text-[#0E1525]'
+                        hasActiveChild && !isOpen ? 'text-[#EBE834]' : 'text-[#0E1525] dark:text-slate-300'
                       }`}
                     />
                     <span className="truncate">{category.label}</span>
@@ -353,8 +353,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <span
                         className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold tabular-nums ${
                           hasActiveChild
-                            ? 'bg-[#FFF500] text-[#0E1525]'
-                            : 'bg-[#0E1525] text-[#FFF500]'
+                            ? 'bg-[#EBE834] text-[#0E1525]'
+                            : 'bg-[#0E1525] text-[#FFF9DB]'
                         }`}
                       >
                         {totalCatBadges}
@@ -370,7 +370,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Dropdown Nested Items */}
                 {isOpen && (
-                  <div className="pl-3.5 pr-1 py-1 space-y-1 border-l-2 border-[#0E1525]/20 ml-4">
+                  <div className="pl-3.5 pr-1 py-1 space-y-1 border-l-2 border-[#D4AF37]/35 dark:border-slate-700 ml-4">
                     {category.items.map((item) => {
                       const ItemIcon = item.icon;
                       const isActive = activeTab === item.id;
@@ -388,14 +388,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           title={item.fullName}
                           className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[12.5px] border-l-4 transition-all duration-200 ease-in-out text-left cursor-pointer ${
                             isActive
-                              ? 'bg-[#0E1525] text-[#FFF500] border-[#FFF500] font-bold shadow-xs'
-                              : 'border-transparent text-[#0E1525]/90 hover:text-[#0E1525] hover:bg-slate-100 hover:border-[#0E1525]/60 font-medium'
+                              ? 'bg-[#0E1525] text-[#FFF9DB] border-[#EBE834] font-bold shadow-xs'
+                              : 'border-transparent text-[#0E1525]/90 dark:text-slate-300 hover:text-[#0E1525] dark:hover:text-white hover:bg-[#F6EBB8]/60 dark:hover:bg-slate-800 hover:border-[#0E1525]/60 font-medium'
                           }`}
                         >
                           <div className="flex items-center gap-2 min-w-0">
                             <ItemIcon
                               className={`w-3.5 h-3.5 shrink-0 transition-colors duration-200 ${
-                                isActive ? 'text-[#FFF500]' : 'text-[#0E1525]'
+                                isActive ? 'text-[#EBE834]' : 'text-[#0E1525] dark:text-slate-400'
                               }`}
                             />
                             <span className="truncate">{item.label}</span>
@@ -405,8 +405,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             <span
                               className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold tabular-nums ${
                                 isActive
-                                  ? 'bg-[#FFF500] text-[#0E1525]'
-                                  : 'bg-[#0E1525] text-[#FFF500]'
+                                  ? 'bg-[#EBE834] text-[#0E1525]'
+                                  : 'bg-[#0E1525] text-[#FFF9DB]'
                               }`}
                             >
                               {item.badge}
@@ -424,14 +424,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Bottom Sign Out Button */}
         {onLogout && (
-          <div className="p-4 border-t border-[#0E1525]/15 shrink-0">
+          <div className="p-4 border-t border-[#EFE1AA] dark:border-slate-800 shrink-0">
             <button
               type="button"
               onClick={onLogout}
               onMouseEnter={(e) => showTooltip(e, 'Sign Out to Workspace Login Screen')}
               onMouseLeave={hideTooltip}
               title="Sign Out to Workspace Login Screen"
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13px] font-bold text-[#0E1525] hover:bg-[#0E1525] hover:text-white transition-all duration-200 cursor-pointer"
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13px] font-bold text-[#0E1525] dark:text-slate-200 hover:bg-[#0E1525] hover:text-white dark:hover:bg-[#FFFDE8] dark:hover:text-[#0E1525] transition-all duration-200 cursor-pointer"
             >
               <Power className="w-4 h-4 shrink-0" />
               <span>{i18n.language === 'am' ? 'ውጣ (Sign Out)' : 'Sign Out'}</span>

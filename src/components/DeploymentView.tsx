@@ -16,7 +16,14 @@ import {
   Moon,
   Info,
   Layers,
-  ArrowRightLeft
+  ArrowRightLeft,
+  GripVertical,
+  Check,
+  Filter,
+  UserCheck,
+  AlertCircle,
+  Trash2,
+  UserPlus
 } from 'lucide-react';
 import { ClientSite, Deployment, Employee, ServiceType, ShiftType, SecurityPlatoon } from '../types/hrm';
 
@@ -35,12 +42,19 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
   onDeployEmployee,
   onRelieveDeployment
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'posts' | 'shift-matrix'>('posts');
+  const [activeSubTab, setActiveSubTab] = useState<'posts' | 'shift-matrix' | 'drag-drop'>('drag-drop');
   const [selectedSiteId, setSelectedSiteId] = useState<string>('All');
   const [filterService, setFilterService] = useState<'All' | ServiceType>('All');
   const [filterShift, setFilterShift] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isDeployModalOpen, setIsDeployModalOpen] = useState<boolean>(false);
+
+  // Drag and Drop Scheduler State
+  const [draggedEmpId, setDraggedEmpId] = useState<string | null>(null);
+  const [dragOverSiteId, setDragOverSiteId] = useState<string | null>(null);
+  const [dndServiceFilter, setDndServiceFilter] = useState<'All' | ServiceType>('All');
+  const [dndSearchQuery, setDndSearchQuery] = useState<string>('');
+  const [dndFilterMode, setDndFilterMode] = useState<'unassigned' | 'all'>('unassigned');
 
   // Live state for weekly rotation and security platoon handover
   const [cleaningRotationWeek, setCleaningRotationWeek] = useState<'Week 1 (Morning)' | 'Week 2 (Afternoon)'>('Week 1 (Morning)');
@@ -58,6 +72,74 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
 
   const targetSite = sites.find(s => s.id === deploySiteId) || sites[0];
   const selectedEmp = employees.find(e => e.id === deployEmployeeId);
+
+  // Direct Assign / Drop Logic for Workforce Scheduling
+  const handleAssignToSite = (emp: Employee, site: ClientSite, explicitPost?: string) => {
+    // If employee is already deployed at another site, relieve their previous deployment
+    const previousDep = deployments.find(d => d.employeeId === emp.id && d.status === 'Active');
+    if (previousDep) {
+      onRelieveDeployment(previousDep.id);
+    }
+
+    // Determine post
+    const existingSiteDeps = deployments.filter(d => d.siteId === site.id && d.status === 'Active');
+    const occupiedPosts = new Set(existingSiteDeps.map(d => d.post));
+    let assignedPost = explicitPost || site.posts.find(p => !occupiedPosts.has(p));
+    if (!assignedPost) {
+      assignedPost = site.posts[0] || `${emp.serviceType} Facility Post #${existingSiteDeps.length + 1}`;
+    }
+
+    const shift: ShiftType = emp.serviceType === 'Security'
+      ? '24h Duty (24hr ON / 48hr REST)'
+      : 'Morning Shift (06:00 - 14:00)';
+
+    const newDep: Deployment = {
+      id: `dep-${Date.now()}`,
+      employeeId: emp.id,
+      employeeCode: emp.employeeCode,
+      employeeName: `${emp.firstName} ${emp.lastName}`,
+      serviceType: emp.serviceType,
+      role: emp.role,
+      siteId: site.id,
+      siteName: site.name,
+      post: assignedPost,
+      shift: shift,
+      securityPlatoon: emp.serviceType === 'Security' ? (emp.securityPlatoon || activeSecurityPlatoon) : undefined,
+      cleaningShiftWeek: emp.serviceType === 'Cleaning' ? (emp.cleaningShiftWeek || cleaningRotationWeek) : undefined,
+      assignedDate: new Date().toISOString().split('T')[0],
+      status: 'Active',
+      supervisorNotes: `Assigned via Quick Drag & Drop Scheduler to [${assignedPost}]`
+    };
+
+    onDeployEmployee(newDep);
+    setRotationMessage(`✓ Deployed: ${emp.firstName} ${emp.lastName} (${emp.serviceType}) assigned to ${site.name} at post "${assignedPost}".`);
+    setTimeout(() => setRotationMessage(null), 5000);
+  };
+
+  const handleDropOnSite = (targetSiteId: string, e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOverSiteId(null);
+    let empId = draggedEmpId;
+    if (!empId) {
+      try {
+        const raw = e.dataTransfer.getData('application/json') || e.dataTransfer.getData('text/plain');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          empId = parsed.employeeId;
+        }
+      } catch (err) {
+        // fallback
+      }
+    }
+    if (!empId) return;
+
+    const emp = employees.find(x => x.id === empId);
+    const site = sites.find(s => s.id === targetSiteId);
+    if (!emp || !site) return;
+
+    handleAssignToSite(emp, site);
+    setDraggedEmpId(null);
+  };
 
   // Handle employee change in modal to auto-set appropriate shift policy
   const handleSelectEmployee = (empId: string) => {
@@ -187,13 +269,29 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
       </div>
 
       {/* View Mode Sub-tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <button
+          type="button"
+          onClick={() => setActiveSubTab('drag-drop')}
+          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            activeSubTab === 'drag-drop'
+              ? 'bg-amber-600 text-white shadow-xs font-bold'
+              : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          <span>Drag & Drop Scheduler</span>
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-[#EBE834] text-[#0E1525]">
+            Quick Deploy
+          </span>
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveSubTab('posts')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
             activeSubTab === 'posts'
-              ? 'bg-amber-600 text-white shadow-xs'
+              ? 'bg-amber-600 text-white shadow-xs font-bold'
               : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
           }`}
         >
@@ -204,9 +302,9 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveSubTab('shift-matrix')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
             activeSubTab === 'shift-matrix'
-              ? 'bg-amber-600 text-white shadow-xs'
+              ? 'bg-amber-600 text-white shadow-xs font-bold'
               : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
           }`}
         >
@@ -681,6 +779,399 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
 
         </div>
       )}
+
+      {/* SUB-TAB 3: INTERACTIVE DRAG & DROP WORKFORCE SCHEDULER */}
+      {activeSubTab === 'drag-drop' && (() => {
+        const activeDeploymentMap = new Map(
+          deployments.filter(d => d.status === 'Active').map(d => [d.employeeId, d])
+        );
+
+        const dndPool = employees.filter(e => {
+          if (e.status === 'Exited' || e.status === 'In Clearance') return false;
+          if (dndServiceFilter !== 'All' && e.serviceType !== dndServiceFilter) return false;
+          const isCurrentlyAssigned = activeDeploymentMap.has(e.id);
+          if (dndFilterMode === 'unassigned' && isCurrentlyAssigned) return false;
+
+          if (dndSearchQuery.trim()) {
+            const q = dndSearchQuery.toLowerCase();
+            return (
+              e.firstName.toLowerCase().includes(q) ||
+              e.lastName.toLowerCase().includes(q) ||
+              e.employeeCode.toLowerCase().includes(q) ||
+              e.role.toLowerCase().includes(q)
+            );
+          }
+          return true;
+        });
+
+        const unassignedTotal = employees.filter(e => 
+          e.status !== 'Exited' && e.status !== 'In Clearance' && !activeDeploymentMap.has(e.id)
+        ).length;
+
+        return (
+          <div className="space-y-6 animate-fadeIn">
+            
+            {/* Guidance & Instruction Banner */}
+            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4 text-xs text-amber-900 dark:text-amber-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-[#EBE834] text-[#0E1525] font-black shrink-0 mt-0.5">
+                  <GripVertical className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Interactive Drag-and-Drop Facility Scheduling
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 mt-0.5 leading-relaxed">
+                    Grab any employee card from the <strong>Available Pool</strong> on the left and drop them onto a <strong>Client Facility Card</strong> on the right to immediately deploy them to the next open post.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-semibold shrink-0">
+                <span className="px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300">
+                  {unassignedTotal} Staff in Reserve Pool
+                </span>
+              </div>
+            </div>
+
+            {/* Split Drag & Drop Workspace */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              {/* LEFT COLUMN: AVAILABLE WORKFORCE POOL (4 Cols) */}
+              <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs space-y-4 lg:sticky lg:top-4 max-h-[85vh] flex flex-col">
+                <div className="border-b border-slate-100 dark:border-slate-800 pb-3 space-y-2.5 shrink-0">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-amber-600" />
+                        <span>Workforce Pool ({dndPool.length})</span>
+                      </h2>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Drag cards to client facilities
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      {dndFilterMode === 'unassigned' ? 'Unassigned' : 'All Staff'}
+                    </span>
+                  </div>
+
+                  {/* Search */}
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                    <input
+                      type="text"
+                      placeholder="Search name, code, role..."
+                      value={dndSearchQuery}
+                      onChange={(e) => setDndSearchQuery(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-600"
+                    />
+                  </div>
+
+                  {/* Filter Mode & Service Toggles */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setDndFilterMode(dndFilterMode === 'unassigned' ? 'all' : 'unassigned')}
+                      className={`text-[10px] font-bold px-2 py-1 rounded transition-colors cursor-pointer ${
+                        dndFilterMode === 'unassigned'
+                          ? 'bg-[#0E1525] text-[#FFF500]'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      {dndFilterMode === 'unassigned' ? '✓ Showing Unassigned' : 'Show All (Reassign)'}
+                    </button>
+                    {(['All', 'Security', 'Cleaning'] as const).map(svc => (
+                      <button
+                        key={svc}
+                        type="button"
+                        onClick={() => setDndServiceFilter(svc)}
+                        className={`text-[10px] font-semibold px-2 py-1 rounded transition-colors cursor-pointer ${
+                          dndServiceFilter === svc
+                            ? 'bg-amber-600 text-white'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        }`}
+                      >
+                        {svc}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Draggable Employee List */}
+                <div className="space-y-2.5 overflow-y-auto pr-1 flex-1 min-h-[300px]">
+                  {dndPool.length === 0 ? (
+                    <div className="text-center py-10 text-xs text-slate-400">
+                      <Users className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+                      <div>No employees found matching filter.</div>
+                      {dndFilterMode === 'unassigned' && (
+                        <button
+                          type="button"
+                          onClick={() => setDndFilterMode('all')}
+                          className="mt-2 text-[11px] font-bold text-amber-600 hover:underline cursor-pointer"
+                        >
+                          Show deployed staff for reassignment →
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    dndPool.map(emp => {
+                      const activeDep = activeDeploymentMap.get(emp.id);
+                      const isDragged = draggedEmpId === emp.id;
+
+                      return (
+                        <div
+                          key={emp.id}
+                          draggable={true}
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('application/json', JSON.stringify({ employeeId: emp.id }));
+                            e.dataTransfer.setData('text/plain', JSON.stringify({ employeeId: emp.id }));
+                            e.dataTransfer.effectAllowed = 'move';
+                            setDraggedEmpId(emp.id);
+                          }}
+                          onDragEnd={() => setDraggedEmpId(null)}
+                          className={`p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing select-none group ${
+                            isDragged
+                              ? 'opacity-40 border-amber-500 scale-95 shadow-inner bg-amber-50 dark:bg-amber-950/20'
+                              : 'bg-slate-50/70 hover:bg-white dark:bg-slate-800/50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-500 shadow-xs hover:shadow-md'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="text-slate-400 group-hover:text-amber-600 transition-colors shrink-0">
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <div className="font-bold text-xs text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                                  <span>{emp.firstName} {emp.lastName}</span>
+                                  {emp.gender === 'Female' && (
+                                    <span className="text-[10px] text-pink-600 dark:text-pink-400 font-bold">♀</span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                                  {emp.employeeCode} · {emp.role}
+                                </div>
+                              </div>
+                            </div>
+                            <span
+                              className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
+                                emp.serviceType === 'Security'
+                                  ? 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300'
+                                  : 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300'
+                              }`}
+                            >
+                              {emp.serviceType}
+                            </span>
+                          </div>
+
+                          <div className="mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[11px]">
+                            {activeDep ? (
+                              <span className="text-slate-600 dark:text-slate-400 truncate max-w-[170px]" title={activeDep.siteName}>
+                                At: <strong>{activeDep.siteName.split(' ')[0]}</strong>
+                              </span>
+                            ) : (
+                              <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Ready in Reserve</span>
+                              </span>
+                            )}
+
+                            {/* Accessible Mobile Quick Assign Dropdown */}
+                            <select
+                              aria-label={`Quick deploy ${emp.firstName} to site`}
+                              value=""
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  const targetSite = sites.find(s => s.id === e.target.value);
+                                  if (targetSite) handleAssignToSite(emp, targetSite);
+                                }
+                              }}
+                              className="text-[10px] font-bold bg-[#EBE834] text-[#0E1525] hover:bg-[#E3E029] rounded px-1.5 py-0.5 border border-[#D4D11E] cursor-pointer"
+                            >
+                              <option value="">Quick Deploy ▾</option>
+                              {sites.map(s => (
+                                <option key={s.id} value={s.id}>
+                                  Deploy to: {s.name.split(' ')[0]}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN: CLIENT FACILITY DROP TARGETS (8 Cols) */}
+              <div className="lg:col-span-8 space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-amber-600" />
+                      <span>Client Facility Drop Targets ({sites.length} Active Sites)</span>
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Drop personnel onto any card to fulfill staffing quotas and assign posts
+                    </p>
+                  </div>
+                  <span className="text-xs font-semibold text-slate-500">
+                    Live Drag Target Ready
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {sites.map(site => {
+                    const isHovered = dragOverSiteId === site.id;
+                    const siteDeployments = deployments.filter(d => d.siteId === site.id && d.status === 'Active');
+                    const secCount = siteDeployments.filter(d => d.serviceType === 'Security').length;
+                    const clnCount = siteDeployments.filter(d => d.serviceType === 'Cleaning').length;
+                    const totalRequired = site.securityStaffRequired + site.cleaningStaffRequired;
+                    const totalDeployed = secCount + clnCount;
+                    const fulfillmentPercent = totalRequired > 0 ? Math.round((totalDeployed / totalRequired) * 100) : 100;
+                    const isFull = totalDeployed >= totalRequired;
+
+                    return (
+                      <div
+                        key={site.id}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'copy';
+                          if (dragOverSiteId !== site.id) setDragOverSiteId(site.id);
+                        }}
+                        onDragLeave={(e) => {
+                          if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+                          setDragOverSiteId(null);
+                        }}
+                        onDrop={(e) => handleDropOnSite(site.id, e)}
+                        className={`rounded-xl border p-4.5 transition-all duration-200 flex flex-col justify-between ${
+                          isHovered
+                            ? 'border-2 border-dashed border-[#0E1525] dark:border-[#FFF500] bg-[#EBE834]/25 dark:bg-[#EBE834]/15 ring-4 ring-[#EBE834]/40 scale-[1.01] shadow-lg'
+                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300'
+                        }`}
+                      >
+                        <div>
+                          {/* Site Header */}
+                          <div className="flex items-start justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                            <div>
+                              <div className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-500 uppercase tracking-wide">
+                                {site.siteCode} · {site.subcity}
+                              </div>
+                              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5 leading-snug">
+                                {site.name}
+                              </h3>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                {site.clientOrganization}
+                              </p>
+                            </div>
+                            <span
+                              className={`text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 ${
+                                isFull
+                                  ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300'
+                                  : 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300'
+                              }`}
+                            >
+                              {fulfillmentPercent}% Staffed
+                            </span>
+                          </div>
+
+                          {/* Quota Progress Bar */}
+                          <div className="mt-3 space-y-1.5">
+                            <div className="flex items-center justify-between text-xs font-semibold">
+                              <span className="text-slate-700 dark:text-slate-300">
+                                Staffing Capacity: {totalDeployed} / {totalRequired} Deployed
+                              </span>
+                              <span className="font-mono text-[11px] text-slate-500">
+                                Sec: {secCount}/{site.securityStaffRequired} · Cln: {clnCount}/{site.cleaningStaffRequired}
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                              <div
+                                className={`h-2 rounded-full transition-all duration-300 ${
+                                  isFull ? 'bg-emerald-500' : 'bg-amber-500'
+                                }`}
+                                style={{ width: `${Math.min(100, fulfillmentPercent)}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Dropzone Notice Target */}
+                          <div
+                            className={`my-3 p-3 rounded-lg border-2 border-dashed text-center transition-all cursor-pointer ${
+                              isHovered
+                                ? 'border-[#0E1525] dark:border-[#FFF500] bg-[#EBE834] text-[#0E1525] font-black'
+                                : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100'
+                            }`}
+                          >
+                            <div className="flex items-center justify-center gap-1.5 text-xs font-bold">
+                              <Layers className="w-4 h-4" />
+                              <span>{isHovered ? 'DROP TO SCHEDULE EMPLOYEE HERE' : 'Drop Personnel Here to Deploy'}</span>
+                            </div>
+                            <div className="text-[10px] mt-0.5 opacity-80">
+                              Auto-assigns next vacant post with correct shift policy
+                            </div>
+                          </div>
+
+                          {/* Roster of Deployed Staff on Site */}
+                          <div className="space-y-1.5 mt-2 max-h-[170px] overflow-y-auto pr-1">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                              Active Post Allocations ({siteDeployments.length})
+                            </div>
+                            {siteDeployments.length === 0 ? (
+                              <div className="text-[11px] text-slate-400 italic py-2">
+                                No personnel deployed on this site yet.
+                              </div>
+                            ) : (
+                              siteDeployments.map(dep => (
+                                <div
+                                  key={dep.id}
+                                  className="flex items-center justify-between gap-2 p-1.5 bg-slate-50 dark:bg-slate-800/60 rounded-md border border-slate-200/60 dark:border-slate-700/60 text-[11px]"
+                                >
+                                  <div className="truncate">
+                                    <span className="font-semibold text-slate-900 dark:text-slate-100">
+                                      {dep.employeeName}
+                                    </span>
+                                    <span className="text-[10px] text-slate-500 ml-1.5">
+                                      ({dep.post})
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => onRelieveDeployment(dep.id)}
+                                    title="Relieve post & return to reserve pool"
+                                    className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors shrink-0 cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Bottom Actions */}
+                        <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                          <span className="text-slate-500">
+                            {site.posts.length} Designated Posts
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenDeployModal(site.id)}
+                            className="font-bold text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>Modal Deploy</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        );
+      })()}
 
       {/* Modal: New Site Assignment */}
       {isDeployModalOpen && (

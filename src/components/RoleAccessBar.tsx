@@ -10,6 +10,7 @@ interface RoleAccessBarProps {
 }
 
 const SHORT_ROLE_LABELS: Record<string, string> = {
+  'mgmt-gm': 'General Manager (GM)',
   'mgmt-hr-head': 'HR Head (Full)',
   'mgmt-ceo': 'CEO (Full)',
   'mgmt-fin-head': 'Finance & Payroll',
@@ -30,14 +31,14 @@ export const RoleAccessBar: React.FC<RoleAccessBarProps> = ({
 
   // Order key distinct roles for quick 1-click switching
   const orderedIds = [
+    'mgmt-gm',
     'mgmt-hr-head',
     'mgmt-fin-head',
     'mgmt-storekeeper',
     'mgmt-hr-ops',
     'mgmt-hr-talent',
     'mgmt-supervisor-dan',
-    'mgmt-legal',
-    'mgmt-ceo'
+    'mgmt-legal'
   ];
 
   const quickRoles = orderedIds

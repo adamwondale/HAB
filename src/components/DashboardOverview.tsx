@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { 
   Building2, 
   Shield, 
@@ -15,19 +14,8 @@ import {
   UserPlus,
   Package,
   BarChart3,
-  TrendingUp,
-  TrendingDown,
-  Filter,
-  Lightbulb,
-  Sparkles,
-  Layers,
-  DollarSign,
-  CheckCircle2,
-  AlertTriangle,
   ArrowUpRight,
-  ArrowDownRight,
-  Briefcase,
-  PieChart
+  ArrowDownRight
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -92,7 +80,7 @@ const HabMetricCard: React.FC<HabMetricCardProps> = ({
   value,
   subtitle,
   onClick,
-  variant = 'brand',
+  variant = 'light-gold',
   className
 }) => {
   const isLightGold = variant === 'light-gold';
@@ -103,23 +91,21 @@ const HabMetricCard: React.FC<HabMetricCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={className || `${defaultClasses} rounded-xl p-5 cursor-pointer transition-all shadow-xs hover:shadow-md flex flex-col justify-between min-h-[132px]`}
+      className={className || `${defaultClasses} rounded-xl p-4 sm:p-5 cursor-pointer transition-colors flex flex-col justify-between min-h-[116px]`}
     >
-      <div className="flex items-start justify-between gap-2">
-        <span className={`text-xl sm:text-2xl font-black font-mono tabular-nums tracking-tight ${isLightGold ? 'text-[#0E1525] dark:text-[#FFF500]' : 'text-[#0E1525]'}`}>
+      <div className="text-xs font-semibold text-[#0E1525]/75 dark:text-slate-300">
+        {title}
+      </div>
+      <div className="my-2">
+        <span className={`text-xl sm:text-2xl font-bold font-mono tabular-nums tracking-tight ${isLightGold ? 'text-[#0E1525] dark:text-[#FFF500]' : 'text-[#0E1525]'}`}>
           {value}
         </span>
       </div>
-      <div className="mt-4">
-        <div className={`text-base sm:text-[17px] font-bold leading-snug ${isLightGold ? 'text-[#0E1525] dark:text-slate-100' : 'text-[#0E1525]'}`}>
-          {title}
+      {subtitle && (
+        <div className="text-[11px] text-[#0E1525]/65 dark:text-slate-400">
+          {subtitle}
         </div>
-        {subtitle && (
-          <div className={`text-xs font-semibold mt-0.5 ${isLightGold ? 'text-[#0E1525]/75 dark:text-slate-400' : 'text-[#0E1525]/75'}`}>
-            {subtitle}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
@@ -139,17 +125,11 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   activeUser,
   onNavigateTab
 }) => {
-  const { t } = useTranslation();
   const roleConfig = getRoleConfig(activeUser);
   const [chartFilter, setChartFilter] = useState<'All' | 'Security' | 'Cleaning'>('All');
-  const [executiveViewMode, setExecutiveViewMode] = useState<'gm-cockpit' | 'operations'>('gm-cockpit');
+  const [executiveTab, setExecutiveTab] = useState<'summary' | 'inputs-outputs' | 'coverage'>('summary');
 
-  // Common Calculations across all 4 divisions
-  const securityCount = employees.filter(e => e.serviceType === 'Security').length;
-  const cleaningCount = employees.filter(e => e.serviceType === 'Cleaning').length;
-  const propertyMgmtCount = employees.filter(e => e.serviceType === 'Property Management').length;
-  const headOfficeCount = employees.filter(e => e.serviceType === 'Head Office Staff').length;
-
+  // Common Calculations across all divisions
   const totalRequiredSec = sites.reduce((sum, s) => sum + s.securityStaffRequired, 0);
   const totalDeployedSec = sites.reduce((sum, s) => sum + s.securityStaffDeployed, 0);
   const totalRequiredCln = sites.reduce((sum, s) => sum + s.cleaningStaffRequired, 0);
@@ -162,7 +142,6 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   const pendingClearances = clearances.filter(c => c.status === 'In Progress');
   const presentAttendance = attendance.filter(a => a.status === 'Present' || a.status === 'Late' || a.status === 'Overtime');
   const attendanceRate = attendance.length > 0 ? Math.round((presentAttendance.length / attendance.length) * 100) : 100;
-  const onLeaveCount = employees.filter(e => e.status === 'On Leave').length + leaveRequests.filter(r => r.status === 'Approved').length;
 
   // Storekeeper Calculations
   const pendingStoreSignoffs = clearances.filter(c => !c.storeAssetSignoff?.completed);
@@ -184,134 +163,91 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   const totalSeverancePending = clearances.reduce((sum, c) => sum + (c.financeSignoff?.finalSeveranceSettlement || 0), 0);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6">
 
       {/* ========================================================================= */}
       {/* 0. FINANCE & PAYROLL HEAD VIEW                                            */}
       {/* ========================================================================= */}
       {roleConfig.type === 'finance' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Finance KPIs in HAB Yellow-Green Card Theme */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                Finance & 30-Day Payroll Overview
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Disbursements, statutory 11% employer pension, and exit clearance deductions
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigateTab('payroll')}
+              className="px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Open Payroll Sheet</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
             <HabMetricCard
               title="30-Day Gross Payroll"
               value={`ETB ${payroll.reduce((s, r) => s + r.grossPay, 0).toLocaleString()}`}
-              subtitle={`${payroll.length} staff across 4 divisions`}
+              subtitle={`${payroll.length} staff records`}
               onClick={() => onNavigateTab('payroll')}
             />
             <HabMetricCard
               title="11% Employer Pension"
               value={`ETB ${payroll.reduce((s, r) => s + (r.pensionEmployer11Percent || 0), 0).toLocaleString()}`}
-              subtitle="Non-deductible company contribution"
+              subtitle="Company contribution"
               onClick={() => onNavigateTab('payroll')}
             />
             <HabMetricCard
               title="Net Bank Disbursement"
               value={`ETB ${payroll.reduce((s, r) => s + r.netPay, 0).toLocaleString()}`}
-              subtitle="CBE, Awash & Dashen Bank transfers"
+              subtitle="CBE bulk transfer ready"
               onClick={() => onNavigateTab('payroll')}
             />
             <HabMetricCard
               title="Clearance Deductions"
               value={`ETB ${totalUnreturnedDeductions.toLocaleString()}`}
-              subtitle="Gate #3 Finance settlement queue"
+              subtitle="Gate #3 settlement queue"
               onClick={() => onNavigateTab('clearance')}
             />
           </div>
 
-          {/* Finance Payroll & Clearance Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                    <span>30-Day Standard Payroll Sheet Summary</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Additions (Basic, Transport, Mobile Card, House, OT) & Deductions (Tax, 7% Pension, Penalties, Food)
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('payroll')}
-                  className="text-xs bg-[#0E1525] text-[#FFF500] px-3 py-1.5 rounded-full font-semibold flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Open Full Sheet</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <div className="space-y-2.5">
-                {payroll.slice(0, 5).map((rec) => (
-                  <div
-                    key={rec.id}
-                    onClick={() => onNavigateTab('payroll')}
-                    className="p-3 bg-[#DFE16A]/20 hover:bg-[#DFE16A]/40 dark:bg-slate-800/60 rounded-lg border border-[#CFD25A]/50 dark:border-slate-700 flex items-center justify-between gap-3 cursor-pointer transition-colors text-xs"
-                  >
-                    <div>
-                      <div className="font-bold text-slate-900 dark:text-slate-100">{rec.employeeName}</div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-400">
-                        {rec.serviceType} · {rec.workingDays}/30 Days · 11% Pension: ETB {rec.pensionEmployer11Percent}
-                      </div>
-                    </div>
-                    <div className="text-right font-mono">
-                      <div className="font-bold text-[#0E1525] dark:text-[#FFF500]">ETB {rec.netPay.toLocaleString()}</div>
-                      <div className="text-[10px] text-slate-500">{rec.paymentStatus}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                Recent Payroll Ledger Records
+              </h2>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('payroll')}
+                className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
+              >
+                View All ({payroll.length})
+              </button>
             </div>
-
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                    Finance Department Quick Controls
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Authorized financial & store accounting actions
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-2.5 text-xs">
-                <button
-                  type="button"
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {payroll.slice(0, 6).map((rec) => (
+                <div
+                  key={rec.id}
                   onClick={() => onNavigateTab('payroll')}
-                  className="w-full p-3.5 rounded-xl border border-[#D4D11E] bg-[#EBE834] hover:bg-[#E3E029] flex items-center justify-between text-left transition-colors cursor-pointer"
+                  className="px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 flex items-center justify-between gap-4 cursor-pointer text-xs"
                 >
                   <div>
-                    <div className="font-bold text-[#0E1525]">Approve & Disburse 30-Day Payroll</div>
-                    <div className="text-[11px] text-[#0E1525]/80">Edit working days, allowances, penalties & food sharing</div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100">{rec.employeeName}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      {rec.serviceType} · {rec.workingDays}/30 Days · 11% Pension: ETB {rec.pensionEmployer11Percent.toLocaleString()}
+                    </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#0E1525] shrink-0" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('clearance')}
-                  className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 hover:bg-[#DFE16A]/30 flex items-center justify-between text-left transition-colors cursor-pointer"
-                >
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-slate-100">Sign Off Clearance Gate #3 (Finance)</div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Settle severance and deduct unreturned store gear</div>
+                  <div className="text-right font-mono tabular-nums">
+                    <div className="font-bold text-slate-900 dark:text-slate-100">ETB {rec.netPay.toLocaleString()}</div>
+                    <div className="text-[11px] text-slate-500">{rec.paymentStatus}</div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 shrink-0" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('store')}
-                  className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 hover:bg-[#DFE16A]/30 flex items-center justify-between text-left transition-colors cursor-pointer"
-                >
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-slate-100">Audit Store & Stock Valuation</div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Review warehouse inventory costs across 4 divisions</div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 shrink-0" />
-                </button>
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -321,146 +257,120 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* 1. STOREKEEPER & EQUIPMENT CONTROLLER VIEW                                */}
       {/* ========================================================================= */}
       {roleConfig.type === 'storekeeper' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* 1-Click 3D Physical Warehouse Quick-Access Banner for Stock Manager */}
-          <div className="bg-[#0E1525] border border-slate-800 rounded-xl p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="p-3 rounded-xl bg-[#EBE834] text-[#0E1525] shrink-0">
-                <Package className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFF500]">
-                    Interactive Spatial Digital Twin
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-[#DFE16A]/20 text-[#FFF500] border border-[#FFF500]/30 text-[10px] font-semibold">
-                    4 Division Bays Live
-                  </span>
-                </div>
-                <h2 className="text-base sm:text-lg font-bold text-white mt-0.5">
-                  3D Physical Warehouse & Rack Inspector
-                </h2>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  Inspect Bay A/B (Security Gear & Radios), Bay C (Cleaning Chemicals), Bay D (Property Tools), and Bay E (HQ Stationery) in 3D and issue or restock directly from shelves.
-                </p>
-              </div>
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                Central Store & Inventory Control
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Uniform handouts, chemical stock buffers, and Gate #2 exit property returns
+              </p>
             </div>
             <button
               type="button"
               onClick={() => onNavigateTab('store')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#FFF500] hover:bg-[#EBE834] text-[#0E1525] font-bold text-xs rounded-full transition-colors shadow-xs shrink-0 self-start sm:self-auto cursor-pointer"
+              className="px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] text-xs font-semibold flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
             >
-              <span>Launch 3D Warehouse</span>
-              <ArrowRight className="w-4 h-4" />
+              <Package className="w-3.5 h-3.5 text-[#EBE834]" />
+              <span>Open 3D Warehouse</span>
             </button>
           </div>
 
-          {/* Store Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
             <HabMetricCard
-              title="Pending Property Handover"
+              title="Pending Property Returns"
               value={`${pendingStoreSignoffs.length} Returns`}
-              subtitle="Awaiting store inspection"
+              subtitle="Gate #2 clearance inspection"
               onClick={() => onNavigateTab('clearance')}
             />
             <HabMetricCard
-              title="Unreturned Gear Deductions"
+              title="Unreturned Gear Value"
               value={`ETB ${totalUnreturnedDeductions.toLocaleString()}`}
-              subtitle="To deduct from final severance"
+              subtitle="Forwarded to Finance"
               onClick={() => onNavigateTab('clearance')}
             />
             <HabMetricCard
-              title="Onboarding Gear Issuance"
+              title="Onboarding Gear Queue"
               value={`${newRecruitsAwaitingGear.length} Recruits`}
-              subtitle="Uniform, cap & boots needed"
+              subtitle="Uniforms & boots needed"
               onClick={() => onNavigateTab('onboarding')}
             />
             <HabMetricCard
-              title="Active Uniform Records"
-              value={`${employees.length} Profiles`}
-              subtitle="Sized for boot & uniform inventory"
+              title="Sized Staff Profiles"
+              value={`${employees.length} Staff`}
+              subtitle="Uniform & boot records"
               onClick={() => onNavigateTab('management')}
             />
           </div>
 
-          {/* Storekeeper Detailed Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <LogOut className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                    <span>Clearance Property Handover Watchlist</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Verify returned shirts, trousers, boots, and ID badges</p>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  Gate #2 Exit Property Returns
+                </h2>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('clearance')}
-                  className="text-xs font-bold text-[#0E1525] dark:text-[#FFF500] hover:underline"
+                  className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
                 >
-                  Open Clearance Tab →
+                  Open Clearances
                 </button>
               </div>
-
-              <div className="space-y-3">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {clearances.map((c) => (
-                  <div key={c.id} className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#DFE16A]/15 dark:bg-slate-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div key={c.id} className="px-5 py-3 flex items-center justify-between gap-3 text-xs">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{c.employeeName}</span>
-                        <span className="font-mono text-[10px] text-slate-500 dark:text-slate-400">{c.employeeCode}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-[#EBE834] text-[#0E1525]">
-                          {c.serviceType}
-                        </span>
+                      <div className="font-semibold text-slate-900 dark:text-slate-100">
+                        {c.employeeName} <span className="font-mono text-slate-400">({c.employeeCode})</span>
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        Reason: {c.exitReason} · Site: {c.siteName}
-                      </div>
-                      <div className="text-[11px] text-slate-800 dark:text-amber-300 mt-1 font-semibold">
-                        Property Status: {c.storeAssetSignoff?.completed ? '✓ Handover Signed Off' : '⚠️ Pending Store Inspection'} 
-                        {(c.financeSignoff?.unreturnedGearCost || 0) > 0 && ` (ETB ${c.financeSignoff.unreturnedGearCost.toLocaleString()} deduction)`}
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        {c.siteName} · {c.storeAssetSignoff?.completed ? 'Returned & Signed' : 'Pending Store Check'}
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => onNavigateTab('clearance')}
-                      className="px-3.5 py-1.5 bg-[#0E1525] hover:bg-[#19233C] text-white font-semibold text-xs rounded-full shadow-xs shrink-0 cursor-pointer"
+                      className="px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold cursor-pointer"
                     >
-                      Inspect Return
+                      Inspect
                     </button>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <CheckSquare className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                  <span>Onboarding Uniform & PPE Kits</span>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  Onboarding Kit Handouts
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Newly hired guards and cleaners ready for uniform issuance</p>
+                <button
+                  type="button"
+                  onClick={() => onNavigateTab('onboarding')}
+                  className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
+                >
+                  Open Onboarding
+                </button>
               </div>
-
-              <div className="space-y-2.5">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {onboardingList.map((ob) => {
                   const equipTask = ob.tasks.find(t => t.category === 'Equipment');
                   return (
-                    <div key={ob.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between gap-3">
+                    <div key={ob.id} className="px-5 py-3 flex items-center justify-between gap-3 text-xs">
                       <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-slate-100">{ob.fullName}</div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400">{ob.role} · {ob.serviceType}</div>
-                        <div className="text-[10px] font-semibold text-slate-700 dark:text-amber-400 mt-0.5">
-                          Equipment Task: {equipTask?.completed ? '✓ Issued' : '⏳ Ready for Handout'}
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">{ob.fullName}</div>
+                        <div className="text-[11px] text-slate-500 mt-0.5">
+                          {ob.role} · {equipTask?.completed ? 'Kit Issued' : 'Ready for Handout'}
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => onNavigateTab('onboarding')}
-                        className="text-xs bg-[#EBE834] text-[#0E1525] px-2.5 py-1 rounded-full font-bold cursor-pointer"
+                        className="px-3 py-1 rounded-md bg-[#FFF9DB] hover:bg-[#EBE834] text-[#0E1525] border border-[#EFE1AA] font-semibold cursor-pointer"
                       >
-                        Issue Kit →
+                        Issue Kit
                       </button>
                     </div>
                   );
@@ -475,104 +385,85 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* 2. FIELD SITE SUPERVISOR VIEW                                             */}
       {/* ========================================================================= */}
       {roleConfig.type === 'site_supervisor' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Supervisor Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                Field Site Supervision & Roll Call
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Daily shift attendance, guard platoons, and standby relief coverage
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigateTab('attendance')}
+              className="px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Take Roll Call</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
             <HabMetricCard
               title="Present Today"
               value={`${presentAttendance.length} / ${attendance.length}`}
-              subtitle={`${attendanceRate}% present at posts`}
+              subtitle={`${attendanceRate}% clocked in`}
               onClick={() => onNavigateTab('attendance')}
             />
             <HabMetricCard
-              title="Unfilled Posts Alert"
-              value={`${unfilledPostsCount} Shortage`}
-              subtitle="Across 5 client facilities"
+              title="Unfilled Posts"
+              value={`${unfilledPostsCount} Posts`}
+              subtitle="Across 5 client sites"
               onClick={() => onNavigateTab('deployment')}
             />
             <HabMetricCard
-              title="Active Security Platoon"
+              title="Active Platoon"
               value="Platoon Alpha"
-              subtitle="24hr Duty ON / 48hr Rest"
+              subtitle="24hr Duty / 48hr Rest"
               onClick={() => onNavigateTab('deployment')}
             />
             <HabMetricCard
-              title="On Leave"
+              title="Pending Leave Relief"
               value={`${pendingLeavesRequiringCover.length} Requests`}
-              subtitle="Assign replacement guard"
+              subtitle="Assign standby cover"
               onClick={() => onNavigateTab('leave')}
             />
           </div>
 
-          {/* Supervisor Detailed Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                    <span>Client Facility Guarding Readiness</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Field inspection of guard posts and hospital cleaning squads</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('deployment')}
-                  className="text-xs font-bold text-[#0E1525] dark:text-[#FFF500] hover:underline"
-                >
-                  Deployments Tab →
-                </button>
-              </div>
-
-              <div className="space-y-2.5">
-                {sites.map((s) => (
-                  <div key={s.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#DFE16A]/15 dark:bg-slate-800/50 flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100">{s.name}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400">{s.subcity} · {s.clientOrganization}</div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-right text-xs">
-                        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
-                          {s.securityStaffDeployed}/{s.securityStaffRequired}
-                        </span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Security</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => onNavigateTab('attendance')}
-                        className="px-3 py-1 bg-[#0E1525] hover:bg-[#19233C] text-white text-[11px] font-semibold rounded-full shadow-xs cursor-pointer"
-                      >
-                        Roll Call
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                Client Site Staffing Readiness
+              </h2>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('deployment')}
+                className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
+              >
+                Open Scheduler
+              </button>
             </div>
-
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                  <span>Today's Shift Attendance Roster</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Guards & cleaners clocked in at client posts</p>
-              </div>
-
-              <div className="space-y-2">
-                {attendance.slice(0, 5).map((a) => (
-                  <div key={a.id} className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between text-xs">
-                    <div>
-                      <div className="font-semibold text-slate-900 dark:text-slate-100">{a.employeeName}</div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400">{a.siteName} · {a.shift}</div>
-                    </div>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EBE834] text-[#0E1525]">
-                      {a.status}
-                    </span>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {sites.map((s) => (
+                <div key={s.id} className="px-5 py-3 flex items-center justify-between gap-4 text-xs">
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</div>
+                    <div className="text-[11px] text-slate-500">{s.subcity} · {s.clientOrganization}</div>
                   </div>
-                ))}
-              </div>
+                  <div className="flex items-center gap-4 font-mono tabular-nums">
+                    <div>
+                      <span className="text-slate-500 mr-1">Sec:</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{s.securityStaffDeployed}/{s.securityStaffRequired}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 mr-1">Cln:</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{s.cleaningStaffDeployed}/{s.cleaningStaffRequired}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -582,9 +473,27 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* 3. TALENT ACQUISITION & RECORDS OFFICER VIEW                             */}
       {/* ========================================================================= */}
       {roleConfig.type === 'hr_talent' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Talent Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                Recruitment & Onboarding Pipeline
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Applicant vetting, Kebele guarantor verification, and contract onboarding
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigateTab('recruitment')}
+              className="px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Open Recruitment</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
             <HabMetricCard
               title="Candidate Pipeline"
               value={`${activeCandidates.length} Active`}
@@ -594,98 +503,55 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <HabMetricCard
               title="Guarantor Checks"
               value={`${pendingGuarantors.length} Pending`}
-              subtitle="Kebele & government letters"
+              subtitle="Kebele verification"
               onClick={() => onNavigateTab('recruitment')}
             />
             <HabMetricCard
-              title="Onboarding Checklists"
+              title="Active Onboarding"
               value={`${activeOnboarding.length} Recruits`}
-              subtitle="Contract & orientation"
+              subtitle="Pre-deployment checklist"
               onClick={() => onNavigateTab('onboarding')}
             />
             <HabMetricCard
-              title="Experience Certificates"
+              title="Service Certificates"
               value={`${workExperiences.length} Issued`}
-              subtitle="Official service certificates"
+              subtitle="Authenticated records"
               onClick={() => onNavigateTab('experience')}
             />
           </div>
 
-          {/* Talent Detailed Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <UserPlus className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                    <span>Candidate Vetting & Interview Pipeline</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Review applicants for Security Guards and Hospital Cleaning Teams</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('recruitment')}
-                  className="text-xs font-bold text-[#0E1525] dark:text-[#FFF500] hover:underline"
-                >
-                  Recruitment Tab →
-                </button>
-              </div>
-
-              <div className="space-y-2.5">
-                {candidates.map((c) => (
-                  <div key={c.id} className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#DFE16A]/15 dark:bg-slate-800/50 flex items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{c.fullName}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-[#EBE834] text-[#0E1525]">
-                          {c.targetService}
-                        </span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                          {c.phone}
-                        </span>
-                      </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        Applied Role: {c.targetRole} · Stage: <span className="font-semibold text-slate-800 dark:text-slate-200">{c.stage}</span>
-                      </div>
-                    </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                Active Candidates
+              </h2>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('recruitment')}
+                className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
+              >
+                Manage Pipeline
+              </button>
+            </div>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {candidates.map((c) => (
+                <div key={c.id} className="px-5 py-3 flex items-center justify-between gap-4 text-xs">
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100">{c.fullName}</div>
+                    <div className="text-[11px] text-slate-500">{c.targetRole} · {c.targetService}</div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-slate-600 dark:text-slate-300 font-medium">{c.stage}</span>
                     <button
                       type="button"
                       onClick={() => onNavigateTab('recruitment')}
-                      className="px-3.5 py-1.5 bg-[#0E1525] hover:bg-[#19233C] text-white font-semibold text-xs rounded-full shadow-xs shrink-0 cursor-pointer"
+                      className="px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold cursor-pointer"
                     >
-                      Screen Candidate
+                      Review
                     </button>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <CheckSquare className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                  <span>Onboarding Progress Monitor</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Tracking contracts, Kebele IDs, and initial site postings</p>
-              </div>
-
-              <div className="space-y-3">
-                {onboardingList.map((ob) => (
-                  <div key={ob.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-slate-100">
-                      <span>{ob.fullName}</span>
-                      <span className="text-[#0E1525] dark:text-[#FFF500]">{ob.progressPercent}% Complete</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-2 overflow-hidden">
-                      <div className="bg-[#0E1525] dark:bg-[#FFF500] h-2 rounded-full" style={{ width: `${ob.progressPercent}%` }} />
-                    </div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
-                      <span>Role: {ob.role}</span>
-                      <span>Target: {ob.targetStartDate}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -695,99 +561,61 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* 4. HR OPERATIONS OFFICER VIEW                                             */}
       {/* ========================================================================= */}
       {roleConfig.type === 'hr_ops' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Ops Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
             <HabMetricCard
               title="Total Employees"
               value={employees.length}
-              subtitle="Across 4 service divisions"
+              subtitle="Across 4 divisions"
               onClick={() => onNavigateTab('management')}
             />
             <HabMetricCard
               title="Present Today"
               value={`${attendanceRate}%`}
-              subtitle={`${presentAttendance.length} clocked in at client sites`}
+              subtitle={`${presentAttendance.length} clocked in`}
               onClick={() => onNavigateTab('attendance')}
             />
             <HabMetricCard
-              title="On Leave"
+              title="Pending Leave"
               value={leaveRequests.filter(r => r.status === 'Pending').length}
-              subtitle="Awaiting relief coverage sign-off"
+              subtitle="Awaiting relief cover"
               onClick={() => onNavigateTab('leave')}
             />
             <HabMetricCard
-              title="Cleaning Shift Week"
+              title="Cleaning Rotation"
               value="Week 1"
               subtitle="Rotates Monday 06:00"
               onClick={() => onNavigateTab('deployment')}
             />
           </div>
 
-          {/* Ops Detailed Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                    <span>Site Deployments & Staffing Quota</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Live deployment counts against contractual client agreements</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('deployment')}
-                  className="text-xs font-bold text-[#0E1525] dark:text-[#FFF500] hover:underline"
-                >
-                  Manage Deployments →
-                </button>
-              </div>
-
-              <div className="space-y-2.5">
-                {sites.map((s) => (
-                  <div key={s.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#DFE16A]/15 dark:bg-slate-800/50 flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100">{s.name}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400">{s.subcity} · {s.clientOrganization}</div>
-                    </div>
-                    <div className="text-right text-xs">
-                      <div className="font-semibold text-slate-800 dark:text-slate-200 font-mono">
-                        Sec: {s.securityStaffDeployed}/{s.securityStaffRequired} · Cln: {s.cleaningStaffDeployed}/{s.cleaningStaffRequired}
-                      </div>
-                      <span className="text-[10px] text-slate-700 dark:text-[#FFF500] font-bold block">
-                        Fulfillment: {Math.round(((s.securityStaffDeployed + s.cleaningStaffDeployed) / (s.securityStaffRequired + s.cleaningStaffRequired)) * 100)}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                Site Deployments & Quotas
+              </h2>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('deployment')}
+                className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
+              >
+                Manage Deployments
+              </button>
             </div>
-
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                  <span>Leave Requests & Replacement Watch</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Ensure posts are not left unguarded during annual or sick leave</p>
-              </div>
-
-              <div className="space-y-2.5">
-                {leaveRequests.map((lr) => (
-                  <div key={lr.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100">{lr.employeeName}</span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EBE834] text-[#0E1525]">
-                        {lr.status}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                      {lr.leaveType} · {lr.days} days ({lr.startDate} to {lr.endDate})
-                    </div>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {sites.map((s) => (
+                <div key={s.id} className="px-5 py-3 flex items-center justify-between gap-4 text-xs">
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</div>
+                    <div className="text-[11px] text-slate-500">{s.subcity} · {s.clientOrganization}</div>
                   </div>
-                ))}
-              </div>
+                  <div className="font-mono tabular-nums text-right">
+                    <span className="font-semibold text-slate-900 dark:text-white">
+                      Sec {s.securityStaffDeployed}/{s.securityStaffRequired} · Cln {s.cleaningStaffDeployed}/{s.cleaningStaffRequired}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -797,135 +625,86 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* 5. LEGAL ADVISOR VIEW                                                     */}
       {/* ========================================================================= */}
       {roleConfig.type === 'legal' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Legal Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
             <HabMetricCard
-              title="Proclamation Clearances"
-              value={`${pendingClearances.length} Active`}
-              subtitle="Proclamation No. 1156/2019"
+              title="Active Clearances"
+              value={`${pendingClearances.length}`}
+              subtitle="Proclamation 1156/2019"
               onClick={() => onNavigateTab('clearance')}
             />
             <HabMetricCard
-              title="Severance Settlements"
+              title="Severance Queue"
               value={`ETB ${totalSeverancePending.toLocaleString()}`}
-              subtitle="Final compensation audit"
+              subtitle="Final settlement audit"
               onClick={() => onNavigateTab('clearance')}
             />
             <HabMetricCard
-              title="Authenticated Certificates"
-              value={`${workExperiences.length} Validated`}
-              subtitle="Article 22 compliance"
+              title="Work Certificates"
+              value={`${workExperiences.length}`}
+              subtitle="Article 22 compliant"
               onClick={() => onNavigateTab('experience')}
             />
             <HabMetricCard
               title="Guarantor Compliance"
               value="100%"
-              subtitle="Civil indemnity contracts"
+              subtitle="Verified civil undertakings"
               onClick={() => onNavigateTab('management')}
             />
           </div>
 
-          {/* Legal Detailed Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                    <span>Exit Clearance Legal Sign-off (Proclamation 1156/2019)</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Audit notice periods, statutory severance, and property handover</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onNavigateTab('clearance')}
-                  className="text-xs font-bold text-[#0E1525] dark:text-[#FFF500] hover:underline"
-                >
-                  Clearance Audit →
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {clearances.map((c) => (
-                  <div key={c.id} className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#DFE16A]/15 dark:bg-slate-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{c.employeeName}</span>
-                        <span className="font-mono text-[10px] text-slate-500 dark:text-slate-400">{c.employeeCode}</span>
-                        <span className="text-[10px] bg-[#EBE834] text-[#0E1525] px-1.5 py-0.5 rounded font-bold">
-                          {c.exitReason}
-                        </span>
-                      </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        Target Exit Date: {c.targetExitDate} · Initiated: {c.initiationDate}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onNavigateTab('clearance')}
-                      className="px-3.5 py-1.5 bg-[#0E1525] hover:bg-[#19233C] text-white font-semibold text-xs rounded-full shadow-xs shrink-0 cursor-pointer"
-                    >
-                      Audit Sign-off
-                    </button>
-                  </div>
-                ))}
-              </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                Exit Clearance Legal Sign-Off Queue
+              </h2>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('clearance')}
+                className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline cursor-pointer"
+              >
+                Open Clearances
+              </button>
             </div>
-
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                  <span>Authenticated Work Experience Records</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Legal certificates under Ethiopian Labor Law Article 22</p>
-              </div>
-
-              <div className="space-y-3">
-                {workExperiences.map((w) => (
-                  <div key={w.id} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-slate-100">
-                      <span>{w.employeeName}</span>
-                      <span className="font-mono text-[#0E1525] dark:text-[#FFF500] text-[10px]">{w.certificateNumber}</span>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {clearances.map((c) => (
+                <div key={c.id} className="px-5 py-3 flex items-center justify-between gap-4 text-xs">
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100">
+                      {c.employeeName} <span className="font-mono text-slate-400">({c.employeeCode})</span>
                     </div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                      {w.role} · {w.serviceType}
+                    <div className="text-[11px] text-slate-500">
+                      {c.exitReason} · Target Exit: {c.targetExitDate}
                     </div>
                   </div>
-                ))}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => onNavigateTab('clearance')}
+                    className="px-3 py-1 rounded-md bg-[#0E1525] text-white font-semibold cursor-pointer"
+                  >
+                    Audit Sign-off
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* 6. EXECUTIVE & GENERAL MANAGEMENT VIEW (HR DIRECTOR / EXECUTIVE DASHBOARD)*/}
+      {/* 6. EXECUTIVE & GENERAL MANAGEMENT VIEW (DISTILLED & PROGRESSIVE)          */}
       {/* ========================================================================= */}
       {roleConfig.type === 'executive' && (() => {
-        // Prepare chart data for Weekly Deployment Capacity vs Actual Deployment
         const chartData = sites.map(site => {
-          let capacity = 0;
-          let actual = 0;
           const secCap = site.securityStaffRequired;
           const secAct = site.securityStaffDeployed;
           const clnCap = site.cleaningStaffRequired;
           const clnAct = site.cleaningStaffDeployed;
 
-          if (chartFilter === 'Security') {
-            capacity = secCap;
-            actual = secAct;
-          } else if (chartFilter === 'Cleaning') {
-            capacity = clnCap;
-            actual = clnAct;
-          } else {
-            capacity = secCap + clnCap;
-            actual = secAct + clnAct;
-          }
-
-          const deficit = Math.max(0, capacity - actual);
-          const fulfillment = capacity > 0 ? Math.round((actual / capacity) * 100) : 100;
+          const capacity =
+            chartFilter === 'Security' ? secCap : chartFilter === 'Cleaning' ? clnCap : secCap + clnCap;
+          const actual =
+            chartFilter === 'Security' ? secAct : chartFilter === 'Cleaning' ? clnAct : secAct + clnAct;
 
           let shortName = site.siteCode || site.name;
           if (site.name.includes('Commercial Bank')) shortName = 'CBE Tower';
@@ -940,62 +719,11 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             name: shortName,
             capacity,
             actual,
-            deficit,
-            fulfillment
+            fulfillment: capacity > 0 ? Math.round((actual / capacity) * 100) : 100
           };
         });
 
-        const totalFilteredCapacity = chartData.reduce((acc, curr) => acc + curr.capacity, 0);
-        const totalFilteredActual = chartData.reduce((acc, curr) => acc + curr.actual, 0);
-        const filteredFulfillmentRate = totalFilteredCapacity > 0 ? Math.round((totalFilteredActual / totalFilteredCapacity) * 100) : 100;
-        const totalShortage = Math.max(0, totalFilteredCapacity - totalFilteredActual);
-
-        const CustomChartTooltip = ({ active, payload }: any) => {
-          if (active && payload && payload.length) {
-            const data = payload[0].payload;
-            return (
-              <div className="bg-[#0E1525] text-white p-3.5 rounded-xl shadow-2xl border border-[#FFF500]/30 text-xs min-w-[230px]">
-                <div className="font-bold text-xs text-[#FFF500] border-b border-white/10 pb-1.5 mb-2 leading-snug">
-                  {data.fullName}
-                </div>
-                <div className="space-y-1.5 text-slate-200">
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-slate-400">
-                      <span className="w-2.5 h-2.5 rounded-xs bg-[#64748B]"></span>
-                      Weekly Capacity:
-                    </span>
-                    <span className="font-mono font-bold text-white tabular-nums">{data.capacity} Staff</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-slate-400">
-                      <span className="w-2.5 h-2.5 rounded-xs bg-[#EBE834]"></span>
-                      Actual Deployment:
-                    </span>
-                    <span className="font-mono font-bold text-[#EBE834] tabular-nums">{data.actual} Staff</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
-                    <span className="text-slate-400">Fulfillment Rate:</span>
-                    <span className={`font-mono font-bold ${data.fulfillment >= 100 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                      {data.fulfillment}%
-                    </span>
-                  </div>
-                  {data.deficit > 0 ? (
-                    <div className="text-[11px] text-rose-300 font-medium bg-rose-950/60 px-2 py-1 rounded border border-rose-800/60 mt-1">
-                      ⚠️ Shortage: {data.deficit} post{data.deficit > 1 ? 's' : ''} to fill
-                    </div>
-                  ) : (
-                    <div className="text-[11px] text-emerald-300 font-medium bg-emerald-950/60 px-2 py-1 rounded border border-emerald-800/60 mt-1">
-                      ✓ Full Capacity Met
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }
-          return null;
-        };
-
-        // GM Business Financial & Operational Analytics: Inputs vs Outputs
+        // GM Financials: Inputs vs Outputs
         const totalGrossPayroll = payroll.reduce((s, r) => s + r.grossPay, 0);
         const totalEmployerPension = payroll.reduce((s, r) => s + (r.pensionEmployer11Percent || 0), 0);
         const storeProcurementOutlay = stockTransactions
@@ -1007,11 +735,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         const totalInputsCost = totalGrossPayroll + totalEmployerPension + storeProcurementOutlay;
         const totalWarehouseValuation = stockItems.reduce((s, item) => s + (item.quantityInStock * item.unitCostETB), 0) || 348500;
         const totalRecruitsInPipeline = candidates.filter(c => c.stage !== 'Rejected').length;
-        const candidatesGuarantorVerified = candidates.filter(c => c.guarantorProvided).length;
-        const uniformSetsIssued = stockTransactions.filter(t => t.transactionType === 'Issued (Out)').length || 42;
 
-        // Client service billable contract rates:
-        // Security guard: ETB 7,500/month; Custodial cleaner: ETB 5,200/month
         const siteFinancials = sites.map(s => {
           const secRev = s.securityStaffDeployed * 7500;
           const clnRev = s.cleaningStaffDeployed * 5200;
@@ -1023,8 +747,6 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           const marginPercent = totalRev > 0 ? Math.round((margin / totalRev) * 100) : 0;
           return {
             ...s,
-            secRev,
-            clnRev,
             totalRev,
             totalCost,
             margin,
@@ -1036,846 +758,455 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         const grossOperatingProfit = totalClientRevenue - totalInputsCost;
         const grossProfitMargin = totalClientRevenue > 0 ? Math.round((grossOperatingProfit / totalClientRevenue) * 100) : 34;
         const monthlySecurityHoursDelivered = totalDeployedSec * 240;
-        const monthlyCleaningAreaCovered = totalDeployedCln * 12500;
 
         return (
-          <div className="space-y-6 animate-fadeIn">
+          <div className="space-y-6">
             
-            {/* General Manager Top Mode Selector */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+            {/* CHILD 1: Clean Page Header & Focused View Switcher */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 rounded-lg bg-[#EBE834] text-[#0E1525] font-black">
-                    <Briefcase className="w-4 h-4" />
-                  </span>
-                  <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
-                    General Manager Business Intelligence & Executive Overview
-                  </h1>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#EBE834] text-[#0E1525]">
-                    GM Cockpit
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Full operational oversight: Tracking all business <strong>Inputs</strong> (recruitment, inventory procurement, payroll costs) vs <strong>Outputs</strong> (client SLA billing, delivered guard hours, profit margins).
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                  Executive Operations Overview
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Security, Cleaning, and Property Management performance across 5 institutional facilities
                 </p>
               </div>
 
-              <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg shrink-0">
+              {/* Progressive Disclosure Segmented Control */}
+              <div className="flex items-center gap-1 bg-[#FFFDE8] dark:bg-slate-900 border border-[#EFE1AA] dark:border-slate-800 p-1 rounded-xl self-start sm:self-auto">
                 <button
                   type="button"
-                  onClick={() => setExecutiveViewMode('gm-cockpit')}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    executiveViewMode === 'gm-cockpit'
-                      ? 'bg-[#0E1525] text-[#FFF500] shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                  onClick={() => setExecutiveTab('summary')}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                    executiveTab === 'summary'
+                      ? 'bg-[#0E1525] text-[#FFF9DB]'
+                      : 'text-[#0E1525]/75 dark:text-slate-300 hover:text-[#0E1525]'
                   }`}
                 >
-                  <span className="flex items-center gap-1.5">
-                    <Lightbulb className="w-3.5 h-3.5" />
-                    <span>Inputs & Outputs Cockpit</span>
-                  </span>
+                  Client Sites & Summary
                 </button>
                 <button
                   type="button"
-                  onClick={() => setExecutiveViewMode('operations')}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                    executiveViewMode === 'operations'
-                      ? 'bg-[#0E1525] text-[#FFF500] shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                  onClick={() => setExecutiveTab('inputs-outputs')}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                    executiveTab === 'inputs-outputs'
+                      ? 'bg-[#0E1525] text-[#FFF9DB]'
+                      : 'text-[#0E1525]/75 dark:text-slate-300 hover:text-[#0E1525]'
                   }`}
                 >
-                  <span className="flex items-center gap-1.5">
-                    <BarChart3 className="w-3.5 h-3.5" />
-                    <span>Deployment Quota Chart</span>
-                  </span>
+                  Inputs vs. Outputs
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setExecutiveTab('coverage')}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                    executiveTab === 'coverage'
+                      ? 'bg-[#0E1525] text-[#FFF9DB]'
+                      : 'text-[#0E1525]/75 dark:text-slate-300 hover:text-[#0E1525]'
+                  }`}
+                >
+                  Deployment Chart
                 </button>
               </div>
             </div>
 
-            {/* SECTION 1: EXECUTIVE HERO KPIS (INPUTS VS OUTPUTS) - Light Golden Yellow (#FFFDE8 / #FFF9DB) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 p-3.5 sm:p-4.5 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800 shadow-xs">
+            {/* CHILD 2: Light Golden Yellow (#FFFDE8 / #FFF9DB) 4-Card Hero KPI Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FFFDE8] dark:bg-slate-900/60 border border-[#EFE1AA] dark:border-slate-800">
               <HabMetricCard
                 variant="light-gold"
-                title="Monthly Billed Inflow (Outputs)"
+                title="Monthly Billed Revenue"
                 value={`ETB ${totalClientRevenue.toLocaleString()}`}
-                subtitle={`5 institutional client SLA contracts`}
+                subtitle="5 active client SLA contracts"
                 onClick={() => onNavigateTab('deployment')}
               />
               <HabMetricCard
                 variant="light-gold"
-                title="Direct Operating Costs (Inputs)"
+                title="Direct Operating Costs"
                 value={`ETB ${totalInputsCost.toLocaleString()}`}
-                subtitle={`Gross wages + 11% pension + supplies`}
+                subtitle="Payroll + 11% pension + store"
                 onClick={() => onNavigateTab('payroll')}
               />
               <HabMetricCard
                 variant="light-gold"
-                title="Gross Operating Margin"
+                title="Net Operating Margin"
                 value={`ETB ${grossOperatingProfit.toLocaleString()}`}
-                subtitle={`${grossProfitMargin}% net operating profit margin`}
+                subtitle={`${grossProfitMargin}% operating profit margin`}
                 onClick={() => onNavigateTab('payroll')}
               />
               <HabMetricCard
                 variant="light-gold"
-                title="Client SLA Fulfillment"
+                title="Site SLA Fulfillment"
                 value={`${overallFulfillmentRate}%`}
-                subtitle={`${totalStaffDeployed}/${totalStaffRequired} site posts actively manned`}
+                subtitle={`${totalStaffDeployed} of ${totalStaffRequired} posts manned`}
                 onClick={() => onNavigateTab('deployment')}
               />
             </div>
 
-            {/* SECTION 2: GM EXECUTIVE AI DIAGNOSTIC ADVISORY */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 rounded-lg bg-[#EBE834] text-[#0E1525]">
-                    <Sparkles className="w-4 h-4" />
-                  </span>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                      Executive Diagnostic Advisory & Strategic Insights
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Automated operational intelligence evaluating business inputs, outputs, and margin performance
-                    </p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 self-start sm:self-auto">
-                  ● Live Diagnostics
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                
-                {/* Insight 1: Revenue & Margins */}
-                <div className="p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      <span>Revenue & Margin Insight</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-800/60 text-emerald-900 dark:text-emerald-100">
-                      High Return
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                    <strong>Commercial Bank of Ethiopia (CBE) Tower</strong> generates the highest gross revenue (<strong>ETB 330,800/mo</strong>) with <strong>38%</strong> contribution margin. Custodial cleaning services yield a <strong>36.5%</strong> gross margin vs <strong>32.1%</strong> for armed security.
-                  </p>
-                  <div className="text-[11px] text-emerald-800 dark:text-emerald-300 font-semibold pt-1 border-t border-emerald-200/60 dark:border-emerald-800/60">
-                    Recommendation: Replicate CBE bundled service model for upcoming St. Paul's renewal.
-                  </div>
-                </div>
-
-                {/* Insight 2: Operational Capacity Bottleneck */}
-                <div className="p-3.5 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/50 dark:bg-amber-950/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1">
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                      <span>Capacity Deficit Alert</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-200/60 dark:bg-amber-800/60 text-amber-900 dark:text-amber-100">
-                      Action Required
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                    2 contracted posts currently have staffing deficits: <strong>1 Cleaner at CBE Tower</strong> and <strong>1 Guard at EAL Cargo Hub</strong>. 4 candidates in onboarding have completed medical vetting and can be scheduled immediately.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => onNavigateTab('deployment')}
-                    className="text-[11px] font-bold text-amber-900 dark:text-amber-200 hover:underline flex items-center gap-1 pt-1 cursor-pointer"
-                  >
-                    <span>Open Drag & Drop Scheduler to assign posts</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
-
-                {/* Insight 3: Legal & Labor Compliance */}
-                <div className="p-3.5 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-blue-50/50 dark:bg-blue-950/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-800 dark:text-blue-300 flex items-center gap-1">
-                      <Shield className="w-3.5 h-3.5" />
-                      <span>Labor Law Compliance</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-200/60 dark:bg-blue-800/60 text-blue-900 dark:text-blue-100">
-                      100% Compliant
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                    <strong>100%</strong> of newly deployed security guards have verified notarized Kebele guarantors on file, satisfying Ethiopian Labor Proclamation No. 1156/2019. Zero labor tribunal inquiries or wrongful termination exposure.
-                  </p>
-                  <div className="text-[11px] text-blue-800 dark:text-blue-300 font-semibold pt-1 border-t border-blue-200/60 dark:border-blue-800/60">
-                    Audit Status: Legal Gate #4 cleared for all active personnel.
-                  </div>
-                </div>
-
-                {/* Insight 4: Store Inventory Safety Stock */}
-                <div className="p-3.5 rounded-xl border border-purple-200 dark:border-purple-800/60 bg-purple-50/50 dark:bg-purple-950/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-purple-800 dark:text-purple-300 flex items-center gap-1">
-                      <Package className="w-3.5 h-3.5" />
-                      <span>Central Store Buffer Warning</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-200/60 dark:bg-purple-800/60 text-purple-900 dark:text-purple-100">
-                      Inventory Alert
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                    Security tactical boots stock is down to <strong>8 pairs</strong> (safe buffer is 20 pairs). With <strong>12 incoming recruits</strong> scheduled for deployment, initiate an emergency purchase order to prevent onboarding delay.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => onNavigateTab('store')}
-                    className="text-[11px] font-bold text-purple-900 dark:text-purple-200 hover:underline flex items-center gap-1 pt-1 cursor-pointer"
-                  >
-                    <span>View Store Ledger & Restock</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
-
-                {/* Insight 5: Payroll & Pension Reconciliation */}
-                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                      <CreditCard className="w-3.5 h-3.5" />
-                      <span>Payroll & 11% Pension Audit</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
-                      Reconciled
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                    Employer 11% pension contribution (<strong>ETB {totalEmployerPension.toLocaleString()}</strong>) is properly isolated from employee 7% deductions. Overtime variance is controlled at <strong>4.2%</strong> of baseline payroll.
-                  </p>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-400 font-semibold pt-1 border-t border-slate-200 dark:border-slate-700">
-                    Disbursement: Ready for Commercial Bank of Ethiopia (CBE) bulk transfer.
-                  </div>
-                </div>
-
-                {/* Insight 6: Asset Clearance & Recovery Rate */}
-                <div className="p-3.5 rounded-xl border border-[#D4D11E] bg-[#EBE834]/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-[#0E1525] flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Asset Clearance Recovery</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#EBE834] text-[#0E1525]">
-                      100% Recovery
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#0E1525] leading-relaxed font-medium">
-                    100% of unreturned property (uniforms, boots, walkie-talkies) has been verified or deducted at Gate #2 & Gate #3. Zero financial leakage upon employee exit clearance.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => onNavigateTab('clearance')}
-                    className="text-[11px] font-bold text-[#0E1525] hover:underline flex items-center gap-1 pt-1 cursor-pointer"
-                  >
-                    <span>Audit 4-Gate Exit Clearances</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
-
-              </div>
-            </div>
-
-            {/* SECTION 3: DUAL-COLUMN INPUTS VS OUTPUTS BUSINESS ARCHITECTURE */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              
-              {/* LEFT COLUMN: BUSINESS INPUTS (RESOURCES & EXPENSES CONSUMED) */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300">
-                      <ArrowDownRight className="w-4 h-4" />
-                    </span>
+            {/* CHILD 3: Focused View Content (1 Clear View at a time) */}
+            {executiveTab === 'summary' && (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* Unified Client Sites & Financial Performance Table */}
+                <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <div>
                       <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                        Operational Inputs (Costs & Resources)
+                        Client Facilities & Contract Performance
                       </h2>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Workforce talent intake, warehouse supplies, direct payroll & statutory pensions
+                        Staffing coverage, monthly billing, and net contribution by site
                       </p>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => onNavigateTab('deployment')}
+                      className="text-xs font-semibold text-[#0E1525] dark:text-[#EBE834] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Manage Roster</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <span className="font-mono font-bold text-xs text-rose-700 dark:text-rose-400">
-                    ETB {totalInputsCost.toLocaleString()}/mo
-                  </span>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/70 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
+                        <tr>
+                          <th className="py-3 px-4">Facility</th>
+                          <th className="py-3 px-3 text-right">Staffing</th>
+                          <th className="py-3 px-3 text-right">Monthly Billing</th>
+                          <th className="py-3 px-3 text-right">Net Margin</th>
+                          <th className="py-3 px-4 text-right">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {siteFinancials.map(s => {
+                          const totalReq = s.securityStaffRequired + s.cleaningStaffRequired;
+                          const totalAct = s.securityStaffDeployed + s.cleaningStaffDeployed;
+                          const fulfillment = totalReq > 0 ? Math.round((totalAct / totalReq) * 100) : 100;
+                          return (
+                            <tr
+                              key={s.id}
+                              onClick={() => onNavigateTab('deployment')}
+                              className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+                            >
+                              <td className="py-3.5 px-4">
+                                <div className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</div>
+                                <div className="text-[11px] text-slate-500">
+                                  {s.subcity} · {s.servicesProvided.join(' & ')}
+                                </div>
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-mono tabular-nums">
+                                <span className="font-semibold text-slate-900 dark:text-slate-100">{totalAct}/{totalReq}</span>
+                                <span className="text-[11px] text-slate-400 ml-1">({fulfillment}%)</span>
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-mono tabular-nums font-semibold text-slate-900 dark:text-slate-100">
+                                ETB {s.totalRev.toLocaleString()}
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-mono tabular-nums">
+                                <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                                  ETB {s.margin.toLocaleString()}
+                                </span>
+                                <span className="text-[11px] text-slate-400 ml-1">({s.marginPercent}%)</span>
+                              </td>
+                              <td className="py-3.5 px-4 text-right">
+                                <span
+                                  className={`text-[11px] font-semibold ${
+                                    fulfillment >= 100
+                                      ? 'text-emerald-700 dark:text-emerald-400'
+                                      : 'text-amber-700 dark:text-amber-400'
+                                  }`}
+                                >
+                                  {fulfillment >= 100 ? 'Full Coverage' : `${totalReq - totalAct} Open Post`}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
 
-                <div className="space-y-3">
-                  
-                  {/* Input 1: Talent Intake & Recruitment */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-blue-600" />
-                        <span>Workforce Talent Pipeline & Vetting</span>
+                {/* Right Column: Priority Operational Actions (Flat hairline list, no nested cards) */}
+                <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                      Attention Required
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Key bottlenecks across departments
+                    </p>
+                  </div>
+
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+                    <div className="p-4 space-y-1.5">
+                      <div className="flex items-center justify-between font-semibold text-slate-900 dark:text-slate-100">
+                        <span>Site Staffing Gaps</span>
+                        <span className="font-mono tabular-nums text-amber-700 dark:text-amber-400">
+                          {unfilledPostsCount} open
+                        </span>
+                      </div>
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        CBE Tower and EAL Cargo have open shift posts. {onboardingList.length} vetted recruits are ready for assignment.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => onNavigateTab('deployment')}
+                        className="text-[#0E1525] dark:text-[#EBE834] font-semibold hover:underline inline-flex items-center gap-1 pt-0.5 cursor-pointer"
+                      >
+                        <span>Assign in Scheduler</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="p-4 space-y-1.5">
+                      <div className="flex items-center justify-between font-semibold text-slate-900 dark:text-slate-100">
+                        <span>Store Reorder Buffer</span>
+                        <span className="font-mono tabular-nums text-amber-700 dark:text-amber-400">
+                          {stockItems.filter(i => i.quantityInStock <= i.minReorderLevel).length} items low
+                        </span>
+                      </div>
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Review tactical boots and hospital sanitizer inventory before next onboarding batch.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => onNavigateTab('store')}
+                        className="text-[#0E1525] dark:text-[#EBE834] font-semibold hover:underline inline-flex items-center gap-1 pt-0.5 cursor-pointer"
+                      >
+                        <span>Open Warehouse Ledger</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="p-4 space-y-1.5">
+                      <div className="flex items-center justify-between font-semibold text-slate-900 dark:text-slate-100">
+                        <span>30-Day Payroll & Pension</span>
+                        <span className="font-mono tabular-nums text-emerald-700 dark:text-emerald-400">
+                          ETB {totalEmployerPension.toLocaleString()}
+                        </span>
+                      </div>
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        11% employer pension isolated from 7% employee withholding. Ready for bank transfer.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => onNavigateTab('payroll')}
+                        className="text-[#0E1525] dark:text-[#EBE834] font-semibold hover:underline inline-flex items-center gap-1 pt-0.5 cursor-pointer"
+                      >
+                        <span>Review Payroll Sheet</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: CLEAN INPUTS VS. OUTPUTS LEDGER */}
+            {executiveTab === 'inputs-outputs' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                {/* Operational Inputs */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ArrowDownRight className="w-4 h-4 text-rose-600" />
+                      <div>
+                        <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                          Operational Inputs (Costs & Resources)
+                        </h2>
+                        <p className="text-xs text-slate-500">Monthly workforce, payroll, and store outlay</p>
+                      </div>
+                    </div>
+                    <span className="font-mono tabular-nums font-bold text-xs text-rose-700 dark:text-rose-400">
+                      ETB {totalInputsCost.toLocaleString()}/mo
+                    </span>
+                  </div>
+
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">30-Day Gross Wages</div>
+                        <div className="text-[11px] text-slate-500">{payroll.length} active staff on payroll</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
+                        ETB {totalGrossPayroll.toLocaleString()}
                       </span>
-                      <span className="font-mono font-bold text-blue-700 dark:text-blue-400">
+                    </div>
+
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">11% Statutory Employer Pension</div>
+                        <div className="text-[11px] text-slate-500">Proclamation 1156/2019 contribution</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
+                        ETB {totalEmployerPension.toLocaleString()}
+                      </span>
+                    </div>
+
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">Store & Uniform Procurement</div>
+                        <div className="text-[11px] text-slate-500">Warehouse valuation: ETB {totalWarehouseValuation.toLocaleString()}</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
+                        ETB {storeProcurementOutlay.toLocaleString()}
+                      </span>
+                    </div>
+
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">Talent Intake & Vetting</div>
+                        <div className="text-[11px] text-slate-500">100% Kebele guarantor verified</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
                         {totalRecruitsInPipeline} Candidates
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                      <div>
-                        <div className="text-slate-500">Guarantors Vetted</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {candidatesGuarantorVerified}/{totalRecruitsInPipeline} (100%)
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">In Onboarding</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {onboardingList.length} Recruits
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Medical Fit</div>
-                        <div className="font-bold text-emerald-600 font-mono mt-0.5">
-                          100% Passed
-                        </div>
-                      </div>
-                    </div>
                   </div>
-
-                  {/* Input 2: Central Store Procurement */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <Package className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Store Procurement & Uniform Issuance</span>
-                      </span>
-                      <span className="font-mono font-bold text-amber-700 dark:text-amber-400">
-                        ETB {storeProcurementOutlay.toLocaleString()} Outlay
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                      <div>
-                        <div className="text-slate-500">Warehouse Valuation</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          ETB {totalWarehouseValuation.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Uniforms Issued</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {uniformSetsIssued} Sets
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Chemicals/PPE</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          Active Supply
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Input 3: Direct Labor & Payroll Sheet */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <CreditCard className="w-3.5 h-3.5 text-rose-600" />
-                        <span>30-Day Payroll Sheet & Employer Pension</span>
-                      </span>
-                      <span className="font-mono font-bold text-rose-700 dark:text-rose-400">
-                        ETB {(totalGrossPayroll + totalEmployerPension).toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                      <div>
-                        <div className="text-slate-500">Gross Wages</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          ETB {totalGrossPayroll.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">11% Employer Pension</div>
-                        <div className="font-bold text-rose-600 font-mono mt-0.5">
-                          ETB {totalEmployerPension.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Disbursed Staff</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {payroll.length} Employees
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Input 4: Post Capacity Commitment */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-indigo-600" />
-                        <span>Workforce Post Commitment & Shifts</span>
-                      </span>
-                      <span className="font-mono font-bold text-slate-700 dark:text-slate-300">
-                        {totalStaffRequired} Required Posts
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                      <div>
-                        <div className="text-slate-500">Security (24/48)</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {totalRequiredSec} Posts (3 Platoons)
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Cleaning (2-Shift)</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {totalRequiredCln} Posts (Weekly)
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Head Office Support</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {headOfficeCount} Staff
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                 </div>
-              </div>
 
-              {/* RIGHT COLUMN: BUSINESS OUTPUTS (VALUE CREATED & REVENUE) */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
-                      <ArrowUpRight className="w-4 h-4" />
+                {/* Business Outputs */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ArrowUpRight className="w-4 h-4 text-emerald-600" />
+                      <div>
+                        <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                          Business Outputs (Revenue & Delivery)
+                        </h2>
+                        <p className="text-xs text-slate-500">Client contract billing, patrol hours, and profit</p>
+                      </div>
+                    </div>
+                    <span className="font-mono tabular-nums font-bold text-xs text-emerald-700 dark:text-emerald-400">
+                      ETB {totalClientRevenue.toLocaleString()}/mo
                     </span>
-                    <div>
-                      <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                        Business Outputs (Revenue & Deliverables)
-                      </h2>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Institutional client billing, delivered guard hours, hygiene coverage & profit contribution
-                      </p>
-                    </div>
-                  </div>
-                  <span className="font-mono font-bold text-xs text-emerald-700 dark:text-emerald-400">
-                    ETB {totalClientRevenue.toLocaleString()}/mo
-                  </span>
-                </div>
-
-                <div className="space-y-3">
-                  
-                  {/* Output 1: Institutional Client Revenue */}
-                  <div className="p-3.5 rounded-xl border border-emerald-200/80 dark:border-emerald-800/80 bg-emerald-50/40 dark:bg-emerald-950/20 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <Building2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Client Contract Billed Realization</span>
-                      </span>
-                      <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                        ETB {totalClientRevenue.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-emerald-200/60 dark:border-emerald-800/60">
-                      <div>
-                        <div className="text-slate-500">Security Billing</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          ETB {(totalDeployedSec * 7500).toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Cleaning Billing</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          ETB {(totalDeployedCln * 5200).toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Realization Rate</div>
-                        <div className="font-bold text-emerald-600 font-mono mt-0.5">
-                          100% Invoiced
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
-                  {/* Output 2: Deliverables & Hours */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <Shield className="w-3.5 h-3.5 text-blue-600" />
-                        <span>Delivered Patrol Hours & Hygiene Coverage</span>
-                      </span>
-                      <span className="font-mono font-bold text-blue-700 dark:text-blue-400">
-                        {monthlySecurityHoursDelivered.toLocaleString()} Guard Hrs
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">Security Division Billing</div>
+                        <div className="text-[11px] text-slate-500">{totalDeployedSec} guards deployed ({monthlySecurityHoursDelivered.toLocaleString()} hrs/mo)</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
+                        ETB {(totalDeployedSec * 7500).toLocaleString()}
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                      <div>
-                        <div className="text-slate-500">Roll-Call Attendance</div>
-                        <div className="font-bold text-emerald-600 font-mono mt-0.5">
-                          {attendanceRate}% Clocked In
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Hygiene Serviced</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          {monthlyCleaningAreaCovered.toLocaleString()} m²
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Unattended Posts</div>
-                        <div className="font-bold text-emerald-600 font-mono mt-0.5">
-                          0 Incidents
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Output 3: Gross Operational Profit & Margins */}
-                  <div className="p-3.5 rounded-xl border border-[#D4D11E] bg-[#EBE834]/25 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-[#0E1525] flex items-center gap-1.5">
-                        <TrendingUp className="w-3.5 h-3.5 text-[#0E1525]" />
-                        <span>Net Operating Profit & Margin Realization</span>
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">Cleaning Division Billing</div>
+                        <div className="text-[11px] text-slate-500">{totalDeployedCln} cleaners deployed across hospitals & towers</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
+                        ETB {(totalDeployedCln * 5200).toLocaleString()}
                       </span>
-                      <span className="font-mono font-black text-[#0E1525]">
+                    </div>
+
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">Net Operating Profit</div>
+                        <div className="text-[11px] text-slate-500">{grossProfitMargin}% net operating margin</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-bold text-emerald-700 dark:text-emerald-400">
                         ETB {grossOperatingProfit.toLocaleString()}
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-[#D4D11E]">
-                      <div>
-                        <div className="text-[#0E1525]/70 font-semibold">Gross Margin %</div>
-                        <div className="font-bold text-[#0E1525] font-mono mt-0.5">
-                          {grossProfitMargin}%
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-[#0E1525]/70 font-semibold">Margin per Guard</div>
-                        <div className="font-bold text-[#0E1525] font-mono mt-0.5">
-                          ETB 2,700/mo
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-[#0E1525]/70 font-semibold">Margin per Cleaner</div>
-                        <div className="font-bold text-[#0E1525] font-mono mt-0.5">
-                          ETB 1,900/mo
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Output 4: Exit Clearances & Property Recovery */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Asset Recovery & Legal Release Rate</span>
-                      </span>
-                      <span className="font-mono font-bold text-emerald-600">
-                        100% Property Cleared
+                    <div className="px-5 py-3.5 flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">Exit Asset Recovery Rate</div>
+                        <div className="text-[11px] text-slate-500">4-Gate clearance property verification</div>
+                      </div>
+                      <span className="font-mono tabular-nums font-semibold text-emerald-700 dark:text-emerald-400">
+                        100% Cleared
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
-                      <div>
-                        <div className="text-slate-500">Gate #2 Store Returns</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          100% Signed Off
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Payroll Deductions</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          ETB {totalUnreturnedDeductions.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-slate-500">Legal Release</div>
-                        <div className="font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5">
-                          Certificates Issued
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
-
-            {/* SECTION 4: CLIENT FACILITY UNIT ECONOMICS & PROFIT CONTRIBUTION TABLE */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-emerald-600" />
-                    <span>Client Facility Financials & Margin Contribution</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Billed revenue inflow vs operating labor & equipment outlay across 5 institutional sites
-                  </p>
-                </div>
-                <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
-                  Total Active Billing: ETB {totalClientRevenue.toLocaleString()} / Month
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-semibold">
-                    <tr>
-                      <th className="py-2.5 px-3">Client Facility</th>
-                      <th className="py-2.5 px-3">Services</th>
-                      <th className="py-2.5 px-3 text-center">Deployed / Quota</th>
-                      <th className="py-2.5 px-3 text-right">Monthly Billing</th>
-                      <th className="py-2.5 px-3 text-right">Operating Outlay</th>
-                      <th className="py-2.5 px-3 text-right">Net Margin</th>
-                      <th className="py-2.5 px-3 text-center">SLA Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {siteFinancials.map(s => {
-                      const totalReq = s.securityStaffRequired + s.cleaningStaffRequired;
-                      const totalAct = s.securityStaffDeployed + s.cleaningStaffDeployed;
-                      const fulfillment = totalReq > 0 ? Math.round((totalAct / totalReq) * 100) : 100;
-                      return (
-                        <tr key={s.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-                          <td className="py-3 px-3">
-                            <div className="font-bold text-slate-900 dark:text-slate-100">{s.name}</div>
-                            <div className="text-[11px] text-slate-500">{s.siteCode} · {s.subcity}</div>
-                          </td>
-                          <td className="py-3 px-3">
-                            <div className="flex items-center gap-1">
-                              {s.servicesProvided.map(svc => (
-                                <span
-                                  key={svc}
-                                  className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                                    svc === 'Security'
-                                      ? 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300'
-                                      : 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300'
-                                  }`}
-                                >
-                                  {svc}
-                                </span>
-                              ))}
-                            </div>
-                          </td>
-                          <td className="py-3 px-3 text-center font-mono">
-                            <span className="font-bold text-slate-800 dark:text-slate-200">{totalAct}/{totalReq}</span>
-                            <span className="text-[10px] text-slate-500 block">({fulfillment}%)</span>
-                          </td>
-                          <td className="py-3 px-3 text-right font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                            ETB {s.totalRev.toLocaleString()}
-                          </td>
-                          <td className="py-3 px-3 text-right font-mono text-slate-600 dark:text-slate-400">
-                            ETB {s.totalCost.toLocaleString()}
-                          </td>
-                          <td className="py-3 px-3 text-right font-mono">
-                            <span className="font-bold text-slate-900 dark:text-slate-100">ETB {s.margin.toLocaleString()}</span>
-                            <span className="text-[10px] text-emerald-600 font-bold block">{s.marginPercent}% Margin</span>
-                          </td>
-                          <td className="py-3 px-3 text-center">
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                fulfillment >= 100
-                                  ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300'
-                                  : 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300'
-                              }`}
-                            >
-                              {fulfillment >= 100 ? '100% Met' : `${totalReq - totalAct} Vacant`}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Recharts Bar Chart: Weekly Deployment Capacity vs Actual Deployment */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-[#EBE834] text-[#0E1525] shrink-0">
-                      <BarChart3 className="w-4 h-4" />
-                    </span>
-                    <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
-                      Weekly Deployment Capacity vs Actual Deployment
-                    </h2>
-                    <span className="hidden md:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DFE16A]/40 text-[#0E1525] border border-[#C8CB54]/50">
-                      Site Quotas
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Contractual staffing quota capacity compared against active on-site deployments across client facilities
-                  </p>
-                </div>
-
-                {/* Filter Controls */}
-                <div className="flex items-center gap-1.5 self-start sm:self-auto bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                  <span className="text-[11px] font-semibold text-slate-500 px-2 flex items-center gap-1">
-                    <Filter className="w-3 h-3" />
-                    <span>View:</span>
-                  </span>
-                  {(['All', 'Security', 'Cleaning'] as const).map(f => (
-                    <button
-                      key={f}
-                      type="button"
-                      onClick={() => setChartFilter(f)}
-                      className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                        chartFilter === f
-                          ? 'bg-[#0E1525] text-[#FFF500] shadow-xs'
-                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-white/60 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      {f === 'All' ? 'Combined (All)' : f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* KPI Summary strip for the chart */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-200/70 dark:border-slate-800 text-xs">
-                <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Contract Capacity</div>
-                  <div className="text-lg font-bold text-slate-900 dark:text-slate-100 font-mono tabular-nums mt-0.5">
-                    {totalFilteredCapacity} Posts
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Actual Deployed</div>
-                  <div className="text-lg font-bold text-[#0E1525] dark:text-[#FFF500] font-mono tabular-nums mt-0.5">
-                    {totalFilteredActual} Staff
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Fulfillment Rate</div>
-                  <div className={`text-lg font-bold font-mono tabular-nums mt-0.5 ${
-                    filteredFulfillmentRate >= 95 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
-                  }`}>
-                    {filteredFulfillmentRate}%
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Staffing Gap</div>
-                  <div className={`text-lg font-bold font-mono tabular-nums mt-0.5 ${
-                    totalShortage > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
-                  }`}>
-                    {totalShortage > 0 ? `-${totalShortage} Shortage` : '0 (Optimal)'}
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* Recharts Bar Chart Container */}
-              <div className="w-full h-72 sm:h-80 pt-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={chartData}
-                    margin={{ top: 10, right: 15, left: -10, bottom: 25 }}
-                    barGap={6}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fill: '#475569', fontSize: 11, fontWeight: 600 }}
-                      tickLine={false}
-                      axisLine={{ stroke: '#CBD5E1' }}
-                      dy={8}
-                    />
-                    <YAxis
-                      tick={{ fill: '#475569', fontSize: 11 }}
-                      tickLine={false}
-                      axisLine={{ stroke: '#CBD5E1' }}
-                      domain={[0, 'auto']}
-                    />
-                    <Tooltip content={<CustomChartTooltip />} />
-                    <Legend
-                      verticalAlign="top"
-                      align="right"
-                      wrapperStyle={{ paddingBottom: '12px', fontSize: '11px', fontWeight: 600 }}
-                      formatter={(value) => (
-                        <span className="text-slate-700 dark:text-slate-300 font-semibold">{value}</span>
-                      )}
-                    />
-                    <Bar
-                      dataKey="capacity"
-                      name="Weekly Deployment Capacity"
-                      fill="#64748B"
-                      radius={[5, 5, 0, 0]}
-                      maxBarSize={38}
-                    />
-                    <Bar
-                      dataKey="actual"
-                      name="Actual Deployment"
-                      fill="#EBE834"
-                      radius={[5, 5, 0, 0]}
-                      maxBarSize={38}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Client Sites & Staffing Quota */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0E1525] dark:text-[#FFF500]" />
-                  <span>Client Sites & Staffing Fulfillment</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Staffing across major client facilities in Addis Ababa</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => onNavigateTab('deployment')}
-                className="text-xs bg-[#0E1525] text-[#FFF500] px-3.5 py-1.5 rounded-full font-semibold flex items-center gap-1 cursor-pointer"
-              >
-                <span>View Roster</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              {sites.map((site) => (
-                <div 
-                  key={site.id} 
-                  onClick={() => onNavigateTab('deployment')}
-                  className="p-4 bg-[#DFE16A]/20 hover:bg-[#DFE16A]/40 dark:bg-slate-800/60 dark:hover:bg-slate-800 rounded-xl border border-[#CFD25A]/60 dark:border-slate-700/80 flex items-center justify-between gap-3 cursor-pointer transition-colors"
-                >
+            {/* TAB 3: DEPLOYMENT QUOTA CHART */}
+            {executiveTab === 'coverage' && (
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
                   <div>
-                    <div className="font-bold text-xs sm:text-sm text-[#0E1525] dark:text-slate-100">{site.name}</div>
-                    <div className="text-[11px] text-slate-600 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
-                      <MapPin className="w-3 h-3 text-[#0E1525]/70 dark:text-slate-400" />
-                      <span>{site.subcity}</span>
-                      <span>·</span>
-                      <span>{site.clientOrganization}</span>
-                    </div>
+                    <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-[#0E1525] dark:text-[#EBE834]" />
+                      <span>Weekly Deployment Capacity vs. Actual Deployment</span>
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Contractual staffing quotas compared against active on-site deployments
+                    </p>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs shrink-0">
-                    {site.servicesProvided.includes('Security') && (
-                      <div className="text-right px-2.5 py-1 rounded-lg bg-[#EBE834] text-[#0E1525]">
-                        <span className="text-[10px] font-bold block">Security</span>
-                        <span className="font-mono font-black">
-                          {site.securityStaffDeployed}/{site.securityStaffRequired}
-                        </span>
-                      </div>
-                    )}
-
-                    {site.servicesProvided.includes('Cleaning') && (
-                      <div className="text-right px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-[#0E1525]/15 text-[#0E1525] dark:text-slate-100">
-                        <span className="text-[10px] font-bold block">Cleaning</span>
-                        <span className="font-mono font-black">
-                          {site.cleaningStaffDeployed}/{site.cleaningStaffRequired}
-                        </span>
-                      </div>
-                    )}
+                  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg self-start sm:self-auto">
+                    {(['All', 'Security', 'Cleaning'] as const).map(f => (
+                      <button
+                        key={f}
+                        type="button"
+                        onClick={() => setChartFilter(f)}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+                          chartFilter === f
+                            ? 'bg-[#0E1525] text-[#FFF9DB]'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                        }`}
+                      >
+                        {f === 'All' ? 'Combined' : f}
+                      </button>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+
+                <div className="w-full h-72 pt-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={chartData}
+                      margin={{ top: 10, right: 15, left: -10, bottom: 20 }}
+                      barGap={6}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fill: '#475569', fontSize: 11, fontWeight: 600 }}
+                        tickLine={false}
+                        axisLine={{ stroke: '#CBD5E1' }}
+                        dy={8}
+                      />
+                      <YAxis
+                        tick={{ fill: '#475569', fontSize: 11 }}
+                        tickLine={false}
+                        axisLine={{ stroke: '#CBD5E1' }}
+                      />
+                      <Tooltip />
+                      <Legend
+                        verticalAlign="top"
+                        align="right"
+                        wrapperStyle={{ paddingBottom: '12px', fontSize: '11px', fontWeight: 600 }}
+                      />
+                      <Bar
+                        dataKey="capacity"
+                        name="Contract Quota"
+                        fill="#64748B"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={36}
+                      />
+                      <Bar
+                        dataKey="actual"
+                        name="Actual Deployed"
+                        fill="#EBE834"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={36}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
           </div>
-        </div>
         );
       })()}
 

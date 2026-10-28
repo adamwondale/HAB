@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan to condense the sidebar navigation into an accordion-style category dropdown menu with Overview standalone and 4 collapsible module groups.",
-  "updatedAt":  "2026-10-21T16:47:26.086453112Z",
+  "summary":  "Implementation plan for the HAB Routine Copilot: a proactive operational intelligence engine and multi-turn Gemini chat assistant integrated across all six HAB Business PLC ERP modules with live habit tracking, cross-departmental ripple reasoning, persona-adaptive nudges, and 1-click state execution.",
+  "updatedAt":  "2026-10-26T16:26:37.114964762Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

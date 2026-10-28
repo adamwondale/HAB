@@ -17,6 +17,18 @@ import { StoreManagementView } from './components/StoreManagementView';
 import { getRoleAllowedTabs } from './utils/roleConfig';
 import { HabMonogramIcon } from './components/HabLogo';
 import { LoginView } from './components/LoginView';
+import { HabRoutineCopilot } from './components/HabRoutineCopilot';
+import {
+  INITIAL_LEARNED_HABITS,
+  computeProactiveNudges,
+  mapTabToErpModule
+} from './utils/copilotEngine';
+import {
+  CopilotAction,
+  LearnedHabit,
+  RippleSimulationScenario,
+  UserActionTelemetry
+} from './types/copilot';
 
 import {
   INITIAL_CLIENT_SITES,
@@ -68,6 +80,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [serviceFilter, setServiceFilter] = useState<'All' | ServiceType>('All');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
 
   // Automated Cleaning Shift Weekly Rotation State
   const [autoRotationAlert, setAutoRotationAlert] = useState<string | null>(null);
@@ -108,6 +121,85 @@ export default function App() {
     return INITIAL_MANAGEMENT_PERSONS.find(p => p.id === 'mgmt-hr-head') || INITIAL_MANAGEMENT_PERSONS[0];
   });
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  // HAB Routine Copilot States
+  const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
+  const [learnedHabits, setLearnedHabits] = useState<LearnedHabit[]>(INITIAL_LEARNED_HABITS);
+  const [executedActionIds, setExecutedActionIds] = useState<string[]>([]);
+  const [copilotToast, setCopilotToast] = useState<{
+    title: string;
+    detail: string;
+    targetTabId?: string;
+  } | null>(null);
+  const [actionTelemetry, setActionTelemetry] = useState<UserActionTelemetry[]>([
+    {
+      id: 'tel-init-1',
+      timestamp: '08:30 AM',
+      actorName: 'Ato Dawit Mekonnen',
+      actorRole: 'General Manager',
+      module: 'HRM',
+      actionLabel: 'Checked Bole & CBE Morning Shift Roll-Call',
+      rippleSummary: 'Synced working days with Finance 30-day payroll ledger'
+    },
+    {
+      id: 'tel-init-2',
+      timestamp: '08:42 AM',
+      actorName: 'W/ro Tigist Alemu',
+      actorRole: 'HR Talent Officer',
+      module: 'HRM',
+      actionLabel: 'Verified Kebele Guarantor for New Security Recruits',
+      rippleSummary: 'Queued uniform kit issuance in Inventory & salary setup in Finance'
+    },
+    {
+      id: 'tel-init-3',
+      timestamp: '09:05 AM',
+      actorName: 'AtoKebede Tadesse',
+      actorRole: 'Storekeeper',
+      module: 'Inventory',
+      actionLabel: 'Audited Central Warehouse Safety Stock Buffers',
+      rippleSummary: 'Flagged Cleaning Sanitizer & Tactical Boots for Finance PO'
+    }
+  ]);
+
+  const recordTelemetryEvent = (
+    module: UserActionTelemetry['module'],
+    actionLabel: string,
+    rippleSummary: string
+  ) => {
+    const entry: UserActionTelemetry = {
+      id: `tel-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      actorName: activeUser.name,
+      actorRole: activeUser.title,
+      module,
+      actionLabel,
+      rippleSummary
+    };
+    setActionTelemetry(prev => [entry, ...prev.slice(0, 24)]);
+  };
+
+  const handleNavigateTabWithTelemetry = (nextTab: string) => {
+    setActiveTab(nextTab);
+    const mod = mapTabToErpModule(nextTab);
+    recordTelemetryEvent(
+      mod,
+      `Opened ${nextTab.charAt(0).toUpperCase() + nextTab.slice(1)} View`,
+      `Routine observer updated preference & sequential habit loop for ${mod}`
+    );
+    // Boost confidence slightly on matching routines
+    setLearnedHabits(prev =>
+      prev.map(h =>
+        h.linkedModules.includes(mod)
+          ? {
+              ...h,
+              confidence: Math.min(99, h.confidence + 1),
+              occurrences: h.occurrences + 1,
+              lastTriggered: 'Just now'
+            }
+          : h
+      )
+    );
+  };
 
   // Switch role and automatically navigate to an authorized tab if needed
   const handleSelectActiveUser = (user: ManagementPerson) => {
@@ -454,13 +546,306 @@ export default function App() {
 
   const handleQuickAction = (action: string) => {
     if (action === 'deploy') {
-      setActiveTab('deployment');
+      handleNavigateTabWithTelemetry('deployment');
     } else if (action === 'clearance') {
-      setActiveTab('clearance');
+      handleNavigateTabWithTelemetry('clearance');
     } else if (action === 'attendance') {
-      setActiveTab('attendance');
+      handleNavigateTabWithTelemetry('attendance');
     }
   };
+
+  // 1-Click Copilot Decision Executor across all 6 ERP Modules
+  const handleExecuteCopilotAction = (action: CopilotAction) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    switch (action.actionType) {
+      case 'APPROVE_PAYROLL_VOUCHER': {
+        setPayroll(prev =>
+          prev.map(rec => ({
+            ...rec,
+            paymentStatus: 'Disbursed'
+          }))
+        );
+        recordTelemetryEvent(
+          'Finance',
+          '1-Click Approved & Disbursed 30-Day Payroll Vouchers',
+          'Closed pending Finance handoffs and notified HRM & Operations'
+        );
+        setCopilotToast({
+          title: 'Payroll Vouchers Approved & Disbursed',
+          detail:
+            'All 30-day salary and 11% employer pension vouchers have been marked Disbursed for CBE bulk transfer. HRM and Management KPIs updated.',
+          targetTabId: 'payroll'
+        });
+        break;
+      }
+
+      case 'AUTO_RESTOCK_SANITIZER': {
+        setStockItems(prev =>
+          prev.map(item =>
+            item.division === 'Cleaning' || item.name.toLowerCase().includes('disinfectant') || item.name.toLowerCase().includes('sanitizer') || item.quantityInStock <= item.minReorderLevel
+              ? {
+                  ...item,
+                  quantityInStock: item.quantityInStock + 20,
+                  lastUpdated: todayStr
+                }
+              : item
+          )
+        );
+        const restockTx: StockTransaction = {
+          id: `tx-cop-${Date.now()}`,
+          date: todayStr,
+          itemId: stockItems[0]?.id || 'stk-1',
+          itemCode: 'CLN-SAN-200',
+          itemName: 'Heavy-Duty Hospital Sanitizer & Disinfectant Drums',
+          division: 'Cleaning',
+          transactionType: 'Received (Restock)',
+          quantity: 20,
+          unit: 'Liters',
+          recipientOrSource: 'Addis Chemical & Hygiene Suppliers PLC',
+          referenceCode: `PO-COP-${Math.floor(1000 + Math.random() * 9000)}`,
+          handledBy: activeUser.name,
+          notes: 'Auto-restocked via HAB Routine Copilot 1-Click Decision'
+        };
+        setStockTransactions(prev => [restockTx, ...prev]);
+        recordTelemetryEvent(
+          'Inventory',
+          'Auto-Restocked 20 Drums Cleaning Sanitizer',
+          'Updated Central Store safety buffers and logged Finance purchase requisition'
+        );
+        setCopilotToast({
+          title: 'Auto-Restocked 20 Drums in Central Store',
+          detail:
+            'Inventory levels replenished above minimum buffer. Purchase requisition queued in Finance and Hospital/Hotel site supervisors notified.',
+          targetTabId: 'store'
+        });
+        break;
+      }
+
+      case 'AUTO_RESTOCK_BOOTS': {
+        setStockItems(prev =>
+          prev.map(item =>
+            item.division === 'Security' || item.name.toLowerCase().includes('boot')
+              ? {
+                  ...item,
+                  quantityInStock: item.quantityInStock + 25,
+                  lastUpdated: todayStr
+                }
+              : item
+          )
+        );
+        const bootTx: StockTransaction = {
+          id: `tx-cop-boots-${Date.now()}`,
+          date: todayStr,
+          itemId: stockItems[0]?.id || 'stk-2',
+          itemCode: 'SEC-BT-042',
+          itemName: 'Security Tactical Patrol Boots (Size 41-44)',
+          division: 'Security',
+          transactionType: 'Received (Restock)',
+          quantity: 25,
+          unit: 'Pairs',
+          recipientOrSource: 'Kangaro Shoe Factory Addis Ababa',
+          referenceCode: `PO-SEC-${Math.floor(1000 + Math.random() * 9000)}`,
+          handledBy: activeUser.name,
+          notes: 'Auto-restocked via HAB Routine Copilot 1-Click Decision'
+        };
+        setStockTransactions(prev => [bootTx, ...prev]);
+        recordTelemetryEvent(
+          'Inventory',
+          'Auto-Restocked 25 Pairs Security Tactical Boots',
+          'Unblocked HRM onboarding equipment issuance and updated Finance PO ledger'
+        );
+        setCopilotToast({
+          title: '25 Pairs of Tactical Boots Restocked',
+          detail:
+            'Central Store Bay A (Security Gear) replenished. Incoming recruits in HRM Onboarding are now cleared for immediate kit handout.',
+          targetTabId: 'store'
+        });
+        break;
+      }
+
+      case 'ASSIGN_RELIEF_GUARD': {
+        setLeaveRequests(prev =>
+          prev.map(req =>
+            req.status === 'Pending'
+              ? {
+                  ...req,
+                  status: 'Approved',
+                  replacementEmployeeName: 'Platoon Bravo Standby Officer',
+                  reviewedBy: activeUser.name
+                }
+              : req
+          )
+        );
+        setSites(prev =>
+          prev.map(site => ({
+            ...site,
+            securityStaffDeployed: Math.max(site.securityStaffDeployed, site.securityStaffRequired),
+            cleaningStaffDeployed: Math.max(site.cleaningStaffDeployed, site.cleaningStaffRequired)
+          }))
+        );
+        recordTelemetryEvent(
+          'Property/Sales',
+          'Assigned Standby Relief Guard & Closed Site Staffing Gaps',
+          'Approved pending HRM leave requests and brought all client sites to 100% SLA coverage'
+        );
+        setCopilotToast({
+          title: 'Standby Relief Officer Assigned',
+          detail:
+            'Pending leave requests approved with Platoon Standby relief coverage. All client sites (CBE Tower, EAL Cargo) are now at 100% SLA fulfillment.',
+          targetTabId: 'deployment'
+        });
+        break;
+      }
+
+      case 'ISSUE_UNIFORM_QUEUE_PAYROLL': {
+        setOnboardingList(prev =>
+          prev.map(ob => ({
+            ...ob,
+            progressPercent: 100,
+            contractSigned: true,
+            tasks: ob.tasks.map(t => ({
+              ...t,
+              completed: true,
+              completedAt: todayStr
+            }))
+          }))
+        );
+        recordTelemetryEvent(
+          'HRM',
+          'Completed Onboarding Uniform Handout & Queued 30-Day Payroll',
+          'Executed 3-step Habit Loop across HRM → Inventory → Finance'
+        );
+        setCopilotToast({
+          title: 'Uniforms Issued & 30-Day Payroll Queued',
+          detail:
+            'All onboarding checklists marked 100% complete, store uniform kits deducted from Inventory, and recruits added to the 30-day Finance payroll sheet.',
+          targetTabId: 'onboarding'
+        });
+        break;
+      }
+
+      case 'RECONCILE_BOLE_ATTENDANCE': {
+        setAttendance(prev =>
+          prev.map(att =>
+            att.status === 'Absent' || att.status === 'Late'
+              ? {
+                  ...att,
+                  status: 'Present',
+                  checkInTime: att.checkInTime || '06:00',
+                  notes: 'Reconciled with standby relief cover via HAB Routine Copilot'
+                }
+              : att
+          )
+        );
+        recordTelemetryEvent(
+          'HRM',
+          'Reconciled Morning Shift Attendance Across Bole & CBE Sites',
+          'Synced verified 30-day working counts with Finance Payroll'
+        );
+        setCopilotToast({
+          title: 'Morning Shift Attendance Reconciled',
+          detail:
+            'All shift roll-call logs across Bole Medhanialem and CBE Tower verified at 100% coverage and synced with the 30-day Payroll ledger.',
+          targetTabId: 'attendance'
+        });
+        break;
+      }
+
+      case 'APPROVE_CLEARANCE_SETTLEMENT': {
+        setClearances(prev =>
+          prev.map(c => ({
+            ...c,
+            status: 'Cleared',
+            siteSupervisorSignoff: { ...c.siteSupervisorSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr },
+            storeAssetSignoff: { ...c.storeAssetSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr },
+            financeSignoff: { ...c.financeSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr },
+            hrClearanceSignoff: { ...c.hrClearanceSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr, certificateIssued: true }
+          }))
+        );
+        recordTelemetryEvent(
+          'Asset Management',
+          'Signed Off 4-Gate Exit Clearances & Property Recovery',
+          'Settled unreturned store gear deductions in Finance and authorized HR Experience Certificates'
+        );
+        setCopilotToast({
+          title: '4-Gate Exit Clearances Finalized',
+          detail:
+            'Store property handovers, Finance severance deductions, and HR Work Experience Certificates have been signed off.',
+          targetTabId: 'clearance'
+        });
+        break;
+      }
+
+      case 'SCHEDULE_GENERATOR_MAINTENANCE': {
+        const maintTx: StockTransaction = {
+          id: `tx-maint-${Date.now()}`,
+          date: todayStr,
+          itemId: stockItems[0]?.id || 'stk-maint',
+          itemCode: 'PRP-MNT-108',
+          itemName: 'Generator Filter & Rotary Scrubber Brush Kit',
+          division: 'Property Management',
+          transactionType: 'Issued (Out)',
+          quantity: 2,
+          unit: 'Sets',
+          recipientOrSource: 'Bole Medhanialem Mixed-Use Complex',
+          referenceCode: `WO-${Math.floor(1000 + Math.random() * 9000)}`,
+          handledBy: activeUser.name,
+          notes: 'Preventive maintenance parts dispatched via Routine Copilot'
+        };
+        setStockTransactions(prev => [maintTx, ...prev]);
+        recordTelemetryEvent(
+          'Asset Management',
+          'Scheduled Generator & Scrubber Service at Bole Complex',
+          'Reserved spare parts in Inventory and queued Finance maintenance voucher'
+        );
+        setCopilotToast({
+          title: 'Generator & Scrubber Maintenance Dispatched',
+          detail:
+            'Spare parts reserved in Central Store Bay C, technician dispatched to Bole Complex, and expense voucher queued in Finance.',
+          targetTabId: 'store'
+        });
+        break;
+      }
+
+      case 'NAVIGATE_MODULE':
+      default: {
+        if (action.targetTabId) {
+          handleNavigateTabWithTelemetry(action.targetTabId);
+        }
+        setCopilotToast({
+          title: `Opened ${action.targetModule}`,
+          detail: action.description
+        });
+        break;
+      }
+    }
+
+    setExecutedActionIds(prev =>
+      prev.includes(action.actionType) ? prev : [...prev, action.actionType]
+    );
+  };
+
+  const handleTriggerRippleScenario = (scenario: RippleSimulationScenario) => {
+    recordTelemetryEvent(
+      scenario.crossModuleImpact[0]?.module || 'Management Dashboard',
+      `Simulated ${scenario.category}: ${scenario.title}`,
+      `Traced impact across ${scenario.crossModuleImpact.map(c => c.module).join(' → ')}`
+    );
+  };
+
+  const proactiveNudges = computeProactiveNudges({
+    employees,
+    sites,
+    deployments,
+    attendance,
+    leaveRequests,
+    payroll,
+    stockItems,
+    clearances,
+    onboardingList,
+    activeUser
+  });
 
   if (!isAuthenticated) {
     return (
@@ -477,7 +862,7 @@ export default function App() {
       {/* Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleNavigateTabWithTelemetry}
         serviceFilter={serviceFilter}
         setServiceFilter={setServiceFilter}
         totalEmployees={employees.length}
@@ -489,6 +874,8 @@ export default function App() {
         onQuickAction={handleQuickAction}
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
         darkMode={darkMode}
         onToggleDarkMode={toggleDarkMode}
         activeUser={activeUser}
@@ -500,6 +887,8 @@ export default function App() {
         <TopBar
           activeTab={activeTab}
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+          isSidebarCollapsed={isSidebarCollapsed}
+          onToggleSidebarCollapse={() => setIsSidebarCollapsed(prev => !prev)}
           serviceFilter={serviceFilter}
           setServiceFilter={setServiceFilter}
           totalEmployees={employees.length}
@@ -511,12 +900,38 @@ export default function App() {
           activeUser={activeUser}
           managementPersons={managementPersons}
           onSelectActiveUser={handleSelectActiveUser}
-          onNavigateTab={setActiveTab}
+          onNavigateTab={handleNavigateTabWithTelemetry}
           onLogout={handleLogout}
           pendingLeaveCount={pendingLeaves}
           activeClearanceCount={activeClearances}
+          onOpenCopilot={() => setIsCopilotOpen(true)}
         />
 
+        {/* HAB Routine Copilot: Persistent Smart Nudge Bar + Floating Slide-Over Drawer */}
+        <HabRoutineCopilot
+          isOpen={isCopilotOpen}
+          onOpen={() => setIsCopilotOpen(true)}
+          onClose={() => setIsCopilotOpen(false)}
+          activeUser={activeUser}
+          employees={employees}
+          sites={sites}
+          deployments={deployments}
+          attendance={attendance}
+          leaveRequests={leaveRequests}
+          payroll={payroll}
+          stockItems={stockItems}
+          clearances={clearances}
+          onboardingList={onboardingList}
+          proactiveNudges={proactiveNudges}
+          learnedHabits={learnedHabits}
+          actionTelemetry={actionTelemetry}
+          executedActionIds={executedActionIds}
+          onExecuteCopilotAction={handleExecuteCopilotAction}
+          onTriggerRippleScenario={handleTriggerRippleScenario}
+          toastMessage={copilotToast}
+          onDismissToast={() => setCopilotToast(null)}
+          onNavigateTab={handleNavigateTabWithTelemetry}
+        />
 
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">

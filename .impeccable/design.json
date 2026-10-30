@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-30T15:10:00Z",
+  "title": "Design System: HAB Business PLC — Integrated ERP System",
+  "extensions": {
+    "colorMeta": {
+      "hab-navy-deep": {
+        "role": "primary",
+        "displayName": "Abyssinian Deep Navy",
+        "canonical": "#0E1525",
+        "tonalRamp": ["#070B14", "#0E1525", "#19233C", "#283556", "#3E4F78", "#6476A0", "#9AA8C7", "#DCE2F0"]
+      },
+      "hab-gold-accent": {
+        "role": "primary",
+        "displayName": "HAB Sovereign Gold",
+        "canonical": "#EBE834",
+        "tonalRamp": ["#3D3B06", "#66630D", "#949016", "#C4BF21", "#EBE834", "#F3F16E", "#F8F7A6", "#FCFCE0"]
+      },
+      "hab-cream-header": {
+        "role": "secondary",
+        "displayName": "Sunlit Cream Header",
+        "canonical": "#FFF9DB",
+        "tonalRamp": ["#4A3F12", "#786721", "#A89238", "#D4BE5D", "#EFE1AA", "#FFF4BF", "#FFF9DB", "#FFFDF2"]
+      },
+      "hab-cream-sidebar": {
+        "role": "secondary",
+        "displayName": "Parchment Sidebar Cream",
+        "canonical": "#FFFDE8",
+        "tonalRamp": ["#4D4618", "#7D722B", "#B0A246", "#DACB6E", "#EFE1AA", "#F5EAB8", "#FFF9DB", "#FFFDE8"]
+      },
+      "hab-gold-border": {
+        "role": "secondary",
+        "displayName": "Gilded Hairline Border",
+        "canonical": "#EFE1AA",
+        "tonalRamp": ["#3E3616", "#665926", "#91803A", "#BDA854", "#D8C67A", "#EFE1AA", "#F7EECF", "#FCF9ED"]
+      },
+      "surface-canvas": {
+        "role": "neutral",
+        "displayName": "Cool Ledger Canvas",
+        "canonical": "#F8FAFC",
+        "tonalRamp": ["#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#E2E8F0", "#F8FAFC"]
+      },
+      "surface-card": {
+        "role": "neutral",
+        "displayName": "Pure Sheet White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": ["#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1", "#F1F5F9", "#FFFFFF"]
+      },
+      "status-emerald": {
+        "role": "tertiary",
+        "displayName": "SLA Emerald",
+        "canonical": "#047857",
+        "tonalRamp": ["#022C22", "#064E3B", "#047857", "#059669", "#10B981", "#34D399", "#A7F3D0", "#ECFDF5"]
+      },
+      "status-amber": {
+        "role": "tertiary",
+        "displayName": "Operational Amber",
+        "canonical": "#B45309",
+        "tonalRamp": ["#451A03", "#78350F", "#92400E", "#B45309", "#D97706", "#F59E0B", "#FDE68A", "#FFFBEB"]
+      },
+      "status-rose": {
+        "role": "tertiary",
+        "displayName": "Deficit Rose",
+        "canonical": "#BE123C",
+        "tonalRamp": ["#4C0519", "#881337", "#9F1239", "#BE123C", "#E11D48", "#FB7185", "#FECDD3", "#FFF1F2"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display / KPI Metric (Google Sans / Google Sans Mono)",
+        "purpose": "Executive KPI metric figures and Live Formula Sandbox net pay totals."
+      },
+      "headline": {
+        "displayName": "Headline / Module Title (Google Sans Display)",
+        "purpose": "Primary ERP view headers and workspace titles."
+      },
+      "title": {
+        "displayName": "Title / Card Header (Google Sans)",
+        "purpose": "Data table headers, modal headers, and drawer section headings."
+      },
+      "body": {
+        "displayName": "Body / Operational Copy (Google Sans Text)",
+        "purpose": "Navigation links, table cell copy, form controls, and Copilot insights."
+      },
+      "label": {
+        "displayName": "Label / Tabular Monospace (Google Sans Mono)",
+        "purpose": "ETB currency figures, tax percentages, employee IDs, and status badges."
+      }
+    },
+    "shadows": [
+      {
+        "name": "popover-float",
+        "value": "0 4px 6px -1px rgba(14, 21, 37, 0.08), 0 2px 4px -2px rgba(14, 21, 37, 0.04)",
+        "purpose": "Floating sidebar tooltips, search autocomplete results, and notification popovers."
+      },
+      {
+        "name": "drawer-slide-over",
+        "value": "-8px 0 30px rgba(14, 21, 37, 0.16)",
+        "purpose": "Right-hand HAB Routine Copilot slide-over drawer and mobile navigation sheet."
+      }
+    ],
+    "motion": [
+      {
+        "name": "sidebar-collapse",
+        "value": "200ms cubic-bezier(0, 0, 0.2, 1)",
+        "purpose": "Full-screen sidebar width transition between 240px and 64px."
+      },
+      {
+        "name": "surface-color",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Button, table row, and KPI card hover state transitions."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Authority Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action button in Abyssinian Deep Navy with warm cream/gold text for module-level commits and 1-click Copilot actions.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#EBE834\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16\"/><path d=\"M16 16h5v5\"/></svg><span>Recalculate &amp; Sync All Modules</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; background-color: #0E1525; color: #FFF9DB; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; font-size: 12px; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid #0E1525; cursor: pointer; transition: background-color 150ms ease, color 150ms ease; } .ds-btn-primary:hover { background-color: #19233C; color: #FFF500; } .ds-btn-primary:focus-visible { outline: 2px solid #EBE834; outline-offset: 2px; }"
+    },
+    {
+      "name": "Sovereign Gold Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Brand gold trigger used in the TopBar for launching the HAB Routine Copilot drawer and high-emphasis actions.",
+      "html": "<button class=\"ds-btn-accent\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0E1525\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z\"/><path d=\"M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z\"/></svg><span>Copilot</span></button>",
+      "css": ".ds-btn-accent { display: inline-flex; align-items: center; gap: 6px; background-color: #EBE834; color: #0E1525; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(14, 21, 37, 0.15); cursor: pointer; transition: background-color 150ms ease; } .ds-btn-accent:hover { background-color: #E3E029; } .ds-btn-accent:focus-visible { outline: 2px solid #0E1525; outline-offset: 2px; }"
+    },
+    {
+      "name": "Sidebar Navigation Item (Active & Default)",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Collapsible sidebar navigation links showing active deep-navy pill state and warm parchment default state.",
+      "html": "<div class=\"ds-nav-stack\"><button class=\"ds-nav-item ds-nav-active\"><span class=\"ds-nav-left\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#EBE834\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/></svg><span>Overview</span></span></button><button class=\"ds-nav-item\"><span class=\"ds-nav-left\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0E1525\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"4\" x2=\"4\" y1=\"21\" y2=\"14\"/><line x1=\"4\" x2=\"4\" y1=\"10\" y2=\"3\"/><line x1=\"12\" x2=\"12\" y1=\"21\" y2=\"12\"/><line x1=\"12\" x2=\"12\" y1=\"8\" y2=\"3\"/><line x1=\"20\" x2=\"20\" y1=\"21\" y2=\"16\"/><line x1=\"20\" x2=\"20\" y1=\"12\" y2=\"3\"/><line x1=\"2\" x2=\"6\" y1=\"14\" y2=\"14\"/><line x1=\"10\" x2=\"14\" y1=\"8\" y2=\"8\"/><line x1=\"18\" x2=\"22\" y1=\"16\" y2=\"16\"/></svg><span>Master Setup</span></span><span class=\"ds-nav-badge\">v1.4</span></button></div>",
+      "css": ".ds-nav-stack { display: flex; flex-direction: column; gap: 4px; width: 220px; background: #FFFDE8; padding: 10px; border-radius: 10px; border: 1px solid #EFE1AA; } .ds-nav-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border-radius: 8px; border: none; background: transparent; color: #0E1525; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background-color 150ms ease; } .ds-nav-item:hover { background-color: rgba(245, 234, 184, 0.65); } .ds-nav-active, .ds-nav-active:hover { background-color: #0E1525; color: #FFF9DB; font-weight: 600; } .ds-nav-left { display: inline-flex; align-items: center; gap: 10px; } .ds-nav-badge { font-family: 'Google Sans Mono', 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; background: rgba(14, 21, 37, 0.1); color: #0E1525; padding: 2px 6px; border-radius: 4px; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Executive KPI Metric Card (HabMetricCard)",
+      "kind": "card",
+      "refersTo": "card-metric-gold",
+      "description": "Sunlit cream KPI summary card with Google Sans Mono tabular figure and 1px gilded hairline border.",
+      "html": "<div class=\"ds-metric-card\"><div class=\"ds-metric-title\">Deployed Workforce SLA</div><div class=\"ds-metric-value\">98.4%</div><div class=\"ds-metric-sub\">312 / 317 contracted posts filled</div></div>",
+      "css": ".ds-metric-card { background-color: #FFF9DB; border: 1px solid #EFE1AA; border-radius: 12px; padding: 16px 20px; min-height: 112px; width: 240px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: background-color 150ms ease; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; } .ds-metric-card:hover { background-color: #FFF4BF; } .ds-metric-title { font-size: 12px; font-weight: 600; color: rgba(14, 21, 37, 0.75); } .ds-metric-value { font-family: 'Google Sans Mono', 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: #0E1525; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin: 6px 0; } .ds-metric-sub { font-size: 11px; color: rgba(14, 21, 37, 0.65); }"
+    },
+    {
+      "name": "Quick Module Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Header search box in parchment cream with gilded border and keyboard-friendly focus state.",
+      "html": "<div class=\"ds-search-wrap\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(14,21,37,0.6)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input class=\"ds-search-input\" type=\"text\" placeholder=\"Jump to module...\" value=\"Master Setup\" readonly /></div>",
+      "css": ".ds-search-wrap { display: inline-flex; align-items: center; gap: 8px; background-color: #FFFDE8; border: 1px solid #EFE1AA; border-radius: 8px; padding: 6px 12px; width: 240px; transition: border-color 150ms ease, box-shadow 150ms ease; } .ds-search-wrap:focus-within { border-color: #0E1525; box-shadow: 0 0 0 2px rgba(14, 21, 37, 0.15); } .ds-search-input { border: none; background: transparent; color: #0E1525; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; font-size: 12px; font-weight: 500; width: 100%; outline: none; }"
+    },
+    {
+      "name": "Operational Status & SLA Chip",
+      "kind": "chip",
+      "refersTo": "card-surface",
+      "description": "Semantic status pill in Google Sans Mono with tabular numeric precision for SLA coverage, payroll disbursement, and stock buffer alerts.",
+      "html": "<div class=\"ds-chip-row\"><span class=\"ds-chip ds-chip-emerald\">100% SLA Covered</span><span class=\"ds-chip ds-chip-amber\">2 Posts Open</span><span class=\"ds-chip ds-chip-rose\">ETB -1,450 Gear Penalty</span></div>",
+      "css": ".ds-chip-row { display: flex; flex-wrap: wrap; gap: 8px; } .ds-chip { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 6px; font-family: 'Google Sans Mono', 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; } .ds-chip-emerald { background-color: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; } .ds-chip-amber { background-color: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; } .ds-chip-rose { background-color: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }"
+    },
+    {
+      "name": "HAB Routine Copilot Smart Nudge Strip",
+      "kind": "custom",
+      "refersTo": "nav-item-default",
+      "description": "Quiet single-line proactive intelligence banner pairing a behavioral observation with a 1-click live ERP execution button.",
+      "html": "<div class=\"ds-nudge-strip\"><div class=\"ds-nudge-left\"><span class=\"ds-nudge-tier\">Tier 1</span><span class=\"ds-nudge-text\">Monday Payroll Routine: 312 shift logs verified across CBE &amp; Bole Tower.</span></div><button class=\"ds-nudge-cta\"><span>Approve &amp; Sync Payroll</span></button></div>",
+      "css": ".ds-nudge-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; background-color: #FFFDE8; border: 1px solid #EFE1AA; border-radius: 10px; padding: 8px 14px; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; } .ds-nudge-left { display: flex; align-items: center; gap: 8px; min-width: 0; } .ds-nudge-tier { font-family: 'Google Sans Mono', 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; background-color: #FFF9DB; color: #0E1525; border: 1px solid #EFE1AA; padding: 2px 6px; border-radius: 4px; white-space: nowrap; } .ds-nudge-text { font-size: 12px; font-weight: 500; color: #0E1525; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-nudge-cta { background-color: #0E1525; color: #FFF9DB; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; white-space: nowrap; transition: background-color 150ms ease; } .ds-nudge-cta:hover { background-color: #19233C; color: #FFF500; }"
+    },
+    {
+      "name": "Enterprise Ledger Table Header & Row",
+      "kind": "custom",
+      "refersTo": "card-surface",
+      "description": "High-contrast sunlit cream table header (#FFF9DB) paired with tabular-nums Google Sans Mono financial columns.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Employee</th><th>Division</th><th class=\"ds-num\">Net Pay (ETB)</th></tr></thead><tbody><tr><td>Abebe Bikila</td><td>Security Services</td><td class=\"ds-num\">14,280.00</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: 'Google Sans', 'Google Sans Text', system-ui, sans-serif; font-size: 12px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; } .ds-table thead th { background-color: #FFF9DB; color: #0E1525; font-weight: 700; text-align: left; padding: 10px 14px; border-bottom: 1px solid #FDE68A; } .ds-table tbody td { padding: 10px 14px; color: #0E1525; border-bottom: 1px solid #F1F5F9; } .ds-table tbody tr:hover td { background-color: rgba(254, 240, 138, 0.25); } .ds-table .ds-num { text-align: right; font-family: 'Google Sans Mono', 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; font-weight: 600; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sovereign Operations Ledger",
+    "overview": "HAB Business PLC operates high-accountability field deployments across Security Services, Cleaning Services, and Property Management in Addis Ababa. Built in Operate mode, the interface prioritizes calm operational command, zero visual bloat, and immediate numeric legibility. Warm golden-cream chrome frames crisp white data canvases, anchored by deep navy authority ink, clean Google Sans typography, and precision Google Sans Mono financial figures.\n\nEvery screen adheres to progressive disclosure: complex multi-department workflows (30-day Ethiopian payroll, 3-gate exit clearance, 24/48 security shift roll call, and statutory System Master Setup) are organized into scannable lenses rather than stacked into overwhelming walls of widgets. Decoration recedes so operational truth—headcounts, SLA coverage ratios, and ETB balances—leads at first glance.",
+    "keyCharacteristics": [
+      "Warm Golden-Cream Chrome + Crisp Paper Canvas: Navigation, top header bars, KPI strip cards, and table headers use warm sunlit cream tones, while primary workspaces rest on pure white cards over a cool slate canvas.",
+      "Deep Navy Ink & Action Contrast: Primary text, active navigation states, and primary action buttons use Abyssinian Deep Navy with warm cream or vivid yellow-gold foregrounds.",
+      "Google Sans & Strict Tabular Numeric Discipline: All UI headings, body copy, and controls render in Google Sans (Google Sans Display and Google Sans Text), while every currency amount (ETB), tax bracket, headcount, and SLA percentage renders in Google Sans Mono (JetBrains Mono fallback) with tabular-nums (tnum) enabled for vertical column alignment.",
+      "Flat Hairline Architecture: Surfaces are separated by 1px solid hairline borders (#EFE1AA on warm surfaces, #E2E8F0 on neutral surfaces) rather than heavy drop shadows or nested sub-cards.",
+      "Quiet Proactive Intelligence: The HAB Routine Copilot surfaces as a single-line smart nudge bar below the header and a slide-over drawer with 1-click cross-departmental actions."
+    ],
+    "rules": [
+      {
+        "name": "The Golden Chrome, White Ledger Rule",
+        "body": "Warm golden-cream tones (#FFF9DB, #FFFDE8) belong exclusively to structural chrome (Sidebar, TopBar, Nudge Strip, KPI Summary Cards, and Table Headers). Primary workspaces and data rows remain on clean white (#FFFFFF) so dense records stay effortless to scan.",
+        "section": "colors"
+      },
+      {
+        "name": "The Navy Authority Rule",
+        "body": "Primary actions and active navigation items invert to Abyssinian Deep Navy (#0E1525) with warm cream (#FFF9DB) or gold (#EBE834) foregrounds—never generic browser blue or saturated neon gradients.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Ledger Rule",
+        "body": "Every numeric value—ETB currency, tax percentages, working days, attendance counts, and stock quantities—must apply font-mono tabular-nums (Google Sans Mono) so digits align vertically down every table column and calculation breakdown.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Primary cards, KPI tiles, and data tables sit flat at rest (shadow-none) with crisp 1px borders. Shadows appear only on transient floating overlays (tooltips, dropdowns, slide-over drawers, and modals).",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Cards Within Cards Rule",
+        "body": "Never nest boxed sub-cards inside a parent card. Separate internal records using flat 1px horizontal row dividers (divide-y divide-slate-100).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use #FFF9DB and #FFFDE8 with #EFE1AA 1px borders for navigation, headers, KPI summary tiles, and table <thead> elements.",
+      "Do apply Google Sans (--font-sans) for all UI copy and Google Sans Mono (--font-mono tabular-nums) for all ETB currency amounts, percentages, headcounts, IDs, and calculation tables.",
+      "Do use progressive disclosure (segmented view switchers and collapsible category accordions) so each screen presents one clear operational lens at a time.",
+      "Do provide both Light Mode and Dark Mode token mappings (dark:bg-slate-900, dark:border-slate-800, dark:text-slate-100) on all custom surfaces."
+    ],
+    "donts": [
+      "Don't nest boxed cards inside other cards; use flat 1px horizontal dividers (divide-y divide-slate-100) to group rows inside a container.",
+      "Don't use thick colored left or top accent borders (border-l-4, border-t-4) on KPI cards, alerts, or sidebar links.",
+      "Don't use generic blue/indigo SaaS gradients, neon cyberpunk glows, or decorative circular gauges when a clean tabular figure and status badge communicate faster.",
+      "Don't use browser-native window.alert or window.confirm dialogs; always use inline confirmation banners or toast notifications."
+    ]
+  }
+}

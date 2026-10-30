@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>24/48 Shift Roll-Call &amp; Attendance — HAB Business PLC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-crest">HAB</div>
+        <div class="brand-meta">
+          <span class="brand-title">HAB Business PLC</span>
+          <span class="brand-subtitle">Enterprise ERP v2.4</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">Executive Command</div>
+          <a href="index.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Executive Overview</span><span class="nav-count">Live</span></a>
+          <a href="org.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Org Hierarchy &amp; RBAC</span><span class="nav-count">6 Roles</span></a>
+          <a href="master-setup.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>System Master Setup</span><span class="nav-count">v2.4</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">HR &amp; Workforce</div>
+          <a href="management.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Employee Directory</span><span class="nav-count">1,248</span></a>
+          <a href="recruitment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Recruitment Pipeline</span><span class="nav-count">34</span></a>
+          <a href="onboarding.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>7-Point Onboarding</span><span class="nav-count">12</span></a>
+          <a href="transfers.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Transfers &amp; Promotions</span><span class="nav-count">9</span></a>
+          <a href="experience.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Experience Certificates</span><span class="nav-count">142</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Field Operations</div>
+          <a href="deployment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Client Site Deployment</span><span class="nav-count">42 Sites</span></a>
+          <a href="attendance.html" class="nav-link active"><span class="nav-link-left"><span class="nav-dot"></span>24/48 Shift Attendance</span><span class="nav-count">98.4%</span></a>
+          <a href="leave.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Leave &amp; Relief Roster</span><span class="nav-count">18</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Store, Finance &amp; Exit</div>
+          <a href="store.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Central Store &amp; 3D Twin</span><span class="nav-count">3 Bays</span></a>
+          <a href="payroll.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>30-Day Payroll &amp; Pension</span><span class="nav-count">ETB</span></a>
+          <a href="clearance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>4-Gate Exit Clearance</span><span class="nav-count">5</span></a>
+          <a href="login.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Switch Role / Portal Login</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar">OP</div>
+          <div>
+            <div class="user-name">Shambel Kebede Alemu</div>
+            <div class="user-role">Operations Manager</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb">Field Operations</span>
+          <span class="topbar-sep">/</span>
+          <span class="topbar-current">Daily Roll-Call &amp; Overtime Multipliers</span>
+        </div>
+        <div class="topbar-right">
+          <span class="mono" style="font-size: 12px;">Roll-Call Date: Oct 30, 2026 (06:00 EAT Handover)</span>
+          <a href="payroll.html" class="btn btn-primary btn-sm">Sync Attendance to Payroll →</a>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <span class="page-eyebrow">Biometric &amp; VHF Radio Roll-Call · Proclamation 1156/2019 Overtime Rules</span>
+            <h1 class="page-title">24/48 Shift Attendance &amp; Overtime Ledger</h1>
+            <p class="page-subtitle">Tracks morning 06:00 EAT platoon handovers, split-shift janitorial sign-ins, statutory overtime multipliers (1.5x Day, 1.75x Night, 2.0x Rest Day, 2.5x Public Holiday), and automatic 1/30th absence deductions.</p>
+          </div>
+          <div class="page-actions">
+            <div class="segmented-bar">
+              <button class="seg-btn active">All Roll-Calls (412 Today)</button>
+              <button class="seg-btn">On-Time (398)</button>
+              <button class="seg-btn">Late &gt; 15m (9)</button>
+              <button class="seg-btn">Absent / Relief (5)</button>
+            </div>
+          </div>
+        </div>
+
+        <section class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-label">Morning 06:00 Check-In Rate</span>
+            <div class="kpi-value">98.4%</div>
+            <div class="kpi-foot">405 / 412 Scheduled Posts Checked In</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Logged Overtime Hours (MTD)</span>
+            <div class="kpi-value">1,420 <span style="font-size: 14px;">hrs</span></div>
+            <div class="kpi-foot">1.5x Day · 1.75x Night · 2.5x Holiday</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Unexcused Absences</span>
+            <div class="kpi-value">2</div>
+            <div class="kpi-foot">Auto-triggers 1/30th Salary Deduction</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Relief Guards Deployed</span>
+            <div class="kpi-value">7</div>
+            <div class="kpi-foot">Zero Client SLA Gap Incurred</div>
+          </div>
+        </section>
+
+        <!-- Attendance Log Table -->
+        <section class="card">
+          <div class="card-header gilded">
+            <div>
+              <h2 class="card-title">Live Shift Handover &amp; Overtime Verification Sheet</h2>
+              <p class="card-subtitle">Overtime hours feed directly into the 30-day payroll calculator using Master Setup multipliers</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="erp-table">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Personnel Name &amp; Site</th>
+                  <th>Assigned Shift</th>
+                  <th class="th-right">Clock-In</th>
+                  <th class="th-right">Clock-Out</th>
+                  <th class="th-right">Days Worked</th>
+                  <th class="th-right">Overtime (MTD)</th>
+                  <th>Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono">HAB-EMP-0101</td>
+                  <td>
+                    <div class="cell-primary">Shambel Tadesse Desta</div>
+                    <div class="cell-sub">CBE HQ Tower · Senior Shift Supervisor</div>
+                  </td>
+                  <td class="mono">Platoon A (24h: 06:00–06:00)</td>
+                  <td class="td-right mono">05:48 EAT</td>
+                  <td class="td-right mono">06:05 EAT (+1d)</td>
+                  <td class="td-right mono">30 / 30</td>
+                  <td class="td-right mono">12h (1.75x Night)</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Verified On-Post</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-EMP-0104</td>
+                  <td>
+                    <div class="cell-primary">Kassahun Tadesse Wolde</div>
+                    <div class="cell-sub">CBE HQ Tower · Armed Perimeter Guard</div>
+                  </td>
+                  <td class="mono">Platoon A (24h: 06:00–06:00)</td>
+                  <td class="td-right mono">05:52 EAT</td>
+                  <td class="td-right mono">06:02 EAT (+1d)</td>
+                  <td class="td-right mono">30 / 30</td>
+                  <td class="td-right mono">8h (2.5x Holiday)</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Verified On-Post</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-EMP-0142</td>
+                  <td>
+                    <div class="cell-primary">Tigist Hailu Gebre</div>
+                    <div class="cell-sub">Bole Medhanialem Plaza · Lead Sanitizer</div>
+                  </td>
+                  <td class="mono">Split Day (06:30–15:30)</td>
+                  <td class="td-right mono">06:24 EAT</td>
+                  <td class="td-right mono">15:35 EAT</td>
+                  <td class="td-right mono">30 / 30</td>
+                  <td class="td-right mono">6h (1.5x Day)</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Verified On-Post</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-EMP-0188</td>
+                  <td>
+                    <div class="cell-primary">Alemayehu Tsegaye Berta</div>
+                    <div class="cell-sub">CBE HQ Tower · Vault Lobby Guard</div>
+                  </td>
+                  <td class="mono">Platoon A (24h: 06:00–06:00)</td>
+                  <td class="td-right mono">06:22 EAT</td>
+                  <td class="td-right mono">Active</td>
+                  <td class="td-right mono">29 / 30</td>
+                  <td class="td-right mono">0h</td>
+                  <td><span class="status-dot-label status-warning"><span class="status-dot"></span>Late (+22m Grace Flag)</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-EMP-0219</td>
+                  <td>
+                    <div class="cell-primary">Yared Asfaw Desta</div>
+                    <div class="cell-sub">CBE HQ Tower · West Gate Guard</div>
+                  </td>
+                  <td class="mono">Platoon A (24h: 06:00–06:00)</td>
+                  <td class="td-right mono">—</td>
+                  <td class="td-right mono">—</td>
+                  <td class="td-right mono">28 / 30</td>
+                  <td class="td-right mono">0h</td>
+                  <td><span class="status-dot-label status-danger"><span class="status-dot"></span>Absent (Relief HAB-RLF-04 Sent)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <span>Statutory Rule: 15-minute grace window · Unexcused absence deducts Base Salary ÷ 30 per day</span>
+            <span class="mono">Synced with Master Setup v2.4</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

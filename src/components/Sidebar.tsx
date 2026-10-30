@@ -22,7 +22,8 @@ import {
   Wallet,
   Scale,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Sliders
 } from 'lucide-react';
 import { ServiceType, ManagementPerson } from '../types/hrm';
 import { getRoleAllowedTabs } from '../utils/roleConfig';
@@ -195,6 +196,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t('nav.experience'),
           fullName: i18n.language === 'am' ? t('nav.experience') : 'Authenticated Work Experience Certificates',
           icon: Award
+        },
+        {
+          id: 'master-setup',
+          label: i18n.language === 'am' ? 'ማስተር ሴትአፕ' : 'Master Setup',
+          fullName: i18n.language === 'am' ? 'የሲስተም ማስተር ሴትአፕ እና የቀመር ህጎች' : 'System Master Setup & Statutory Calculation Rules',
+          icon: Sliders
         }
       ]
     }

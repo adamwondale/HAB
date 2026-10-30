@@ -18,6 +18,14 @@ import { getRoleAllowedTabs } from './utils/roleConfig';
 import { HabMonogramIcon } from './components/HabLogo';
 import { LoginView } from './components/LoginView';
 import { HabRoutineCopilot } from './components/HabRoutineCopilot';
+import { SystemMasterSetupView } from './components/SystemMasterSetupView';
+import { SystemMasterConfig } from './types/masterConfig';
+import {
+  DEFAULT_SYSTEM_MASTER_CONFIG,
+  recalculateAllClearancesWithMaster,
+  recalculateAllPayrollWithMaster,
+  recalculateStockThresholdsWithMaster
+} from './utils/masterConfigEngine';
 import {
   INITIAL_LEARNED_HABITS,
   computeProactiveNudges,
@@ -121,6 +129,44 @@ export default function App() {
     return INITIAL_MANAGEMENT_PERSONS.find(p => p.id === 'mgmt-hr-head') || INITIAL_MANAGEMENT_PERSONS[0];
   });
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  // System Master Setup Configuration State (persisted in localStorage)
+  const [masterConfig, setMasterConfig] = useState<SystemMasterConfig>(() => {
+    try {
+      const saved = localStorage.getItem('hab_master_config_v1');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch {
+      // ignore storage errors
+    }
+    return DEFAULT_SYSTEM_MASTER_CONFIG;
+  });
+
+  const handleForceSyncAllModules = (configToSync: SystemMasterConfig) => {
+    setPayroll(prev => recalculateAllPayrollWithMaster(prev, configToSync, false));
+    setClearances(prev => recalculateAllClearancesWithMaster(prev, configToSync));
+    setStockItems(prev => recalculateStockThresholdsWithMaster(prev, configToSync));
+    recordTelemetryEvent(
+      'Finance',
+      `Synchronized System Master Setup (v${configToSync.version})`,
+      `Recalculated active Payroll sheets (${configToSync.pensionAndPayroll.standardWorkingDays}d, ${configToSync.pensionAndPayroll.employerPensionPercent}%/${configToSync.pensionAndPayroll.employeePensionPercent}% pension), Clearance gear penalties, and Store reorder thresholds`
+    );
+  };
+
+  const handleUpdateMasterConfig = (nextConfig: SystemMasterConfig, triggerSync: boolean = true) => {
+    setMasterConfig(nextConfig);
+    try {
+      localStorage.setItem('hab_master_config_v1', JSON.stringify(nextConfig));
+    } catch {
+      // ignore storage errors
+    }
+    if (triggerSync) {
+      setPayroll(prev => recalculateAllPayrollWithMaster(prev, nextConfig, false));
+      setClearances(prev => recalculateAllClearancesWithMaster(prev, nextConfig));
+      setStockItems(prev => recalculateStockThresholdsWithMaster(prev, nextConfig));
+    }
+  };
 
   // HAB Routine Copilot States
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
@@ -992,6 +1038,7 @@ export default function App() {
             employees={employees}
             sites={sites}
             activeUser={activeUser}
+            masterConfig={masterConfig}
             onAddEmployee={handleAddEmployee}
             onInitiateClearanceFromEmployee={() => {
               setActiveTab('clearance');
@@ -1027,6 +1074,7 @@ export default function App() {
             employees={employees}
             sites={sites}
             activeUser={activeUser}
+            masterConfig={masterConfig}
             onApproveLeave={handleApproveLeave}
             onRejectLeave={handleRejectLeave}
             onAddLeaveRequest={(newReq) => setLeaveRequests(prev => [newReq, ...prev])}
@@ -1038,6 +1086,8 @@ export default function App() {
             payrollRecords={payroll}
             employees={employees}
             activeUser={activeUser}
+            masterConfig={masterConfig}
+            onOpenMasterSetup={() => handleNavigateTabWithTelemetry('master-setup')}
             onApproveBatch={() => {
               setPayroll(prev => prev.map(p => ({ ...p, paymentStatus: 'Approved' })));
             }}
@@ -1090,8 +1140,25 @@ export default function App() {
             clearances={clearances}
             employees={employees}
             activeUser={activeUser}
+            masterConfig={masterConfig}
             onUpdateClearance={handleUpdateClearance}
             onInitiateClearance={handleInitiateClearance}
+          />
+        )}
+
+        {activeTab === 'master-setup' && (
+          <SystemMasterSetupView
+            masterConfig={masterConfig}
+            activeUser={activeUser}
+            managementPersons={managementPersons}
+            payrollRecords={payroll}
+            clearances={clearances}
+            stockItems={stockItems}
+            employees={employees}
+            onUpdateMasterConfig={handleUpdateMasterConfig}
+            onForceSyncAllModules={handleForceSyncAllModules}
+            onSelectActiveUser={handleSelectActiveUser}
+            onNavigateTab={handleNavigateTabWithTelemetry}
           />
         )}
 

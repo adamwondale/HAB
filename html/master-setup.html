@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Master Setup &amp; Calculation Engine — HAB Business PLC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-crest">HAB</div>
+        <div class="brand-meta">
+          <span class="brand-title">HAB Business PLC</span>
+          <span class="brand-subtitle">Enterprise ERP v2.4</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">Executive Command</div>
+          <a href="index.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Executive Overview</span><span class="nav-count">Live</span></a>
+          <a href="org.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Org Hierarchy &amp; RBAC</span><span class="nav-count">6 Roles</span></a>
+          <a href="master-setup.html" class="nav-link active"><span class="nav-link-left"><span class="nav-dot"></span>System Master Setup</span><span class="nav-count">v2.4</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">HR &amp; Workforce</div>
+          <a href="management.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Employee Directory</span><span class="nav-count">1,248</span></a>
+          <a href="recruitment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Recruitment Pipeline</span><span class="nav-count">34</span></a>
+          <a href="onboarding.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>7-Point Onboarding</span><span class="nav-count">12</span></a>
+          <a href="transfers.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Transfers &amp; Promotions</span><span class="nav-count">9</span></a>
+          <a href="experience.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Experience Certificates</span><span class="nav-count">142</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Field Operations</div>
+          <a href="deployment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Client Site Deployment</span><span class="nav-count">42 Sites</span></a>
+          <a href="attendance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>24/48 Shift Attendance</span><span class="nav-count">98.4%</span></a>
+          <a href="leave.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Leave &amp; Relief Roster</span><span class="nav-count">18</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Store, Finance &amp; Exit</div>
+          <a href="store.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Central Store &amp; 3D Twin</span><span class="nav-count">3 Bays</span></a>
+          <a href="payroll.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>30-Day Payroll &amp; Pension</span><span class="nav-count">ETB</span></a>
+          <a href="clearance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>4-Gate Exit Clearance</span><span class="nav-count">5</span></a>
+          <a href="login.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Switch Role / Portal Login</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar">GM</div>
+          <div>
+            <div class="user-name">Ato Dawit Mekonnen</div>
+            <div class="user-role">General Manager · Super Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb">Executive Command</span>
+          <span class="topbar-sep">/</span>
+          <span class="topbar-current">System Master Setup &amp; Global Calculation Engine</span>
+        </div>
+        <div class="topbar-right">
+          <span class="status-dot-label status-success"><span class="status-dot"></span>Super Admin Write Mode Enabled</span>
+          <button class="btn btn-secondary btn-sm">Reset to Statutory Defaults</button>
+          <a href="payroll.html" class="btn btn-primary btn-sm">Sync &amp; Recalculate All Modules →</a>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <span class="page-eyebrow">Super Admin Governance · Single Source of Truth for Payroll, Leave, Overtime &amp; Store Penalties</span>
+            <h1 class="page-title">System Master Setup &amp; Live Formula Engine</h1>
+            <p class="page-subtitle">Configures Ethiopian progressive income tax brackets, 7%/11% POESSA pension rates, 30-day working divisor, overtime multipliers, salary grade scales, and Central Store replacement penalty fees.</p>
+          </div>
+          <div class="page-actions">
+            <div class="segmented-bar">
+              <button class="seg-btn active">1. Tax, Pension &amp; Allowances</button>
+              <button class="seg-btn">2. Shift &amp; Overtime Multipliers</button>
+              <button class="seg-btn">3. Leave Quotas &amp; Store Penalties</button>
+              <button class="seg-btn">4. Division Salary Grades</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="workbench-grid">
+          <!-- Left 8 Cols: Master Configuration Tables -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- Section 1: Ethiopian Progressive Income Tax Table -->
+            <section class="card">
+              <div class="card-header gilded">
+                <div>
+                  <h2 class="card-title">Ethiopian Monthly Employment Income Tax Brackets (Proclamation No. 979/2016)</h2>
+                  <p class="card-subtitle">Applied automatically to `(Base Earned + Taxable Allowances + Overtime)` in the Payroll Module</p>
+                </div>
+                <span class="mono" style="font-size: 11.5px; font-weight: 700;">7 Statutory Brackets</span>
+              </div>
+              <div class="table-wrap">
+                <table class="erp-table">
+                  <thead>
+                    <tr>
+                      <th>Bracket</th>
+                      <th class="th-right">Min Taxable (ETB)</th>
+                      <th class="th-right">Max Taxable (ETB)</th>
+                      <th class="th-right">Marginal Tax Rate (%)</th>
+                      <th class="th-right">Quick Deduction (ETB)</th>
+                      <th>Formula Application</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="cell-primary">Bracket 1 (Exempt)</td>
+                      <td class="td-right mono">0.00</td>
+                      <td class="td-right mono">600.00</td>
+                      <td class="td-right mono">0%</td>
+                      <td class="td-right mono">0.00</td>
+                      <td class="mono">Tax = 0.00 ETB</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-primary">Bracket 2</td>
+                      <td class="td-right mono">601.00</td>
+                      <td class="td-right mono">1,650.00</td>
+                      <td class="td-right mono">10%</td>
+                      <td class="td-right mono">60.00</td>
+                      <td class="mono">(Taxable × 0.10) - 60</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-primary">Bracket 3</td>
+                      <td class="td-right mono">1,651.00</td>
+                      <td class="td-right mono">3,200.00</td>
+                      <td class="td-right mono">15%</td>
+                      <td class="td-right mono">142.50</td>
+                      <td class="mono">(Taxable × 0.15) - 142.50</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-primary">Bracket 4</td>
+                      <td class="td-right mono">3,201.00</td>
+                      <td class="td-right mono">5,250.00</td>
+                      <td class="td-right mono">20%</td>
+                      <td class="td-right mono">302.50</td>
+                      <td class="mono">(Taxable × 0.20) - 302.50</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-primary">Bracket 5</td>
+                      <td class="td-right mono">5,251.00</td>
+                      <td class="td-right mono">7,800.00</td>
+                      <td class="td-right mono">25%</td>
+                      <td class="td-right mono">565.00</td>
+                      <td class="mono">(Taxable × 0.25) - 565</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-primary">Bracket 6</td>
+                      <td class="td-right mono">7,801.00</td>
+                      <td class="td-right mono">10,900.00</td>
+                      <td class="td-right mono">30%</td>
+                      <td class="td-right mono">955.00</td>
+                      <td class="mono">(Taxable × 0.30) - 955</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-primary">Bracket 7 (Top)</td>
+                      <td class="td-right mono">10,901.00</td>
+                      <td class="td-right mono">Unlimited</td>
+                      <td class="td-right mono">35%</td>
+                      <td class="td-right mono">1,500.00</td>
+                      <td class="mono">(Taxable × 0.35) - 1,500</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Section 2: Pension, Overtime Multipliers, Salary Grades & Store Penalties Summary -->
+            <section class="card">
+              <div class="card-header gilded">
+                <div>
+                  <h2 class="card-title">Statutory Pension, Overtime Multipliers &amp; Division Base Grades</h2>
+                  <p class="card-subtitle">Editable by Super Admin · Changes propagate across Payroll, Attendance, and Store Clearance</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Employee Pension Contribution (%)</label>
+                    <input type="text" class="input-field mono" value="7.0%" />
+                    <span class="form-hint">Deducted from employee Basic Salary</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Employer Pension Contribution (%)</label>
+                    <input type="text" class="input-field mono" value="11.0%" />
+                    <span class="form-hint">Paid by HAB Business PLC to POESSA</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Standard Monthly Divisor &amp; Hours</label>
+                    <input type="text" class="input-field mono" value="30 Days / 192 Monthly Hours" />
+                    <span class="form-hint">Used for daily absence deduction &amp; hourly OT rate</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Overtime Multipliers (Day / Night / Rest / Holiday)</label>
+                    <input type="text" class="input-field mono" value="1.50x · 1.75x · 2.00x · 2.50x" />
+                    <span class="form-hint">Proclamation No. 1156/2019 Article 68</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Security Division Base Grades (L1–L4)</label>
+                    <input type="text" class="input-field mono" value="L1: 4,800 · L2: 5,800 · L3: 7,500 · L4: 9,500 ETB" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Cleaning Division Base Grades (C1–C3)</label>
+                    <input type="text" class="input-field mono" value="C1: 3,800 · C2: 4,500 · C3: 5,400 ETB" />
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right 4 Cols: Sticky Live Formula Sandbox -->
+          <aside class="card" style="position: sticky; top: 80px;">
+            <div class="card-header gilded">
+              <div>
+                <span class="page-eyebrow">Live Calculation Sandbox</span>
+                <h2 class="card-title">Real-Time Net Pay Simulator</h2>
+                <p class="card-subtitle">Verifies active Master Setup parameters</p>
+              </div>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: column; gap: 14px;">
+              <div class="form-group">
+                <label class="form-label">Sample Division Grade</label>
+                <select class="select-field mono">
+                  <option>Security Grade L2 — 5,800.00 ETB</option>
+                  <option>Security Supervisor L4 — 9,500.00 ETB</option>
+                  <option>Cleaning Specialist C2 — 4,500.00 ETB</option>
+                </select>
+              </div>
+              <div class="divided-list" style="border: 1px solid var(--border-card); border-radius: 8px;">
+                <div class="divided-item" style="padding: 10px 14px;">
+                  <span>Earned Base (30/30 Days)</span>
+                  <span class="mono cell-primary">5,800.00 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 10px 14px;">
+                  <span>Transport Allowance (Tax-Exempt)</span>
+                  <span class="mono">600.00 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 10px 14px;">
+                  <span>Taxable Meal Allowance</span>
+                  <span class="mono">450.00 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 10px 14px;">
+                  <span>Holiday Overtime (8h @ 2.5x)</span>
+                  <span class="mono">604.17 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 10px 14px; background-color: var(--surface-chrome-sidebar);">
+                  <span class="cell-primary">Gross Monthly Earnings</span>
+                  <span class="mono cell-primary">7,454.17 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 10px 14px;">
+                  <span>Income Tax (Bracket 5 @ 25%)</span>
+                  <span class="mono" style="color: var(--status-danger-text);">-856.04 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 10px 14px;">
+                  <span>Employee Pension (7% of Base)</span>
+                  <span class="mono" style="color: var(--status-danger-text);">-406.00 ETB</span>
+                </div>
+                <div class="divided-item" style="padding: 12px 14px; background-color: var(--brand-navy); color: var(--brand-gold);">
+                  <span style="font-weight: 700; color: #FFFFFF;">Net Take-Home Pay</span>
+                  <span class="mono" style="font-size: 16px; font-weight: 700;">6,192.13 ETB</span>
+                </div>
+              </div>
+              <div class="form-hint" style="text-align: center;">
+                Employer 11% Pension Liability: <strong class="mono">638.00 ETB</strong>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

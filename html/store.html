@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central Store &amp; 3D Warehouse Digital Twin — HAB Business PLC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-crest">HAB</div>
+        <div class="brand-meta">
+          <span class="brand-title">HAB Business PLC</span>
+          <span class="brand-subtitle">Enterprise ERP v2.4</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">Executive Command</div>
+          <a href="index.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Executive Overview</span><span class="nav-count">Live</span></a>
+          <a href="org.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Org Hierarchy &amp; RBAC</span><span class="nav-count">6 Roles</span></a>
+          <a href="master-setup.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>System Master Setup</span><span class="nav-count">v2.4</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">HR &amp; Workforce</div>
+          <a href="management.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Employee Directory</span><span class="nav-count">1,248</span></a>
+          <a href="recruitment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Recruitment Pipeline</span><span class="nav-count">34</span></a>
+          <a href="onboarding.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>7-Point Onboarding</span><span class="nav-count">12</span></a>
+          <a href="transfers.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Transfers &amp; Promotions</span><span class="nav-count">9</span></a>
+          <a href="experience.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Experience Certificates</span><span class="nav-count">142</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Field Operations</div>
+          <a href="deployment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Client Site Deployment</span><span class="nav-count">42 Sites</span></a>
+          <a href="attendance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>24/48 Shift Attendance</span><span class="nav-count">98.4%</span></a>
+          <a href="leave.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Leave &amp; Relief Roster</span><span class="nav-count">18</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Store, Finance &amp; Exit</div>
+          <a href="store.html" class="nav-link active"><span class="nav-link-left"><span class="nav-dot"></span>Central Store &amp; 3D Twin</span><span class="nav-count">3 Bays</span></a>
+          <a href="payroll.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>30-Day Payroll &amp; Pension</span><span class="nav-count">ETB</span></a>
+          <a href="clearance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>4-Gate Exit Clearance</span><span class="nav-count">5</span></a>
+          <a href="login.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Switch Role / Portal Login</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar">ST</div>
+          <div>
+            <div class="user-name">Ato Bereket Tesfaye</div>
+            <div class="user-role">Central Storekeeper</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb">Store, Finance &amp; Exit</span>
+          <span class="topbar-sep">/</span>
+          <span class="topbar-current">Megenagna Central Store &amp; 3D Warehouse Digital Twin</span>
+        </div>
+        <div class="topbar-right">
+          <a href="master-setup.html" class="btn btn-secondary btn-sm">Gear Penalty Fee Schedule</a>
+          <button class="btn btn-primary btn-sm">+ Issue / Receive Stock Voucher</button>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <span class="page-eyebrow">Megenagna Logistics Depot · Bay A (Tactical) · Bay B (Janitorial) · Bay C (Facility Tools)</span>
+            <h1 class="page-title">Central Store Inventory &amp; 3D Warehouse Spatial Map</h1>
+            <p class="page-subtitle">Tracks serialized VHF radios, guard uniforms, heavy-duty raincoats, industrial floor scrubbers, and hospital-grade disinfectants with automated reorder alerts and Gate 2 clearance recovery pricing.</p>
+          </div>
+        </div>
+
+        <section class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-label">Total SKU Valuation</span>
+            <div class="kpi-value">4,285,900 <span style="font-size: 14px;">ETB</span></div>
+            <div class="kpi-foot">Across 3 Warehouse Bays (48 Racks)</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Serialized Tactical Gear</span>
+            <div class="kpi-value">1,890</div>
+            <div class="kpi-foot">VHF Radios, Metal Detectors, Batons</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Low-Stock Reorder Alerts</span>
+            <div class="kpi-value" style="color: var(--status-warning-text);">3 <span style="font-size: 14px;">SKUs</span></div>
+            <div class="kpi-foot">Below Master Threshold (50 Units)</div>
+          </div>
+          <div class="kpi-card navy">
+            <span class="kpi-label">Gate 2 Unreturned Holds</span>
+            <div class="kpi-value">2</div>
+            <div class="kpi-foot">Auto-Linked to Exit Clearance Deduction</div>
+          </div>
+        </section>
+
+        <!-- 3D Warehouse Digital Twin Spatial Representation Card -->
+        <section class="card" style="background-color: var(--brand-navy); color: var(--surface-chrome-header); border-color: var(--brand-navy);">
+          <div class="card-header" style="border-bottom-color: rgba(255,249,219,0.12);">
+            <div>
+              <span class="page-eyebrow" style="color: var(--brand-gold);">Spatial Warehouse Twin · Megenagna Depot Floorplan</span>
+              <h2 class="card-title" style="color: #FFFFFF; font-size: 16px;">3-Bay Rack Occupancy &amp; Critical Reorder Telemetry</h2>
+            </div>
+            <div class="mono" style="font-size: 11.5px; color: var(--brand-gold);">
+              Camera: Isometric Bay Overview · 48 Pallet Racks Active
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="grid-3">
+              <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(235,232,52,0.3); border-radius: 8px; padding: 16px;">
+                <div class="mono" style="font-size: 11px; color: var(--brand-gold); margin-bottom: 4px;">BAY A · RACKS A1–A16</div>
+                <div style="font-weight: 700; font-size: 15px; color: #FFFFFF; margin-bottom: 8px;">Security Uniforms &amp; Tactical Gear</div>
+                <div style="font-size: 12px; color: rgba(255,249,219,0.8); margin-bottom: 12px;">Khaki Uniform Sets, Tactical Boots, Heavy Raincoats, Motorola VHF Radios, Handheld Scanners</div>
+                <div class="mono" style="font-size: 11.5px; color: #34D399;">Occupancy: 88% · 1 Low-Stock Alert (Boots Sz 42)</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 16px;">
+                <div class="mono" style="font-size: 11px; color: var(--brand-gold); margin-bottom: 4px;">BAY B · RACKS B1–B16</div>
+                <div style="font-weight: 700; font-size: 15px; color: #FFFFFF; margin-bottom: 8px;">Janitorial &amp; Bio-Clean Chemicals</div>
+                <div style="font-size: 12px; color: rgba(255,249,219,0.8); margin-bottom: 12px;">5L Chlorine Drums, Hospital Bio-Sanitizer, Microfiber Mop Heads, Rotary Floor Buffers</div>
+                <div class="mono" style="font-size: 11.5px; color: #FBBF24;">Occupancy: 64% · 2 Reorder Alerts (5L Disinfectant)</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 16px;">
+                <div class="mono" style="font-size: 11px; color: var(--brand-gold); margin-bottom: 4px;">BAY C · RACKS C1–C16</div>
+                <div style="font-weight: 700; font-size: 15px; color: #FFFFFF; margin-bottom: 8px;">Property &amp; MEP Maintenance Spares</div>
+                <div style="font-size: 12px; color: rgba(255,249,219,0.8); margin-bottom: 12px;">Generator Filters, HVAC Breakers, LED High-Bay Tubes, Plumbing Valves &amp; Safety Harnesses</div>
+                <div class="mono" style="font-size: 11.5px; color: #34D399;">Occupancy: 92% · All SKUs Optimal</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Master Inventory & Penalty Valuation Table -->
+        <section class="card">
+          <div class="card-header gilded">
+            <div>
+              <h2 class="card-title">Central Store Master Stock &amp; Replacement Penalty Ledger</h2>
+              <p class="card-subtitle">Replacement penalty rates are configured by Super Admin in System Master Setup for Gate 2 exit deductions</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="erp-table">
+              <thead>
+                <tr>
+                  <th>SKU Code</th>
+                  <th>Item Description &amp; Specification</th>
+                  <th>Warehouse Bay / Bin</th>
+                  <th class="th-right">On-Hand Qty</th>
+                  <th class="th-right">Safety Min</th>
+                  <th class="th-right">Replacement Penalty (ETB)</th>
+                  <th>Stock Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono">HAB-SKU-101</td>
+                  <td>
+                    <div class="cell-primary">Complete Security Guard Khaki Uniform Set</div>
+                    <div class="cell-sub">Shirt, Trousers, Epaulettes, Woven HAB Shoulder Crest</div>
+                  </td>
+                  <td class="mono">Bay A · Bin A-04</td>
+                  <td class="td-right mono">340 Sets</td>
+                  <td class="td-right mono">50 Sets</td>
+                  <td class="td-right mono cell-primary">1,450.00</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Optimal Stock</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-SKU-104</td>
+                  <td>
+                    <div class="cell-primary">Heavy-Duty Tactical Leather Patrol Boots</div>
+                    <div class="cell-sub">Steel-Toe Oil-Resistant Sole (Sizes 40–45)</div>
+                  </td>
+                  <td class="mono">Bay A · Bin A-09</td>
+                  <td class="td-right mono" style="color: var(--status-warning-text); font-weight: 700;">38 Pairs</td>
+                  <td class="td-right mono">50 Pairs</td>
+                  <td class="td-right mono cell-primary">1,800.00</td>
+                  <td><span class="status-dot-label status-warning"><span class="status-dot"></span>Low Stock — Reorder</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-SKU-108</td>
+                  <td>
+                    <div class="cell-primary">Motorola DP1400 VHF Two-Way Security Radio</div>
+                    <div class="cell-sub">Serialized Asset with Belt Holster &amp; Rapid Charger</div>
+                  </td>
+                  <td class="mono">Bay A · Vault A-01</td>
+                  <td class="td-right mono">64 Units</td>
+                  <td class="td-right mono">20 Units</td>
+                  <td class="td-right mono cell-primary">4,500.00</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Optimal Stock</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-SKU-112</td>
+                  <td>
+                    <div class="cell-primary">Kiremt Heavy-Duty Reflective Guard Raincoat</div>
+                    <div class="cell-sub">Full-Length Waterproof Poncho with Hood</div>
+                  </td>
+                  <td class="mono">Bay A · Bin A-14</td>
+                  <td class="td-right mono">215 Pcs</td>
+                  <td class="td-right mono">50 Pcs</td>
+                  <td class="td-right mono cell-primary">850.00</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Optimal Stock</span></td>
+                </tr>
+                <tr>
+                  <td class="mono">HAB-SKU-205</td>
+                  <td>
+                    <div class="cell-primary">Hospital-Grade Quaternary Disinfectant (5L Jerrycan)</div>
+                    <div class="cell-sub">Issued to St. Paul's Hospital &amp; Commercial Restrooms</div>
+                  </td>
+                  <td class="mono">Bay B · Bin B-03</td>
+                  <td class="td-right mono" style="color: var(--status-danger-text); font-weight: 700;">12 Drums</td>
+                  <td class="td-right mono">15 Drums</td>
+                  <td class="td-right mono cell-primary">620.00</td>
+                  <td><span class="status-dot-label status-danger"><span class="status-dot"></span>Critical — PO Pending</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

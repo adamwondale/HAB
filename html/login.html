@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Login &amp; Role Selection — HAB Business PLC Integrated ERP</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body style="background-color: var(--surface-chrome-sidebar);">
+  <div style="min-height: 100vh; display: flex; flex-direction: column;">
+    <!-- Top Brand Strip -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <div class="brand-crest">HAB</div>
+        <div>
+          <div class="brand-title">HAB Business PLC — Integrated Enterprise Operations ERP</div>
+          <div class="brand-subtitle">Security Services · Commercial Cleaning · Property Management</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="mono" style="font-size: 12px; color: var(--text-secondary);">Proclamation No. 1156/2019 Compliant</span>
+        <a href="index.html" class="btn btn-primary btn-sm">Enter Dashboard →</a>
+      </div>
+    </header>
+
+    <!-- Main Split Login Container -->
+    <main class="page-container" style="max-width: 1120px; margin: auto; padding: 40px 24px;">
+      <div class="workbench-grid" style="grid-template-columns: 5fr 7fr; gap: 32px; align-items: stretch;">
+        <!-- Left 5 Cols: Credential Sign-In Card -->
+        <section class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="card-header gilded">
+              <div>
+                <span class="page-eyebrow">Authenticated Staff Gateway</span>
+                <h1 class="card-title" style="font-size: 18px; margin-top: 2px;">Sign In to Operations Console</h1>
+              </div>
+            </div>
+            <form class="card-body" action="index.html" style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="emp-id">Staff ID or Corporate Email</label>
+                <input id="emp-id" type="text" class="input-field mono" value="HAB-GM-0001" />
+                <span class="form-hint">Format: HAB-EMP-XXXX or @habbusiness.et</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="emp-pass">Security Passcode</label>
+                <input id="emp-pass" type="password" class="input-field" value="••••••••••••" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="branch-select">Operating Duty Station</label>
+                <select id="branch-select" class="select-field">
+                  <option>Addis Ababa HQ — Bole Medhanialem Tower</option>
+                  <option>Central Store Annex — Megenagna</option>
+                  <option>Kirkos Sector Command Center</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%; padding: 11px 16px; margin-top: 6px;">
+                Authenticate &amp; Open Console
+              </button>
+            </form>
+          </div>
+          <div class="card-footer">
+            <span>2FA Hardware Token Active</span>
+            <span class="mono">Session Timeout: 30m</span>
+          </div>
+        </section>
+
+        <!-- Right 7 Cols: Role-Based Access Control (RBAC) Quick Persona Selector -->
+        <section class="card">
+          <div class="card-header gilded">
+            <div>
+              <span class="page-eyebrow">Role-Based Access Control (RBAC)</span>
+              <h2 class="card-title" style="font-size: 18px; margin-top: 2px;">Select Departmental Persona</h2>
+              <p class="card-subtitle">Each role enforces tailored read/write permissions across HR, Store, Finance, and Master Setup</p>
+            </div>
+          </div>
+          <div class="divided-list">
+            <a href="index.html" class="divided-item">
+              <div>
+                <div class="cell-primary">General Manager (Super Admin)</div>
+                <div class="cell-sub">Ato Dawit Mekonnen · Full executive sign-off, System Master Setup write access &amp; SLA oversight</div>
+              </div>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--brand-navy);">HAB-GM-0001 →</span>
+            </a>
+            <a href="management.html" class="divided-item">
+              <div>
+                <div class="cell-primary">HR &amp; Admin Department Head</div>
+                <div class="cell-sub">W/ro Selamawit Tadesse · Recruitment, 7-point Kebele vetting, leave roster &amp; work certificates</div>
+              </div>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--brand-navy);">HAB-HR-0012 →</span>
+            </a>
+            <a href="deployment.html" class="divided-item">
+              <div>
+                <div class="cell-primary">Security &amp; Janitorial Operations Manager</div>
+                <div class="cell-sub">Shambel Kebede Alemu · 42 client sites, 24/48 platoon rosters, daily roll-call &amp; relief dispatch</div>
+              </div>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--brand-navy);">HAB-OPS-0004 →</span>
+            </a>
+            <a href="payroll.html" class="divided-item">
+              <div>
+                <div class="cell-primary">Finance &amp; Payroll Department Head</div>
+                <div class="cell-sub">Ato Yonas Girma · 30-day statutory payroll, progressive income tax, 7%/11% pension &amp; clearance</div>
+              </div>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--brand-navy);">HAB-FIN-0008 →</span>
+            </a>
+            <a href="store.html" class="divided-item">
+              <div>
+                <div class="cell-primary">Central Storekeeper &amp; Logistics Officer</div>
+                <div class="cell-sub">Ato Bereket Tesfaye · Uniform handout, baton/radio serial tracking, chemical stock &amp; Gate 2 clearance</div>
+              </div>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--brand-navy);">HAB-STR-0019 →</span>
+            </a>
+            <a href="deployment.html" class="divided-item">
+              <div>
+                <div class="cell-primary">Property &amp; Facility Maintenance Manager</div>
+                <div class="cell-sub">Eng. Rahel Assefa · Managed commercial buildings, HVAC/generator maintenance &amp; tenant SLAs</div>
+              </div>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--brand-navy);">HAB-PRP-0021 →</span>
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

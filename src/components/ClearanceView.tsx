@@ -21,11 +21,17 @@ import {
   Lock
 } from 'lucide-react';
 import { ClearanceRecord, IssuedClearanceItem, Employee, ServiceType, ManagementPerson } from '../types/hrm';
+import { SystemMasterConfig } from '../types/masterConfig';
+import {
+  DEFAULT_SYSTEM_MASTER_CONFIG,
+  getGearPenaltyFromMaster
+} from '../utils/masterConfigEngine';
 
 interface ClearanceViewProps {
   clearances: ClearanceRecord[];
   employees: Employee[];
   activeUser?: ManagementPerson;
+  masterConfig?: SystemMasterConfig;
   onUpdateClearance: (updated: ClearanceRecord) => void;
   onInitiateClearance: (newRecord: ClearanceRecord) => void;
 }
@@ -34,6 +40,7 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
   clearances,
   employees,
   activeUser,
+  masterConfig = DEFAULT_SYSTEM_MASTER_CONFIG,
   onUpdateClearance,
   onInitiateClearance
 }) => {
@@ -91,7 +98,7 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
           ...item,
           isReturned: nextReturned,
           condition: newCondition,
-          penaltyFee: nextReturned ? 0 : (item.category === 'Equipment' ? 450 : 200)
+          penaltyFee: getGearPenaltyFromMaster(item.category, item.name, newCondition, masterConfig)
         };
       }
       return item;
@@ -108,9 +115,7 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
     if (!selectedClearance) return;
     const updatedItems = selectedClearance.issuedItems.map(item => {
       if (item.id === itemId) {
-        let penalty = 0;
-        if (condition === 'Missing') penalty = item.category === 'Equipment' ? 500 : 250;
-        if (condition === 'Damaged') penalty = item.category === 'Equipment' ? 250 : 120;
+        const penalty = getGearPenaltyFromMaster(item.category, item.name, condition, masterConfig);
         return {
           ...item,
           condition,

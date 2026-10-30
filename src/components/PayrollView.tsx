@@ -9,15 +9,24 @@ import {
   Plus,
   Calculator,
   Info,
-  Lock
+  Lock,
+  Sliders
 } from 'lucide-react';
 import { PayrollRecord, ServiceType, Employee, ManagementPerson } from '../types/hrm';
+import { SystemMasterConfig } from '../types/masterConfig';
+import {
+  DEFAULT_SYSTEM_MASTER_CONFIG,
+  calculateIncomeTaxFromMaster,
+  calculatePayrollRecordWithMaster
+} from '../utils/masterConfigEngine';
 import { exportPayrollToCsv, downloadCsv } from '../utils/csvExport';
 
 interface PayrollViewProps {
   payrollRecords: PayrollRecord[];
   employees?: Employee[];
   activeUser?: ManagementPerson;
+  masterConfig?: SystemMasterConfig;
+  onOpenMasterSetup?: () => void;
   onApproveBatch: () => void;
   onDisburseBatch: () => void;
   onUpdatePayrollRecord?: (updated: PayrollRecord) => void;
@@ -54,12 +63,18 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
   payrollRecords,
   employees = [],
   activeUser,
+  masterConfig = DEFAULT_SYSTEM_MASTER_CONFIG,
+  onOpenMasterSetup,
   onApproveBatch,
   onDisburseBatch,
   onUpdatePayrollRecord,
   onAddPayrollRecord
 }) => {
   const canApprovePayroll = activeUser ? activeUser.permissions.canApprovePayroll : true;
+  const stdWorkingDays = masterConfig.pensionAndPayroll.standardWorkingDays;
+  const employerPensionPct = masterConfig.pensionAndPayroll.employerPensionPercent;
+  const employeePensionPct = masterConfig.pensionAndPayroll.employeePensionPercent;
+
   const [selectedRecord, setSelectedRecord] = useState<PayrollRecord | null>(null);
   const [isPayslipModalOpen, setIsPayslipModalOpen] = useState<boolean>(false);
   const [editingRecord, setEditingRecord] = useState<PayrollRecord | null>(null);
@@ -67,16 +82,16 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
   const [filterService, setFilterService] = useState<'All' | ServiceType>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Form states for adding a new payroll entry
+  // Form states for adding a new payroll entry (seeded from System Master Setup)
   const [newEmpId, setNewEmpId] = useState<string>(employees[0]?.id || '');
-  const [newWorkingDays, setNewWorkingDays] = useState<number>(30);
+  const [newWorkingDays, setNewWorkingDays] = useState<number>(stdWorkingDays);
   const [newBaseSalary, setNewBaseSalary] = useState<number>(employees[0]?.salary.baseSalary || 8500);
-  const [newTransport, setNewTransport] = useState<number>(1500);
-  const [newMobileCard, setNewMobileCard] = useState<number>(400);
-  const [newHouse, setNewHouse] = useState<number>(2000);
+  const [newTransport, setNewTransport] = useState<number>(masterConfig.pensionAndPayroll.defaultTransportAllowance);
+  const [newMobileCard, setNewMobileCard] = useState<number>(masterConfig.pensionAndPayroll.defaultMobileAllowance);
+  const [newHouse, setNewHouse] = useState<number>(masterConfig.pensionAndPayroll.defaultHousingAllowance);
   const [newOvertimePay, setNewOvertimePay] = useState<number>(0);
   const [newPenalties, setNewPenalties] = useState<number>(0);
-  const [newFoodCostSharing, setNewFoodCostSharing] = useState<number>(400);
+  const [newFoodCostSharing, setNewFoodCostSharing] = useState<number>(masterConfig.pensionAndPayroll.defaultFoodCostSharing);
 
   const filteredRecords = payrollRecords.filter(r => {
     if (filterService !== 'All' && r.serviceType !== filterService) return false;
@@ -94,7 +109,10 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
 
   const totalGross = filteredRecords.reduce((acc, r) => acc + r.grossPay, 0);
   const totalNet = filteredRecords.reduce((acc, r) => acc + r.netPay, 0);
-  const totalEmployerPension11 = filteredRecords.reduce((acc, r) => acc + (r.pensionEmployer11Percent || Math.round(r.earnedBaseSalary * 0.11)), 0);
+  const totalEmployerPension11 = filteredRecords.reduce(
+    (acc, r) => acc + (r.pensionEmployer11Percent || Math.round(r.earnedBaseSalary * (employerPensionPct / 100))),
+    0
+  );
   const totalEmployeeDeductions = filteredRecords.reduce(
     (acc, r) => acc + r.incomeTaxDeduction + r.pensionEmployeeDeduction + r.penaltiesDeduction + r.foodCostSharingDeduction,
     0
@@ -109,40 +127,14 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
     setEditingRecord({ ...record });
   };
 
-  const handleRecalculateEditing = (updated: PayrollRecord): PayrollRecord => {
-    const days = Math.max(0, Math.min(30, Number(updated.workingDays) || 0));
-    const earnedBase = Math.round((Number(updated.baseSalary) / 30) * days);
-    const transport = Number(updated.transportAllowance) || 0;
-    const mobile = Number(updated.mobileCardAllowance) || 0;
-    const house = Number(updated.houseAllowance) || 0;
-    const ot = Number(updated.overtimePay) || 0;
-
-    const gross = earnedBase + transport + mobile + house + ot;
-    const pension11NonDeductible = Math.round(earnedBase * 0.11);
-    const pension7Deductible = Math.round(earnedBase * 0.07);
-    const tax = Number(updated.incomeTaxDeduction) || 0;
-    const penalties = Number(updated.penaltiesDeduction) || 0;
-    const food = Number(updated.foodCostSharingDeduction) || 0;
-
-    const totalDed = tax + pension7Deductible + penalties + food;
-    const net = Math.max(0, gross - totalDed);
-
-    return {
-      ...updated,
-      workingDays: days,
-      fullWorkingDays: 30,
-      earnedBaseSalary: earnedBase,
-      grossPay: gross,
-      pensionEmployer11Percent: pension11NonDeductible,
-      pensionEmployeeDeduction: pension7Deductible,
-      netPay: net
-    };
+  const handleRecalculateEditing = (updated: PayrollRecord, recalculateTax: boolean = true): PayrollRecord => {
+    return calculatePayrollRecordWithMaster(updated, masterConfig, recalculateTax);
   };
 
   const handleSaveEdit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingRecord || !onUpdatePayrollRecord) return;
-    const finalRecord = handleRecalculateEditing(editingRecord);
+    const finalRecord = handleRecalculateEditing(editingRecord, false);
     onUpdatePayrollRecord(finalRecord);
     setEditingRecord(null);
   };
@@ -151,12 +143,19 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
     e.preventDefault();
     if (!onAddPayrollRecord) return;
     const emp = employees.find(x => x.id === newEmpId);
-    const days = Math.max(0, Math.min(30, newWorkingDays));
-    const earnedBase = Math.round((newBaseSalary / 30) * days);
+    const days = Math.max(0, Math.min(stdWorkingDays, newWorkingDays));
+    const earnedBase = Math.round((newBaseSalary / stdWorkingDays) * days);
     const gross = earnedBase + newTransport + newMobileCard + newHouse + newOvertimePay;
-    const pension11 = Math.round(earnedBase * 0.11);
-    const pension7 = Math.round(earnedBase * 0.07);
-    const tax = calculateEthiopianIncomeTax(earnedBase + newHouse + newOvertimePay);
+    const pension11 = Math.round(earnedBase * (employerPensionPct / 100));
+    const pension7 = Math.round(earnedBase * (employeePensionPct / 100));
+    const taxableTransport = Math.max(
+      0,
+      newTransport - masterConfig.pensionAndPayroll.taxExemptTransportLimit
+    );
+    const tax = calculateIncomeTaxFromMaster(
+      earnedBase + newHouse + newMobileCard + newOvertimePay + taxableTransport,
+      masterConfig
+    );
     const totalDed = tax + pension7 + newPenalties + newFoodCostSharing;
     const net = Math.max(0, gross - totalDed);
 
@@ -169,7 +168,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
       serviceType: emp?.serviceType || 'Security',
       siteName: emp?.currentSiteName || 'HAB Head Office (Bole)',
       workingDays: days,
-      fullWorkingDays: 30,
+      fullWorkingDays: stdWorkingDays,
       baseSalary: newBaseSalary,
       earnedBaseSalary: earnedBase,
       transportAllowance: newTransport,
@@ -219,21 +218,38 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
-            Standard 30-Day Payroll Sheet · All 4 Divisions
+            Standard {stdWorkingDays}-Day Payroll Sheet · All 4 Divisions
           </div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-0.5">
             Workforce Payroll Sheet & Statutory Ledger
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Full Working Days: <strong className="text-slate-800 dark:text-slate-200">30 Days</strong> across all divisions. Additions: Basic, Transport, Mobile Card, House & Overtime. Includes <strong className="text-indigo-700 dark:text-indigo-400">11% Employer Pension (Non-Deductible)</strong> and Deductions (Tax, 7% Employee Pension, Penalties, Food Cost Sharing).
+            Full Working Days: <strong className="text-slate-800 dark:text-slate-200">{stdWorkingDays} Days</strong> across all divisions. Additions: Basic, Transport, Mobile Card, House & Overtime. Includes <strong className="text-indigo-700 dark:text-indigo-400">{employerPensionPct}% Employer Pension (Non-Deductible)</strong> and Deductions (Tax, {employeePensionPct}% Employee Pension, Penalties, Food Cost Sharing).
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-auto">
+          {onOpenMasterSetup && (
+            <button
+              type="button"
+              onClick={onOpenMasterSetup}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF9DB] hover:bg-[#FFF5B8] text-[#0E1525] border border-[#EFE1AA] text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              <span>Master Rules ({stdWorkingDays}d · {employerPensionPct}%/{employeePensionPct}%)</span>
+            </button>
+          )}
           {canApprovePayroll && onAddPayrollRecord && (
             <button
               type="button"
-              onClick={() => setIsAddModalOpen(true)}
+              onClick={() => {
+                setNewWorkingDays(stdWorkingDays);
+                setNewTransport(masterConfig.pensionAndPayroll.defaultTransportAllowance);
+                setNewMobileCard(masterConfig.pensionAndPayroll.defaultMobileAllowance);
+                setNewHouse(masterConfig.pensionAndPayroll.defaultHousingAllowance);
+                setNewFoodCostSharing(masterConfig.pensionAndPayroll.defaultFoodCostSharing);
+                setIsAddModalOpen(true);
+              }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition-colors shadow-xs"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -296,7 +312,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-indigo-700 dark:text-indigo-400 font-semibold">11% Pension (Non-Deductible)</span>
+            <span className="text-xs text-indigo-700 dark:text-indigo-400 font-semibold">{employerPensionPct}% Pension (Non-Deductible)</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800">
               Non-Deductible
             </span>
@@ -312,7 +328,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           <div className="text-lg font-bold text-rose-600 dark:text-rose-400 tabular-nums mt-0.5">
             -ETB {totalEmployeeDeductions.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400">Tax + 7% Pension + Penalties + Food Cost</span>
+          <span className="text-[11px] text-slate-400">Tax + {employeePensionPct}% Pension + Penalties + Food Cost</span>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs">
@@ -332,7 +348,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
               Master Payroll Sheet ({filteredRecords.length} Staff)
             </h2>
             <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
-              Base Standard: 30 Working Days
+              Base Standard: {stdWorkingDays} Working Days
             </span>
           </div>
 
@@ -364,12 +380,12 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           <table className="w-full text-left text-xs min-w-[1380px]">
             <thead>
               {/* Group Header Row */}
-              <tr className="bg-slate-900 text-white text-[10px] uppercase tracking-wider font-bold border-b border-slate-700">
-                <th colSpan={3} className="py-2 px-3 border-r border-slate-700">Employee & Working Days (30 Days Full)</th>
-                <th colSpan={6} className="py-2 px-3 text-center bg-emerald-950/80 text-emerald-200 border-r border-slate-700">Additions (Earnings in ETB)</th>
-                <th colSpan={1} className="py-2 px-3 text-center bg-indigo-950/90 text-indigo-200 border-r border-slate-700">Non-Deductible (11%)</th>
-                <th colSpan={5} className="py-2 px-3 text-center bg-rose-950/80 text-rose-200 border-r border-slate-700">Deductions (ETB)</th>
-                <th colSpan={2} className="py-2 px-3 text-right">Net & Actions</th>
+              <tr className="bg-[#FFF9DB] dark:bg-slate-900 text-[#0E1525] dark:text-slate-100 text-[11px] uppercase tracking-wider font-extrabold border-b border-amber-300 dark:border-slate-700">
+                <th colSpan={3} className="py-2.5 px-3 bg-[#FFF5B8] dark:bg-slate-900 text-[#0E1525] dark:text-slate-100 border-r border-amber-300 dark:border-slate-700">Employee & Working Days ({stdWorkingDays} Days Full)</th>
+                <th colSpan={6} className="py-2.5 px-3 text-center bg-emerald-100 dark:bg-emerald-950/80 text-emerald-950 dark:text-emerald-200 border-r border-amber-300 dark:border-slate-700">Additions (Earnings in ETB)</th>
+                <th colSpan={1} className="py-2.5 px-3 text-center bg-indigo-100 dark:bg-indigo-950/90 text-indigo-950 dark:text-indigo-200 border-r border-amber-300 dark:border-slate-700">Non-Deductible ({employerPensionPct}%)</th>
+                <th colSpan={5} className="py-2.5 px-3 text-center bg-rose-100 dark:bg-rose-950/80 text-rose-950 dark:text-rose-200 border-r border-amber-300 dark:border-slate-700">Deductions (ETB)</th>
+                <th colSpan={2} className="py-2.5 px-3 text-right bg-[#FFF5B8] dark:bg-slate-900 text-[#0E1525] dark:text-slate-100">Net & Actions</th>
               </tr>
               {/* Column Sub-Headers */}
               <tr className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b-2 border-slate-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[10px]">
@@ -383,14 +399,14 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
                 <th className="py-3 px-2.5 text-right">House</th>
                 <th className="py-3 px-2.5 text-right">Overtime</th>
                 <th className="py-3 px-3 text-right bg-emerald-50/70 dark:bg-emerald-950/30 border-r border-slate-200 dark:border-slate-700">Gross Pay</th>
-                {/* Non-Deductible 11% Pension */}
+                {/* Non-Deductible Employer Pension */}
                 <th className="py-3 px-3 text-right bg-indigo-50/70 dark:bg-indigo-950/30 text-indigo-800 dark:text-indigo-300 border-r border-slate-200 dark:border-slate-700">
-                  11% Pension
+                  {employerPensionPct}% Pension
                   <span className="block text-[9px] font-normal text-indigo-600 dark:text-indigo-400 normal-case">Non-Deductible</span>
                 </th>
                 {/* Deductions */}
                 <th className="py-3 px-2.5 text-right">Tax</th>
-                <th className="py-3 px-2.5 text-right">7% Pension</th>
+                <th className="py-3 px-2.5 text-right">{employeePensionPct}% Pension</th>
                 <th className="py-3 px-2.5 text-right">Penalties</th>
                 <th className="py-3 px-2.5 text-right">Food Cost</th>
                 <th className="py-3 px-3 text-right bg-rose-50/70 dark:bg-rose-950/30 border-r border-slate-200 dark:border-slate-700">Total Ded.</th>

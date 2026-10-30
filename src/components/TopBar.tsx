@@ -51,7 +51,8 @@ const QUICK_SEARCH_MODULES = [
   { id: 'transfers', label: 'Transfers & Promotions', keywords: 'transfer promotion site rotation' },
   { id: 'clearance', label: 'Exit Clearance', keywords: 'clearance exit termination handover' },
   { id: 'experience', label: 'Experience Certificates', keywords: 'experience certificate testimonial' },
-  { id: 'org', label: 'Organization & Roles', keywords: 'organization hierarchy roles settings' }
+  { id: 'org', label: 'Organization & Roles', keywords: 'organization hierarchy roles settings' },
+  { id: 'master-setup', label: 'System Master Setup (Tax, Pension & Rules)', keywords: 'master setup super admin tax pension overtime salary grades penalty rules' }
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({

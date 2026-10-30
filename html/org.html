@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Management Hierarchy &amp; RBAC Governance — HAB Business PLC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-crest">HAB</div>
+        <div class="brand-meta">
+          <span class="brand-title">HAB Business PLC</span>
+          <span class="brand-subtitle">Enterprise ERP v2.4</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">Executive Command</div>
+          <a href="index.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Executive Overview</span><span class="nav-count">Live</span></a>
+          <a href="org.html" class="nav-link active"><span class="nav-link-left"><span class="nav-dot"></span>Org Hierarchy &amp; RBAC</span><span class="nav-count">6 Roles</span></a>
+          <a href="master-setup.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>System Master Setup</span><span class="nav-count">v2.4</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">HR &amp; Workforce</div>
+          <a href="management.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Employee Directory</span><span class="nav-count">1,248</span></a>
+          <a href="recruitment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Recruitment Pipeline</span><span class="nav-count">34</span></a>
+          <a href="onboarding.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>7-Point Onboarding</span><span class="nav-count">12</span></a>
+          <a href="transfers.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Transfers &amp; Promotions</span><span class="nav-count">9</span></a>
+          <a href="experience.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Experience Certificates</span><span class="nav-count">142</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Field Operations</div>
+          <a href="deployment.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Client Site Deployment</span><span class="nav-count">42 Sites</span></a>
+          <a href="attendance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>24/48 Shift Attendance</span><span class="nav-count">98.4%</span></a>
+          <a href="leave.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Leave &amp; Relief Roster</span><span class="nav-count">18</span></a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">Store, Finance &amp; Exit</div>
+          <a href="store.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Central Store &amp; 3D Twin</span><span class="nav-count">3 Bays</span></a>
+          <a href="payroll.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>30-Day Payroll &amp; Pension</span><span class="nav-count">ETB</span></a>
+          <a href="clearance.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>4-Gate Exit Clearance</span><span class="nav-count">5</span></a>
+          <a href="login.html" class="nav-link"><span class="nav-link-left"><span class="nav-dot"></span>Switch Role / Portal Login</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar">GM</div>
+          <div>
+            <div class="user-name">Ato Dawit Mekonnen</div>
+            <div class="user-role">General Manager · Super Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb">Executive Command</span>
+          <span class="topbar-sep">/</span>
+          <span class="topbar-current">Corporate Governance, Command Chain &amp; RBAC Matrix</span>
+        </div>
+        <div class="topbar-right">
+          <a href="login.html" class="btn btn-secondary btn-sm">Switch Active Role</a>
+          <a href="master-setup.html" class="btn btn-primary btn-sm">Open Master Setup</a>
+        </div>
+      </header>
+
+      <main class="page-container">
+        <div class="page-header">
+          <div class="page-title-group">
+            <span class="page-eyebrow">Command Structure · Separation of Duties Across Operations, Store, HR &amp; Finance</span>
+            <h1 class="page-title">Organizational Hierarchy &amp; Role-Based Access Control</h1>
+            <p class="page-subtitle">Defines executive reporting lines and module-level read/write permissions across HAB Business PLC's 6 core management roles.</p>
+          </div>
+        </div>
+
+        <!-- Leadership Command Cards -->
+        <section class="grid-3">
+          <div class="card">
+            <div class="card-header gilded">
+              <div>
+                <span class="page-eyebrow">Tier 1 · Executive Authority</span>
+                <h2 class="card-title">Ato Dawit Mekonnen</h2>
+                <p class="card-subtitle">General Manager (Super Admin)</p>
+              </div>
+              <span class="mono" style="font-size: 11px;">HAB-GM-0001</span>
+            </div>
+            <div class="card-body" style="font-size: 12.5px; color: var(--text-secondary);">
+              Exclusive write access to <strong>System Master Setup</strong> (tax brackets, pension rates, overtime multipliers, grade scales, and store penalty fees). Final sign-off on grade promotions and large procurement orders.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header gilded">
+              <div>
+                <span class="page-eyebrow">Tier 2 · Human Capital &amp; Vetting</span>
+                <h2 class="card-title">W/ro Selamawit Tadesse</h2>
+                <p class="card-subtitle">HR &amp; Admin Department Head</p>
+              </div>
+              <span class="mono" style="font-size: 11px;">HAB-HR-0012</span>
+            </div>
+            <div class="card-body" style="font-size: 12.5px; color: var(--text-secondary);">
+              Manages Recruitment Pipeline, 7-Point Kebele Guarantor &amp; Police Vetting, Leave requests, Gate 4 Exit Clearance, and Official Work Experience Certificates. Read-only view of Master Setup.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header gilded">
+              <div>
+                <span class="page-eyebrow">Tier 2 · Field Command</span>
+                <h2 class="card-title">Shambel Kebede Alemu</h2>
+                <p class="card-subtitle">Security &amp; Cleaning Ops Manager</p>
+              </div>
+              <span class="mono" style="font-size: 11px;">HAB-OPS-0004</span>
+            </div>
+            <div class="card-body" style="font-size: 12.5px; color: var(--text-secondary);">
+              Commands 42 client deployment sites, 24/48 security platoons, daily 06:00 EAT roll-call attendance, standby relief guard pairing, and Gate 1 site exit handovers.
+            </div>
+          </div>
+        </section>
+
+        <!-- RBAC Permission Matrix Table -->
+        <section class="card">
+          <div class="card-header gilded">
+            <div>
+              <h2 class="card-title">Module-Level RBAC Permission Matrix</h2>
+              <p class="card-subtitle">Strict separation of duties prevents unauthorized payroll or store penalty manipulation</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="erp-table">
+              <thead>
+                <tr>
+                  <th>ERP Module / Capability</th>
+                  <th>General Manager</th>
+                  <th>HR Head</th>
+                  <th>Operations Mgr</th>
+                  <th>Finance Head</th>
+                  <th>Storekeeper</th>
+                  <th>Property Mgr</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-primary">System Master Setup (Formulas &amp; Rates)</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Full Write + Sync</span></td>
+                  <td>Read-Only</td>
+                  <td>Read-Only</td>
+                  <td>Read-Only</td>
+                  <td>Read-Only</td>
+                  <td>Read-Only</td>
+                </tr>
+                <tr>
+                  <td class="cell-primary">Recruitment &amp; 7-Point Kebele Vetting</td>
+                  <td>Approve Batch</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Full Write</span></td>
+                  <td>Physical Test</td>
+                  <td>Bank Acct Link</td>
+                  <td>Issue Kit (Gate 6)</td>
+                  <td>Read-Only</td>
+                </tr>
+                <tr>
+                  <td class="cell-primary">Client Site Deployment &amp; 24/48 Attendance</td>
+                  <td>Full Oversight</td>
+                  <td>Leave Pairing</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Full Write</span></td>
+                  <td>Overtime Audit</td>
+                  <td>Site Gear Log</td>
+                  <td>Building Sites</td>
+                </tr>
+                <tr>
+                  <td class="cell-primary">Central Store &amp; Gate 2 Kit Clearance</td>
+                  <td>PO Approval</td>
+                  <td>Read-Only</td>
+                  <td>Requisition</td>
+                  <td>Penalty Audit</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Full Write</span></td>
+                  <td>MEP Spares</td>
+                </tr>
+                <tr>
+                  <td class="cell-primary">30-Day Statutory Payroll &amp; Pension Sheet</td>
+                  <td>Final Sign-Off</td>
+                  <td>Input Roster</td>
+                  <td>Attendance Feed</td>
+                  <td><span class="status-dot-label status-success"><span class="status-dot"></span>Full Write</span></td>
+                  <td>Penalty Feed</td>
+                  <td>Read-Only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

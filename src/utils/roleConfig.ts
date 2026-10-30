@@ -35,17 +35,17 @@ export interface RoleConfig {
 export function getRoleAllowedTabs(userId?: string): string[] | 'ALL' {
   switch (userId) {
     case 'mgmt-fin-head':
-      return ['overview', 'payroll', 'store', 'clearance', 'attendance'];
+      return ['overview', 'payroll', 'store', 'clearance', 'attendance', 'master-setup'];
     case 'mgmt-storekeeper':
-      return ['overview', 'store', 'clearance', 'onboarding', 'management'];
+      return ['overview', 'store', 'clearance', 'onboarding', 'management', 'master-setup'];
     case 'mgmt-supervisor-dan':
-      return ['overview', 'attendance', 'deployment', 'leave', 'store', 'clearance'];
+      return ['overview', 'attendance', 'deployment', 'leave', 'store', 'clearance', 'master-setup'];
     case 'mgmt-hr-talent':
-      return ['overview', 'recruitment', 'onboarding', 'management', 'experience'];
+      return ['overview', 'recruitment', 'onboarding', 'management', 'experience', 'master-setup'];
     case 'mgmt-hr-ops':
-      return ['overview', 'deployment', 'attendance', 'leave', 'transfers', 'store', 'management', 'payroll'];
+      return ['overview', 'deployment', 'attendance', 'leave', 'transfers', 'store', 'management', 'payroll', 'master-setup'];
     case 'mgmt-legal':
-      return ['overview', 'clearance', 'experience', 'management'];
+      return ['overview', 'clearance', 'experience', 'management', 'master-setup'];
     case 'mgmt-gm':
     case 'mgmt-ceo':
     case 'mgmt-ops-head':

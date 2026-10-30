@@ -14,12 +14,18 @@ import {
   Lock
 } from 'lucide-react';
 import { Employee, ServiceType, ClientSite, ManagementPerson } from '../types/hrm';
+import { SystemMasterConfig } from '../types/masterConfig';
+import {
+  DEFAULT_SYSTEM_MASTER_CONFIG,
+  getDivisionGradeDefaults
+} from '../utils/masterConfigEngine';
 import { exportEmployeesToCsv } from '../utils/csvExport';
 
 interface EmployeeManagementViewProps {
   employees: Employee[];
   sites: ClientSite[];
   activeUser?: ManagementPerson;
+  masterConfig?: SystemMasterConfig;
   onAddEmployee: (newEmp: Employee) => void;
   onInitiateClearanceFromEmployee: (employeeId: string) => void;
   onDeployFromEmployee: (employeeId: string) => void;
@@ -29,6 +35,7 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
   employees,
   sites,
   activeUser,
+  masterConfig = DEFAULT_SYSTEM_MASTER_CONFIG,
   onAddEmployee,
   onInitiateClearanceFromEmployee,
   onDeployFromEmployee
@@ -118,12 +125,15 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
         bankName: 'Commercial Bank of Ethiopia (CBE)',
         accountNumber: '1000' + Math.floor(100000000 + Math.random() * 900000000)
       },
-      salary: {
-        baseSalary,
-        siteAllowance: 1200,
-        shiftAllowance: 600,
-        hazardAllowance: serviceType === 'Security' ? 1200 : 800
-      },
+      salary: (() => {
+        const gradeDefaults = getDivisionGradeDefaults(serviceType, 'L1', masterConfig);
+        return {
+          baseSalary,
+          siteAllowance: gradeDefaults.defaultSiteAllowance,
+          shiftAllowance: gradeDefaults.defaultShiftAllowance,
+          hazardAllowance: gradeDefaults.defaultHazardAllowance
+        };
+      })(),
       currentShift:
         serviceType === 'Security'
           ? '24h Duty (24hr ON / 48hr REST)'

@@ -8,12 +8,15 @@ import {
   Lock
 } from 'lucide-react';
 import { LeaveRequest, Employee, LeaveType, ClientSite, ManagementPerson } from '../types/hrm';
+import { SystemMasterConfig } from '../types/masterConfig';
+import { DEFAULT_SYSTEM_MASTER_CONFIG } from '../utils/masterConfigEngine';
 
 interface LeaveManagementViewProps {
   leaveRequests: LeaveRequest[];
   employees: Employee[];
   sites: ClientSite[];
   activeUser?: ManagementPerson;
+  masterConfig?: SystemMasterConfig;
   onApproveLeave: (leaveId: string, replacementEmployeeId: string, replacementEmployeeName: string) => void;
   onRejectLeave: (leaveId: string) => void;
   onAddLeaveRequest: (newReq: LeaveRequest) => void;
@@ -23,6 +26,7 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
   leaveRequests,
   employees,
   activeUser,
+  masterConfig = DEFAULT_SYSTEM_MASTER_CONFIG,
   onApproveLeave,
   onRejectLeave,
   onAddLeaveRequest
@@ -39,7 +43,9 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
   const [leaveType, setLeaveType] = useState<LeaveType>('Annual Leave');
   const [startDate, setStartDate] = useState('2026-10-10');
   const [endDate, setEndDate] = useState('2026-10-15');
-  const [days, setDays] = useState(5);
+  const [days, setDays] = useState(
+    masterConfig.leaveQuotas.find(q => q.leaveType === 'Annual Leave')?.maxDaysPerYear || 5
+  );
   const [reason, setReason] = useState('');
 
   const filteredRequests = leaveRequests.filter(r => {

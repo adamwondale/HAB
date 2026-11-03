@@ -19,6 +19,7 @@ import { HabMonogramIcon } from './components/HabLogo';
 import { LoginView } from './components/LoginView';
 import { HabRoutineCopilot } from './components/HabRoutineCopilot';
 import { SystemMasterSetupView } from './components/SystemMasterSetupView';
+import { FigmaHtmlConverterModal } from './components/FigmaHtmlConverterModal';
 import { SystemMasterConfig } from './types/masterConfig';
 import {
   DEFAULT_SYSTEM_MASTER_CONFIG,
@@ -170,6 +171,7 @@ export default function App() {
 
   // HAB Routine Copilot States
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
+  const [isFigmaConverterOpen, setIsFigmaConverterOpen] = useState<boolean>(true);
   const [learnedHabits, setLearnedHabits] = useState<LearnedHabit[]>(INITIAL_LEARNED_HABITS);
   const [executedActionIds, setExecutedActionIds] = useState<string[]>([]);
   const [copilotToast, setCopilotToast] = useState<{
@@ -895,10 +897,26 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <LoginView
-        managementPersons={managementPersons}
-        onLogin={handleLogin}
-      />
+      <>
+        <LoginView
+          managementPersons={managementPersons}
+          onLogin={handleLogin}
+        />
+        <button
+          type="button"
+          onClick={() => setIsFigmaConverterOpen(true)}
+          className="fixed bottom-4 left-4 z-40 px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] border border-[#EBE834]/50 shadow-lg text-xs font-bold flex items-center gap-2 hover:bg-slate-800 cursor-pointer"
+        >
+          <span className="font-mono bg-[#EBE834] text-[#0E1525] px-1.5 py-0.5 rounded text-[11px] font-bold">
+            h2d
+          </span>
+          Figma html.to.design (15 HTML+CSS Files)
+        </button>
+        <FigmaHtmlConverterModal
+          isOpen={isFigmaConverterOpen}
+          onClose={() => setIsFigmaConverterOpen(false)}
+        />
+      </>
     );
   }
 
@@ -1187,6 +1205,23 @@ export default function App() {
       </footer>
 
       </div>
+
+      {/* Persistent Trigger & Modal for One-by-One Figma html.to.design Conversion */}
+      <button
+        type="button"
+        onClick={() => setIsFigmaConverterOpen(true)}
+        className="fixed bottom-4 left-4 z-40 px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] border border-[#EBE834]/50 shadow-lg text-xs font-bold flex items-center gap-2 hover:bg-slate-800 cursor-pointer no-print"
+      >
+        <span className="font-mono bg-[#EBE834] text-[#0E1525] px-1.5 py-0.5 rounded text-[11px] font-bold">
+          h2d
+        </span>
+        Figma html.to.design (15 HTML+CSS Files)
+      </button>
+
+      <FigmaHtmlConverterModal
+        isOpen={isFigmaConverterOpen}
+        onClose={() => setIsFigmaConverterOpen(false)}
+      />
     </div>
   );
 }

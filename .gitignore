@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Generated Figma HTML/CSS export folders
+/html/
+/public/html/

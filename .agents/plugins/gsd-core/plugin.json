@@ -1,0 +1,5 @@
+{
+  "name": "gsd-core",
+  "description": "Milestone-driven spec execution, context budgeting, and deterministic task state machines (DISCOVERY -> BLUEPRINT -> EXECUTE -> VERIFY -> SHIP).",
+  "version": "1.0.0"
+}

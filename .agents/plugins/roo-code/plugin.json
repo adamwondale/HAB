@@ -1,0 +1,5 @@
+{
+  "name": "roo-code",
+  "description": "Role-specialized autonomous prompting and mode boundaries: Architect (system-planner), Code (builder), Ask (inquiry), Debug (diagnostics), and Review (quality-reviewer).",
+  "version": "1.0.0"
+}

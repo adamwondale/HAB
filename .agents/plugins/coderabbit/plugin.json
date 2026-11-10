@@ -1,0 +1,5 @@
+{
+  "name": "coderabbit",
+  "description": "Automated AI code review, diff audit checklist, anti-slop enforcement, security analysis, and coffee domain quality gate.",
+  "version": "1.0.0"
+}

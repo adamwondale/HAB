@@ -1,0 +1,5 @@
+{
+  "name": "ralph-loop",
+  "description": "Autonomous self-evaluating and self-healing execution loop. Continuously cycles through Code -> Test -> Audit -> Fix -> Re-test until all verification criteria pass.",
+  "version": "1.0.0"
+}

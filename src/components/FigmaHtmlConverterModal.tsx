@@ -251,9 +251,9 @@ export const FigmaHtmlConverterModal: React.FC<FigmaHtmlConverterModalProps> = (
                         toggleConverted(currentPage.slug);
                       }
                     }}
-                    className="px-3 py-2 rounded-lg bg-[#0E1525] hover:bg-slate-800 text-[#FFF9DB] text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
+                    className="px-3 py-2 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5 text-[#EBE834]" />
+                    <Download className="w-3.5 h-3.5 text-[#4C4541]" />
                     Download {currentPage.slug}.html (Ready for html.to.design)
                   </button>
 
@@ -262,7 +262,7 @@ export const FigmaHtmlConverterModal: React.FC<FigmaHtmlConverterModalProps> = (
                     onClick={() =>
                       triggerDownload(`${currentPage.slug}.css`, currentPage.specificCss, 'text/css;charset=utf-8')
                     }
-                    className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-[#FFF9DB] text-[#0E1525] dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-[#FCF0DA] text-[#4C4541] dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Download {currentPage.slug}.css
@@ -271,7 +271,7 @@ export const FigmaHtmlConverterModal: React.FC<FigmaHtmlConverterModalProps> = (
                   <button
                     type="button"
                     onClick={handleDownloadPairAndAdvance}
-                    className="px-3 py-2 rounded-lg bg-[#EBE834] hover:bg-[#dfe022] text-[#0E1525] text-xs font-bold flex items-center gap-1.5 border border-[#0E1525]/15 cursor-pointer"
+                    className="px-3 py-2 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold flex items-center gap-1.5 border border-[#4C4541]/15 cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     Download Both (.html + .css)

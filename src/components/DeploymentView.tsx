@@ -281,7 +281,7 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
         >
           <Layers className="w-4 h-4" />
           <span>Drag & Drop Scheduler</span>
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-[#EBE834] text-[#0E1525]">
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-[#F2C46A] text-[#4C4541]">
             Quick Deploy
           </span>
         </button>
@@ -814,7 +814,7 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
             {/* Guidance & Instruction Banner */}
             <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4 text-xs text-amber-900 dark:text-amber-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
               <div className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-[#EBE834] text-[#0E1525] font-black shrink-0 mt-0.5">
+                <div className="p-2 rounded-lg bg-[#F2C46A] text-[#4C4541] font-black shrink-0 mt-0.5">
                   <GripVertical className="w-4 h-4" />
                 </div>
                 <div>
@@ -873,7 +873,7 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
                       onClick={() => setDndFilterMode(dndFilterMode === 'unassigned' ? 'all' : 'unassigned')}
                       className={`text-[10px] font-bold px-2 py-1 rounded transition-colors cursor-pointer ${
                         dndFilterMode === 'unassigned'
-                          ? 'bg-[#0E1525] text-[#FFF500]'
+                          ? 'bg-[#F2C46A] text-[#4C4541]'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
                     >
@@ -984,7 +984,7 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
                                   if (targetSite) handleAssignToSite(emp, targetSite);
                                 }
                               }}
-                              className="text-[10px] font-bold bg-[#EBE834] text-[#0E1525] hover:bg-[#E3E029] rounded px-1.5 py-0.5 border border-[#D4D11E] cursor-pointer"
+                              className="text-[10px] font-bold bg-[#F2C46A] text-[#4C4541] hover:bg-[#E5B558] rounded px-1.5 py-0.5 border border-[#E5B558] cursor-pointer"
                             >
                               <option value="">Quick Deploy ▾</option>
                               {sites.map(s => (
@@ -1044,7 +1044,7 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
                         onDrop={(e) => handleDropOnSite(site.id, e)}
                         className={`rounded-xl border p-4.5 transition-all duration-200 flex flex-col justify-between ${
                           isHovered
-                            ? 'border-2 border-dashed border-[#0E1525] dark:border-[#FFF500] bg-[#EBE834]/25 dark:bg-[#EBE834]/15 ring-4 ring-[#EBE834]/40 scale-[1.01] shadow-lg'
+                            ? 'border-2 border-dashed border-[#F2C46A] dark:border-[#F2C46A] bg-[#F2C46A]/20 dark:bg-[#F2C46A]/15 ring-4 ring-[#F2C46A]/30 scale-[1.01] shadow-lg'
                             : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300'
                         }`}
                       >
@@ -1097,7 +1097,7 @@ export const DeploymentView: React.FC<DeploymentViewProps> = ({
                           <div
                             className={`my-3 p-3 rounded-lg border-2 border-dashed text-center transition-all cursor-pointer ${
                               isHovered
-                                ? 'border-[#0E1525] dark:border-[#FFF500] bg-[#EBE834] text-[#0E1525] font-black'
+                                ? 'border-[#4C4541] dark:border-[#F2C46A] bg-[#F2C46A] text-[#4C4541] font-black'
                                 : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100'
                             }`}
                           >

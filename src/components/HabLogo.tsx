@@ -27,14 +27,14 @@ export const HabMonogramIcon: React.FC<{ className?: string; forceBlack?: boolea
       xmlns="http://www.w3.org/2000/svg"
       aria-label="HAB Business PLC Logo"
     >
-      {/* Yellow Inner Insets of H */}
+      {/* Gold Inner Insets of H */}
       <path 
         d="M 54 20 L 92 20 L 92 70 C 92 88, 54 88, 54 70 Z" 
-        fill="#FFDE00" 
+        fill="#F2C46A" 
       />
       <path 
         d="M 54 130 C 54 112, 92 112, 92 130 L 92 180 L 54 180 L 54 158 L 38 158 L 38 146 L 54 146 Z" 
-        fill="#FFDE00" 
+        fill="#F2C46A" 
       />
 
       {/* Main HB Monogram Shape */}
@@ -50,7 +50,7 @@ export const HabMonogramIcon: React.FC<{ className?: string; forceBlack?: boolea
           
           M 120 124 L 142 124 C 154 124, 160 130, 160 142 C 160 154, 154 160, 142 160 L 120 160 Z
         " 
-        className={forceBlack ? "fill-black" : "fill-slate-950 dark:fill-white transition-colors"}
+        className={forceBlack ? "fill-[#4C4541]" : "fill-[#4C4541] dark:fill-white transition-colors"}
       />
     </svg>
   );
@@ -100,7 +100,7 @@ export const HabLogo: React.FC<HabLogoProps> = ({
           <span className={`font-black text-slate-900 dark:text-slate-100 leading-tight tracking-tight ${currentSize.text}`}>
             HAB Business PLC
           </span>
-          <span className="text-[10px] font-bold px-1.5 py-0.5 bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 rounded border border-amber-200 dark:border-amber-800 shrink-0">
+          <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-[#F2C46A] rounded border border-[#EFE7D8] dark:border-[#3D3633] shrink-0">
             HRM
           </span>
         </div>

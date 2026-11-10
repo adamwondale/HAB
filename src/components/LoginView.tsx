@@ -54,18 +54,18 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white select-none">
-      {/* Left Split Panel - Soft Yellow-Green (#DFE16A) */}
-      <div className="w-full lg:w-[44%] min-h-[540px] lg:min-h-screen bg-[#DFE16A] flex flex-col justify-center items-center px-6 sm:px-12 md:px-16 py-12 text-[#0E1525]">
+      {/* Left Split Panel - Warm Linen (#FCF0DA) */}
+      <div className="w-full lg:w-[44%] min-h-[540px] lg:min-h-screen bg-[#FCF0DA] flex flex-col justify-center items-center px-6 sm:px-12 md:px-16 py-12 text-[#4C4541]">
         <div className="w-full max-w-[360px]">
-          <h1 className="text-2xl sm:text-[26px] font-bold text-[#0E1525] text-center mb-10 tracking-tight">
-            Welcome To Your Workspace
+          <h1 className="text-2xl sm:text-[26px] font-bold text-[#4C4541] text-center mb-10 tracking-tight">
+            Sign in to HAB records
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="workspace-email"
-                className="block text-sm font-medium text-[#0E1525] mb-2"
+                className="block text-sm font-semibold text-[#4C4541] mb-2"
               >
                 Email
               </label>
@@ -76,14 +76,14 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
                 required
-                className="w-full bg-white text-[#0E1525] placeholder-[#6B7280] rounded-md px-3.5 py-2.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0E1525]/30 shadow-xs"
+                className="w-full bg-white text-[#4C4541] placeholder-[#8C847E] rounded-md px-3.5 py-2.5 text-sm border border-[#EFE7D8] focus:outline-none focus:ring-2 focus:ring-[#F2C46A]/50 shadow-xs"
               />
             </div>
 
             <div>
               <label
                 htmlFor="workspace-password"
-                className="block text-sm font-medium text-[#0E1525] mb-2"
+                className="block text-sm font-semibold text-[#4C4541] mb-2"
               >
                 Password
               </label>
@@ -94,7 +94,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full bg-white text-[#0E1525] placeholder-[#6B7280] rounded-md px-3.5 py-2.5 text-sm border border-transparent focus:outline-none focus:ring-2 focus:ring-[#0E1525]/30 shadow-xs"
+                className="w-full bg-white text-[#4C4541] placeholder-[#8C847E] rounded-md px-3.5 py-2.5 text-sm border border-[#EFE7D8] focus:outline-none focus:ring-2 focus:ring-[#F2C46A]/50 shadow-xs"
               />
             </div>
 
@@ -107,7 +107,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full bg-[#0E1525] hover:bg-[#19233C] active:scale-[0.99] text-white font-semibold py-3 rounded-full text-sm transition-all shadow-md cursor-pointer"
+                className="w-full bg-[#F2C46A] hover:bg-[#E5B558] active:scale-[0.99] text-[#4C4541] font-bold py-3 rounded-full text-sm transition-all shadow-md cursor-pointer"
               >
                 Login
               </button>
@@ -116,7 +116,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
         </div>
       </div>
 
-      {/* Right Split Panel - White Canvas with Official HAB Business PLC Emblem */}
+        {/* Right Split Panel - HAB identity and a short product promise */}
       <div className="w-full lg:w-[56%] flex-1 bg-white flex flex-col items-center justify-center p-8 sm:p-16 relative overflow-hidden">
         <div className="w-[310px] h-[310px] sm:w-[440px] sm:h-[440px] rounded-full bg-gradient-to-b from-[#F5F6F7]/90 via-white to-[#F5F6F7]/60 border border-slate-100 shadow-[0_8px_60px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center p-6 sm:p-10">
           <HabMonogramIcon className="w-36 h-36 sm:w-52 sm:h-52" forceBlack />
@@ -127,6 +127,9 @@ export const LoginView: React.FC<LoginViewProps> = ({
             <div className="text-xl sm:text-[26px] font-black text-black tracking-wide leading-tight mt-0.5">
               HAB BUSINESS PLC
             </div>
+            <p className="mx-auto mt-4 max-w-xs text-sm font-medium leading-6 text-slate-600">
+              One place for employee, pay, and company property records.
+            </p>
           </div>
         </div>
       </div>

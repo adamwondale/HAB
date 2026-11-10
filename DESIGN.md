@@ -1,33 +1,35 @@
 ---
 name: HAB Business PLC — Integrated ERP System
-description: Enterprise Human Resource Management, Client Site Workforce Deployment, Payroll, and 3D Warehouse ERP for Security, Cleaning, and Property Management.
+description: Enterprise Human Resource Management, Client Site Workforce Deployment, Payroll, and 3D Warehouse ERP for Security and Cleaning Services.
 colors:
-  hab-navy-deep: "#0E1525"
-  hab-navy-hover: "#19233C"
-  hab-gold-accent: "#EBE834"
-  hab-gold-vivid: "#FFF500"
-  hab-cream-header: "#FFF9DB"
-  hab-cream-sidebar: "#FFFDE8"
-  hab-cream-hover: "#F5EAB8"
-  hab-gold-border: "#EFE1AA"
-  hab-gold-border-strong: "#C8CB54"
-  surface-canvas: "#F8FAFC"
+  hab-gold-main: "#F2C46A"
+  hab-gold-hover: "#E5B558"
+  hab-gold-muted: "#F9DE9E"
+  hab-espresso-deep: "#4C4541"
+  hab-espresso-hover: "#3D3734"
+  hab-sage-accent: "#AEAC78"
+  hab-sage-light: "#F0EFE6"
+  hab-linen-surface: "#FCF0DA"
+  hab-linen-hover: "#F5E6CA"
+  hab-linen-border: "#EFE7D8"
+  surface-canvas: "#FDFBF7"
   surface-card: "#FFFFFF"
-  surface-muted: "#F1F5F9"
-  border-hairline: "#E2E8F0"
-  border-subtle: "#F1F5F9"
-  text-secondary: "#475569"
-  text-muted: "#64748B"
+  surface-muted: "#F7F4EE"
+  border-hairline: "#EFE7D8"
+  border-subtle: "#F5EFE3"
+  text-primary: "#4C4541"
+  text-secondary: "#68615C"
+  text-muted: "#8C847E"
   status-emerald: "#047857"
   status-emerald-bg: "#ECFDF5"
   status-amber: "#B45309"
   status-amber-bg: "#FFFBEB"
   status-rose: "#BE123C"
   status-rose-bg: "#FFF1F2"
-  dark-canvas: "#080C14"
-  dark-card: "#0F172A"
-  dark-elevated: "#172033"
-  dark-border: "#1E293B"
+  dark-canvas: "#1A1715"
+  dark-card: "#24201E"
+  dark-elevated: "#2C2724"
+  dark-border: "#3D3633"
 typography:
   display:
     fontFamily: "Google Sans, Google Sans Display, Product Sans, system-ui, sans-serif"
@@ -72,51 +74,51 @@ spacing:
   2xl: "24px"
 components:
   button-primary:
-    backgroundColor: "{colors.hab-navy-deep}"
-    textColor: "{colors.hab-cream-header}"
+    backgroundColor: "{colors.hab-gold-main}"
+    textColor: "{colors.hab-espresso-deep}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "8px 14px"
   button-primary-hover:
-    backgroundColor: "{colors.hab-navy-hover}"
-    textColor: "{colors.hab-gold-vivid}"
+    backgroundColor: "{colors.hab-gold-hover}"
+    textColor: "{colors.hab-espresso-deep}"
   button-accent:
-    backgroundColor: "{colors.hab-gold-accent}"
-    textColor: "{colors.hab-navy-deep}"
+    backgroundColor: "{colors.hab-gold-main}"
+    textColor: "{colors.hab-espresso-deep}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "8px 14px"
   button-ghost:
     backgroundColor: "{colors.surface-card}"
-    textColor: "{colors.hab-navy-deep}"
+    textColor: "{colors.hab-espresso-deep}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "8px 12px"
   nav-item-default:
-    backgroundColor: "{colors.hab-cream-sidebar}"
-    textColor: "{colors.hab-navy-deep}"
+    backgroundColor: "{colors.hab-linen-surface}"
+    textColor: "{colors.hab-espresso-deep}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "8px 12px"
   nav-item-active:
-    backgroundColor: "{colors.hab-navy-deep}"
-    textColor: "{colors.hab-cream-header}"
+    backgroundColor: "{colors.hab-gold-main}"
+    textColor: "{colors.hab-espresso-deep}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "8px 12px"
   card-metric-gold:
-    backgroundColor: "{colors.hab-cream-header}"
-    textColor: "{colors.hab-navy-deep}"
+    backgroundColor: "{colors.hab-linen-surface}"
+    textColor: "{colors.hab-espresso-deep}"
     rounded: "{rounded.lg}"
     padding: "16px 20px"
   card-surface:
     backgroundColor: "{colors.surface-card}"
-    textColor: "{colors.hab-navy-deep}"
+    textColor: "{colors.hab-espresso-deep}"
     rounded: "{rounded.lg}"
     padding: "20px"
   input-search:
-    backgroundColor: "{colors.hab-cream-sidebar}"
-    textColor: "{colors.hab-navy-deep}"
+    backgroundColor: "{colors.hab-linen-surface}"
+    textColor: "{colors.hab-espresso-deep}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "6px 12px"
@@ -128,51 +130,51 @@ components:
 
 **Creative North Star: "The Sovereign Operations Ledger"**
 
-HAB Business PLC operates high-accountability field deployments across Security Services, Cleaning Services, and Property Management in Addis Ababa. Built in **Operate** mode, the interface prioritizes calm operational command, zero visual bloat, and immediate numeric legibility. Warm golden-cream chrome frames crisp white data canvases, anchored by deep navy authority ink, clean **Google Sans** typography, and precision **Google Sans Mono** financial figures.
+HAB Business PLC operates high-accountability field deployments across Security Services and Cleaning Services in Addis Ababa. Built in **Operate** mode, the interface prioritizes calm operational command, zero visual bloat, and immediate numeric legibility. Warm golden-cream chrome frames crisp white data canvases, anchored by deep navy authority ink, clean **Google Sans** typography, and precision **Google Sans Mono** financial figures.
 
 Every screen adheres to progressive disclosure: complex multi-department workflows (30-day Ethiopian payroll, 3-gate exit clearance, 24/48 security shift roll call, and statutory System Master Setup) are organized into scannable lenses rather than stacked into overwhelming walls of widgets. Decoration recedes so operational truth—headcounts, SLA coverage ratios, and ETB balances—leads at first glance.
 
 **Key Characteristics:**
-- **Warm Golden-Cream Chrome + Crisp Paper Canvas:** Navigation, top header bars, KPI strip cards, and table headers use warm sunlit cream tones, while primary workspaces rest on pure white cards over a cool slate canvas.
-- **Deep Navy Ink & Action Contrast:** Primary text, active navigation states, and primary action buttons use Abyssinian Deep Navy with warm cream or vivid yellow-gold foregrounds.
+- **Warm Linen Chrome + Crisp White Canvas:** Navigation, top header bars, KPI strip cards, and table headers use Warm Linen (`#FCF0DA`) tones, while primary workspaces rest on pure white cards over a warm off-white canvas (`#FDFBF7`).
+- **Golden Honey Action & Deep Espresso Ink Contrast:** Primary action buttons, active navigation states, and key highlights use Golden Honey (`#F2C46A`) paired strictly with Deep Espresso (`#4C4541`) text to guarantee WCAG AAA 6.8:1 contrast.
 - **Google Sans & Strict Tabular Numeric Discipline:** All UI headings, body copy, and controls render in `Google Sans` (`Google Sans Display` and `Google Sans Text`), while every currency amount (ETB), tax bracket, headcount, and SLA percentage renders in `Google Sans Mono` (`JetBrains Mono` fallback) with `tabular-nums` (`tnum`) enabled for vertical column alignment.
-- **Flat Hairline Architecture:** Surfaces are separated by 1px solid hairline borders (`#EFE1AA` on warm surfaces, `#E2E8F0` on neutral surfaces) rather than heavy drop shadows or nested sub-cards.
+- **Flat Hairline Architecture:** Surfaces are separated by 1px solid hairline borders (`#EFE7D8` on warm surfaces) rather than heavy drop shadows.
 - **Quiet Proactive Intelligence:** The HAB Routine Copilot surfaces as a single-line smart nudge bar below the header and a slide-over drawer with 1-click cross-departmental actions.
 
 ## Colors
 
-The palette pairs warm Ethiopian gold and parchment-cream structural chrome with high-contrast deep navy typography and semantic operational status indicators.
+The palette pairs warm Ethiopian Golden Honey and Warm Linen structural chrome with high-contrast Deep Espresso typography, Sage Green categorization accents, and semantic operational status indicators.
 
 ### Primary
-- **Abyssinian Deep Navy** (`#0E1525`): Primary ink for headings, body copy, table headers, active sidebar navigation fills, and primary CTA buttons.
-- **Navy Interactive Hover** (`#19233C`): Hover state for deep navy primary buttons and dark interactive triggers.
-- **HAB Sovereign Gold** (`#EBE834`): Brand monogram badge fill, active navigation icon accent inside dark pills, and high-emphasis primary action buttons.
-- **Vivid Signal Yellow** (`#FFF500`): High-contrast text and icon highlight on deep navy primary buttons and dark-mode metric values.
+- **Golden Honey (Main Accent)** (`#F2C46A`): Brand monogram badge fill, active navigation pills, primary CTA action buttons, focus rings, and key KPI highlights.
+- **Honey Hover** (`#E5B558`): Hover state for gold primary buttons.
+- **Deep Espresso** (`#4C4541`): Primary ink for headings, body copy, table headers, dark mode structural shell, and text on gold buttons.
+- **Espresso Hover** (`#3D3734`): Interactive dark hover state.
 
 ### Secondary
-- **Sunlit Cream Header** (`#FFF9DB`): Sticky top header bar, executive KPI metric cards, and global data table `<thead>` backgrounds in light mode.
-- **Parchment Sidebar Cream** (`#FFFDE8`): Collapsible sidebar background, header search input fill, and the HAB Routine Copilot smart nudge bar.
-- **Warm Honey Hover** (`#F5EAB8`): Subtle hover and open-accordion highlight across sidebar navigation items.
-- **Gilded Hairline Border** (`#EFE1AA`): 1px structural border separating golden-cream headers, sidebars, and KPI cards.
-- **Tempered Brass Border** (`#C8CB54`): Stronger border token for accented golden callouts and badges.
+- **Warm Linen Surface** (`#FCF0DA`): Sticky top header bar, collapsible sidebar background, modal headers, and global data table `<thead>` backgrounds in light mode.
+- **Linen Hover** (`#F5E6CA`): Subtle hover and open-accordion highlight across sidebar navigation items.
+- **Linen Hairline Border** (`#EFE7D8`): 1px structural border separating linen headers, sidebars, and cards.
+- **Sage Green Accent** (`#AEAC78`): Department badges (Security vs. Cleaning), site filter pills, secondary borders, and subtle categorization tags.
+- **Sage Light Wash** (`#F0EFE6`): Soft background tint for sage category chips.
 
-### Tertiary
+### Tertiary (Semantic Operational Status)
 - **SLA Emerald** (`#047857` on `#ECFDF5`, border `#A7F3D0`): Full deployment coverage (100% SLA), verified guarantors, disbursed payroll, and completed clearance gates.
 - **Operational Amber** (`#B45309` on `#FFFBEB`, border `#FDE68A`): Open shift posts, pending leave requests, and warehouse items approaching reorder thresholds.
 - **Deficit Rose** (`#BE123C` on `#FFF1F2`, border `#FECDD3`): Critical staffing deficits, absent roll-call statuses, and unreturned exit clearance gear deductions.
 
 ### Neutral
-- **Cool Ledger Canvas** (`#F8FAFC`): Root viewport background behind workspace containers.
+- **Warm Off-White Canvas** (`#FDFBF7`): Root viewport background behind workspace containers.
 - **Pure Sheet White** (`#FFFFFF`): Primary data tables, form containers, modal dialogs, and slide-over drawers.
-- **Slate Muted Well** (`#F1F5F9`): Segmented tab tracks, secondary button fills, and subtle table row grouping.
-- **Slate Hairline** (`#E2E8F0`): Standard 1px border on white cards, inputs, and table containers.
-- **Secondary Slate Ink** (`#475569` / `#64748B`): Supporting metadata, timestamps, bilingual subtitles, and field labels.
-- **Dark Mode Slate Surfaces** (`#080C14` canvas, `#0B0F19` muted well, `#0F172A` card surface, `#131B2E` even table rows & inputs, `#172033` elevated surface & table `<thead>`, `#1A253A` row hover, `#1E293B` hairline border): Full dark-theme token parity across all ERP modules.
+- **Warm Muted Well** (`#F7F4EE`): Segmented tab tracks, secondary button fills, and subtle table row grouping.
+- **Warm Hairline** (`#EFE7D8`): Standard 1px border on white cards, inputs, and table containers.
+- **Secondary Espresso Ink** (`#68615C` / `#8C847E`): Supporting metadata, timestamps, bilingual subtitles, and field labels.
+- **Dark Mode Espresso Surfaces** (`#1A1715` canvas, `#1F1B19` muted well, `#24201E` card surface, `#2C2724` elevated surface & sidebar, `#3D3633` hairline border): Full warm-dark-theme token parity across all ERP modules.
 
 ### Named Rules
-**The Golden Chrome, White Ledger Rule.** Warm golden-cream tones (`#FFF9DB`, `#FFFDE8`) belong exclusively to structural chrome (Sidebar, TopBar, Nudge Strip, KPI Summary Cards, and Table Headers). Primary workspaces and data rows remain on clean white (`#FFFFFF`) so dense records stay effortless to scan.
+**The Linen Chrome, White Ledger Rule.** Warm Linen tones (`#FCF0DA`) belong to structural chrome (Sidebar, TopBar, Nudge Strip, KPI Summary Cards, and Table Headers). Primary workspaces and data rows remain on clean white (`#FFFFFF`) with warm off-white canvas (`#FDFBF7`).
 
-**The Navy Authority Rule.** Primary actions and active navigation items invert to Abyssinian Deep Navy (`#0E1525`) with warm cream (`#FFF9DB`) or gold (`#EBE834`) foregrounds—never generic browser blue or saturated neon gradients.
+**The Golden Action Contrast Rule.** Primary actions and active navigation items use Golden Honey (`#F2C46A`) foregrounded exclusively with Deep Espresso (`#4C4541`) text—never white text on gold, ensuring WCAG AAA legibility.
 
 ## Typography
 

@@ -344,17 +344,17 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
       {currentNudge && !isNudgeBarDismissed && (
         <section
           aria-label="HAB Routine Copilot Smart Nudge Bar"
-          className="bg-[#FFFDE8] dark:bg-slate-900 border-b border-[#EFE1AA] dark:border-slate-800 px-4 sm:px-6 lg:px-8 py-2 transition-colors"
+          className="bg-[#FCF0DA] dark:bg-[#2C2724] border-b border-[#EFE7D8] dark:border-[#3D3633] px-4 sm:px-6 lg:px-8 py-2 transition-colors"
         >
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
             {/* Left: Concise Observation */}
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <span className="inline-flex items-center gap-1.5 font-semibold text-[#0E1525] dark:text-[#EBE834] shrink-0">
+              <span className="inline-flex items-center gap-1.5 font-bold text-[#4C4541] dark:text-[#F2C46A] shrink-0">
                 <Brain className="w-3.5 h-3.5" />
                 <span>Copilot</span>
               </span>
               <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">|</span>
-              <p className="text-[#0E1525] dark:text-slate-200 truncate">
+              <p className="text-[#4C4541] dark:text-slate-200 truncate font-medium">
                 {currentNudge.observation}
               </p>
             </div>
@@ -367,17 +367,17 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                   <button
                     type="button"
                     onClick={() => onExecuteCopilotAction(primaryAction)}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap ${
+                    className={`px-2.5 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap shadow-xs ${
                       isDone
                         ? 'bg-emerald-700 text-white'
-                        : 'bg-[#0E1525] hover:bg-[#19233C] text-[#FFF9DB]'
+                        : 'bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541]'
                     }`}
                     title={primaryAction.description}
                   >
                     {isDone ? (
                       <CheckCircle2 className="w-3 h-3 text-emerald-300 shrink-0" />
                     ) : (
-                      <Zap className="w-3 h-3 text-[#EBE834] shrink-0" />
+                      <Zap className="w-3 h-3 text-[#4C4541] shrink-0" />
                     )}
                     <span>{isDone ? 'Applied' : primaryAction.label}</span>
                   </button>
@@ -387,7 +387,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
               <button
                 type="button"
                 onClick={onOpen}
-                className="px-2.5 py-1 rounded-md bg-[#FFF9DB] hover:bg-[#F5EAB8] dark:bg-slate-800 border border-[#EFE1AA] dark:border-slate-700 text-[#0E1525] dark:text-slate-200 font-semibold cursor-pointer whitespace-nowrap"
+                className="px-2.5 py-1 rounded-md bg-white hover:bg-[#FCF0DA] dark:bg-[#1E1B19] border border-[#EFE7D8] dark:border-[#3D3633] text-[#4C4541] dark:text-slate-200 font-semibold cursor-pointer whitespace-nowrap"
               >
                 Details ({ currentNudge.crossModuleImpact.length } modules)
               </button>
@@ -441,12 +441,12 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
       {toastMessage && (
         <section
           aria-live="polite"
-          className="fixed bottom-6 right-6 z-50 max-w-sm bg-[#0E1525] text-white border border-[#EBE834]/50 rounded-lg p-3.5 shadow-xl flex items-start gap-3"
+          className="fixed bottom-6 right-6 z-50 max-w-sm bg-[#4C4541] text-white border border-[#F2C46A]/50 rounded-lg p-3.5 shadow-xl flex items-start gap-3"
         >
-          <CheckCircle2 className="w-4 h-4 text-[#EBE834] shrink-0 mt-0.5" />
+          <CheckCircle2 className="w-4 h-4 text-[#F2C46A] shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold text-[#EBE834]">{toastMessage.title}</div>
-            <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">{toastMessage.detail}</p>
+            <div className="text-xs font-semibold text-[#F2C46A]">{toastMessage.title}</div>
+            <p className="text-xs text-slate-200 mt-0.5 leading-relaxed">{toastMessage.detail}</p>
             {toastMessage.targetTabId && (
               <button
                 type="button"
@@ -454,7 +454,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                   onNavigateTab(toastMessage.targetTabId!);
                   onDismissToast();
                 }}
-                className="mt-1.5 text-[11px] font-semibold text-[#EBE834] hover:underline flex items-center gap-1 cursor-pointer"
+                className="mt-1.5 text-[11px] font-semibold text-[#F2C46A] hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <span>Open Module</span>
                 <ArrowRight className="w-3 h-3" />
@@ -482,19 +482,19 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
             className="fixed inset-0 bg-slate-950/35 backdrop-blur-xs transition-opacity"
           />
 
-          <aside className="relative z-10 w-full max-w-lg bg-white dark:bg-slate-900 border-l border-[#EFE1AA] dark:border-slate-800 h-full flex flex-col justify-between shadow-2xl">
+          <aside className="relative z-10 w-full max-w-lg bg-white dark:bg-slate-900 border-l border-[#EFE7D8] dark:border-[#3D3633] h-full flex flex-col justify-between shadow-2xl">
             {/* Drawer Header */}
-            <div className="bg-[#FFF9DB] dark:bg-slate-900 border-b border-[#EFE1AA] dark:border-slate-800 px-5 py-4">
+            <div className="bg-[#FCF0DA] dark:bg-[#2C2724] border-b border-[#EFE7D8] dark:border-[#3D3633] px-5 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="p-2 rounded-lg bg-[#0E1525] text-[#EBE834] shrink-0">
+                  <div className="p-2 rounded-lg bg-[#F2C46A] text-[#4C4541] shrink-0">
                     <Brain className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-sm font-bold text-[#0E1525] dark:text-slate-100 truncate">
+                    <h2 className="text-sm font-bold text-[#4C4541] dark:text-[#F7F4EE] truncate">
                       HAB Routine Copilot
                     </h2>
-                    <p className="text-[11px] text-[#0E1525]/70 dark:text-slate-400 truncate">
+                    <p className="text-[11px] text-[#4C4541]/70 dark:text-[#8C847E] truncate">
                       {activeUser.name} · {activeUser.title}
                     </p>
                   </div>
@@ -503,7 +503,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="p-1.5 rounded-lg text-[#0E1525]/70 hover:text-[#0E1525] hover:bg-black/5 dark:text-slate-400 dark:hover:text-white cursor-pointer"
+                  className="p-1.5 rounded-lg text-[#4C4541]/70 hover:text-[#4C4541] hover:bg-black/5 dark:text-slate-400 dark:hover:text-white cursor-pointer"
                   aria-label="Close Copilot drawer"
                 >
                   <X className="w-4 h-4" />
@@ -511,15 +511,15 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
               </div>
 
               {/* Segmented Tabs + Model Selector */}
-              <div className="mt-3 flex items-center justify-between gap-2 pt-3 border-t border-[#EFE1AA] dark:border-slate-800">
-                <div className="flex items-center gap-1 p-0.5 bg-[#FFFDE8] dark:bg-slate-800 border border-[#EFE1AA] dark:border-slate-700 rounded-lg">
+              <div className="mt-3 flex items-center justify-between gap-2 pt-3 border-t border-[#EFE7D8] dark:border-[#3D3633]">
+                <div className="flex items-center gap-1 p-0.5 bg-white dark:bg-[#1E1B19] border border-[#EFE7D8] dark:border-[#3D3633] rounded-lg">
                   <button
                     type="button"
                     onClick={() => setDrawerTab('chat')}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       drawerTab === 'chat'
-                        ? 'bg-[#0E1525] text-[#FFF9DB]'
-                        : 'text-[#0E1525]/75 dark:text-slate-300 hover:text-[#0E1525]'
+                        ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+                        : 'text-[#4C4541]/75 dark:text-slate-300 hover:text-[#4C4541]'
                     }`}
                   >
                     Chat
@@ -529,8 +529,8 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                     onClick={() => setDrawerTab('habits')}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       drawerTab === 'habits'
-                        ? 'bg-[#0E1525] text-[#FFF9DB]'
-                        : 'text-[#0E1525]/75 dark:text-slate-300 hover:text-[#0E1525]'
+                        ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+                        : 'text-[#4C4541]/75 dark:text-slate-300 hover:text-[#4C4541]'
                     }`}
                   >
                     Routines ({learnedHabits.length})
@@ -540,8 +540,8 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                     onClick={() => setDrawerTab('simulator')}
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       drawerTab === 'simulator'
-                        ? 'bg-[#0E1525] text-[#FFF9DB]'
-                        : 'text-[#0E1525]/75 dark:text-slate-300 hover:text-[#0E1525]'
+                        ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+                        : 'text-[#4C4541]/75 dark:text-slate-300 hover:text-[#4C4541]'
                     }`}
                   >
                     Ripple Lab
@@ -552,7 +552,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value as CopilotModelId)}
                   aria-label="Select Gemini Intelligence Mode"
-                  className="bg-[#FFFDE8] dark:bg-slate-800 border border-[#EFE1AA] dark:border-slate-700 rounded-lg px-2 py-1 text-[11px] font-medium text-[#0E1525] dark:text-slate-200 focus:outline-none cursor-pointer"
+                  className="bg-white dark:bg-[#1E1B19] border border-[#EFE7D8] dark:border-[#3D3633] rounded-lg px-2 py-1 text-[11px] font-medium text-[#4C4541] dark:text-slate-200 focus:outline-none cursor-pointer"
                 >
                   <option value="gemini-3.1-flash-lite">Flash Lite</option>
                   <option value="gemini-3.8-flash">3.8 Flash</option>
@@ -571,9 +571,9 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                     if (msg.role === 'user') {
                       return (
                         <div key={msg.id} className="flex justify-end">
-                          <div className="max-w-[85%] rounded-xl bg-[#0E1525] text-[#FFF9DB] px-3.5 py-2.5">
+                          <div className="max-w-[85%] rounded-xl bg-[#4C4541] text-[#FCF0DA] px-3.5 py-2.5">
                             <p className="text-xs leading-relaxed">{msg.text}</p>
-                            <div className="text-[10px] text-slate-400 mt-1 text-right font-mono tabular-nums">
+                            <div className="text-[10px] text-slate-300 mt-1 text-right font-mono tabular-nums">
                               {msg.timestamp}
                             </div>
                           </div>
@@ -597,7 +597,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
 
                         {/* Observation */}
                         {msg.observation && (
-                          <p className="text-xs sm:text-[13px] font-semibold text-[#0E1525] dark:text-slate-100 leading-snug">
+                          <p className="text-xs sm:text-[13px] font-semibold text-[#4C4541] dark:text-slate-100 leading-snug">
                             {msg.observation}
                           </p>
                         )}
@@ -615,7 +615,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                                 key={idx}
                                 className="py-1.5 text-xs flex items-baseline gap-2"
                               >
-                                <span className="font-semibold text-[#0E1525] dark:text-[#EBE834] w-28 shrink-0 truncate">
+                                <span className="font-semibold text-[#4C4541] dark:text-[#F2C46A] w-28 shrink-0 truncate">
                                   {item.module}
                                 </span>
                                 <span className="text-slate-600 dark:text-slate-300 flex-1">
@@ -639,7 +639,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                                     isExecuted
                                       ? 'bg-emerald-700 text-white'
-                                      : 'bg-[#EBE834] hover:bg-[#E3E029] text-[#0E1525] border border-[#D4D11E]'
+                                      : 'bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] border border-[#E5B558]'
                                   }`}
                                   title={act.description}
                                 >
@@ -685,7 +685,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                         type="button"
                         onClick={() => handleSendMessage(prompt)}
                         disabled={isLoading}
-                        className="px-2.5 py-1 rounded-md bg-[#FFFDE8] hover:bg-[#FFF9DB] dark:bg-slate-800 border border-[#EFE1AA] dark:border-slate-700 text-[11px] font-medium text-[#0E1525] dark:text-slate-200 whitespace-nowrap shrink-0 transition-colors cursor-pointer"
+                        className="px-2.5 py-1 rounded-md bg-white hover:bg-[#FCF0DA] dark:bg-slate-800 border border-[#EFE7D8] dark:border-slate-700 text-[11px] font-medium text-[#4C4541] dark:text-slate-200 whitespace-nowrap shrink-0 transition-colors cursor-pointer"
                       >
                         {prompt}
                       </button>
@@ -704,12 +704,12 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                       value={inputPrompt}
                       onChange={(e) => setInputPrompt(e.target.value)}
                       placeholder="Ask Copilot about routines, staffing, inventory, or payroll..."
-                      className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-[#0E1525] dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#0E1525]"
+                      className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-[#4C4541] dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#F2C46A]"
                     />
                     <button
                       type="submit"
                       disabled={isLoading || !inputPrompt.trim()}
-                      className="px-3.5 py-2 rounded-lg bg-[#0E1525] hover:bg-[#19233C] disabled:opacity-50 text-[#EBE834] font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                      className="px-3.5 py-2 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] disabled:opacity-50 text-[#4C4541] font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                     >
                       <Send className="w-3.5 h-3.5" />
                       <span>Send</span>
@@ -763,7 +763,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                             key={act.id}
                             type="button"
                             onClick={() => onExecuteCopilotAction(act)}
-                            className="px-2.5 py-1 rounded-md bg-[#0E1525] hover:bg-[#19233C] text-[#FFF9DB] text-[11px] font-semibold cursor-pointer"
+                            className="px-2.5 py-1 rounded-md bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-[11px] font-bold cursor-pointer shadow-xs"
                           >
                             {act.label}
                           </button>
@@ -806,7 +806,7 @@ export const HabRoutineCopilot: React.FC<HabRoutineCopilotProps> = ({
                       <button
                         type="button"
                         onClick={() => handleSimulateScenarioInChat(scen)}
-                        className="px-3 py-1 rounded-md bg-[#EBE834] hover:bg-[#E3E029] text-[#0E1525] border border-[#D4D11E] text-xs font-semibold cursor-pointer"
+                        className="px-3 py-1 rounded-md bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] border border-[#E5B558] text-xs font-bold cursor-pointer shadow-xs"
                       >
                         Simulate Ripple
                       </button>

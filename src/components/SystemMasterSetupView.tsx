@@ -289,14 +289,14 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
       </div>
 
       {/* Segmented Domain Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#FFF9DB] dark:bg-slate-900 border border-[#EFE1AA] dark:border-slate-800 rounded-xl">
+      <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#FCF0DA] dark:bg-[#2C2724] border border-[#EFE7D8] dark:border-[#3D3633] rounded-xl">
         <button
           type="button"
           onClick={() => setActiveSubTab('payroll_tax')}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
             activeSubTab === 'payroll_tax'
-              ? 'bg-[#0E1525] text-[#FFF9DB] shadow-xs'
-              : 'text-[#0E1525]/80 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-slate-800'
+              ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+              : 'text-[#4C4541]/80 dark:text-slate-300 hover:bg-[#F2C46A]/20 dark:hover:bg-slate-800'
           }`}
         >
           <CreditCard className="w-3.5 h-3.5" />
@@ -308,8 +308,8 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
           onClick={() => setActiveSubTab('shifts_leave')}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
             activeSubTab === 'shifts_leave'
-              ? 'bg-[#0E1525] text-[#FFF9DB] shadow-xs'
-              : 'text-[#0E1525]/80 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-slate-800'
+              ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+              : 'text-[#4C4541]/80 dark:text-slate-300 hover:bg-[#F2C46A]/20 dark:hover:bg-slate-800'
           }`}
         >
           <Clock className="w-3.5 h-3.5" />
@@ -321,8 +321,8 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
           onClick={() => setActiveSubTab('grades_penalties')}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
             activeSubTab === 'grades_penalties'
-              ? 'bg-[#0E1525] text-[#FFF9DB] shadow-xs'
-              : 'text-[#0E1525]/80 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-slate-800'
+              ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+              : 'text-[#4C4541]/80 dark:text-slate-300 hover:bg-[#F2C46A]/20 dark:hover:bg-slate-800'
           }`}
         >
           <ShieldCheck className="w-3.5 h-3.5" />
@@ -334,8 +334,8 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
           onClick={() => setActiveSubTab('inventory_rules')}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
             activeSubTab === 'inventory_rules'
-              ? 'bg-[#0E1525] text-[#FFF9DB] shadow-xs'
-              : 'text-[#0E1525]/80 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-slate-800'
+              ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+              : 'text-[#4C4541]/80 dark:text-slate-300 hover:bg-[#F2C46A]/20 dark:hover:bg-slate-800'
           }`}
         >
           <Package className="w-3.5 h-3.5" />
@@ -581,9 +581,9 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
                           taxBrackets: [...prev.taxBrackets, newBracket]
                         }));
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0E1525] text-[#FFF9DB] text-xs font-semibold hover:bg-[#19233C] transition-colors cursor-pointer self-start sm:self-auto"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F2C46A] text-[#4C4541] text-xs font-bold hover:bg-[#E5B558] transition-colors cursor-pointer self-start sm:self-auto shadow-xs"
                     >
-                      <Plus className="w-3.5 h-3.5 text-[#EBE834]" />
+                      <Plus className="w-3.5 h-3.5 text-[#4C4541]" />
                       <span>Add Tax Bracket</span>
                     </button>
                   )}
@@ -591,7 +591,7 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
 
                 <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
                   <table className="w-full text-left text-xs min-w-[640px]">
-                    <thead className="bg-[#FFF9DB] dark:bg-slate-800 text-[#0E1525] dark:text-slate-100 border-b border-amber-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                    <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
                       <tr>
                         <th className="py-3 px-3">Bracket Label</th>
                         <th className="py-3 px-3 text-right">Min Income (ETB)</th>
@@ -942,7 +942,7 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
 
                 <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
                   <table className="w-full text-left text-xs min-w-[540px]">
-                    <thead className="bg-[#FFF9DB] dark:bg-slate-800 text-[#0E1525] dark:text-slate-100 border-b border-amber-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                    <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
                       <tr>
                         <th className="py-3 px-4">Leave Type</th>
                         <th className="py-3 px-4 text-right">Max Allowed Days / Year</th>
@@ -1036,7 +1036,7 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
 
                 <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
                   <table className="w-full text-left text-xs min-w-[640px]">
-                    <thead className="bg-[#FFF9DB] dark:bg-slate-800 text-[#0E1525] dark:text-slate-100 border-b border-amber-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                    <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
                       <tr>
                         <th className="py-3 px-3">Division</th>
                         <th className="py-3 px-3">Grade</th>
@@ -1151,7 +1151,7 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
 
                 <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
                   <table className="w-full text-left text-xs min-w-[580px]">
-                    <thead className="bg-[#FFF9DB] dark:bg-slate-800 text-[#0E1525] dark:text-slate-100 border-b border-amber-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                    <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
                       <tr>
                         <th className="py-3 px-4">Gear Category</th>
                         <th className="py-3 px-4">Item Match / Rule Scope</th>
@@ -1229,7 +1229,7 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
 
               <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
                 <table className="w-full text-left text-xs min-w-[560px]">
-                  <thead className="bg-[#FFF9DB] dark:bg-slate-800 text-[#0E1525] dark:text-slate-100 border-b border-amber-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                  <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] dark:border-slate-700 font-bold uppercase tracking-wider text-[11px]">
                     <tr>
                       <th className="py-3 px-4">Store Inventory Category</th>
                       <th className="py-3 px-4 text-right">Min Reorder Threshold (Units)</th>

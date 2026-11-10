@@ -78,11 +78,20 @@ export interface Employee {
   };
 }
 
+export type DistrictName = 
+  | 'District 1 (South)' 
+  | 'District 2 (Central)' 
+  | 'District 3 (North)' 
+  | 'District 4 (East)';
+
+export type SiteStatus = 'Active' | 'Inactive';
+
 export interface ClientSite {
   id: string;
   siteCode: string;
   name: string;
   clientOrganization: string;
+  district?: DistrictName;
   subcity: string;
   address: string;
   servicesProvided: ServiceType[];
@@ -94,7 +103,7 @@ export interface ClientSite {
   cleaningStaffRequired: number;
   securityStaffDeployed: number;
   cleaningStaffDeployed: number;
-  status: 'Active' | 'Renewal Pending' | 'Terminated';
+  status: 'Active' | 'Inactive' | 'Renewal Pending' | 'Terminated';
   posts: string[]; // e.g., "Main Gate Entry", "Cash Desk Corridor", "Executive Wing", "Basement Parking"
 }
 

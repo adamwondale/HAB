@@ -229,16 +229,6 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-auto">
-          {onOpenMasterSetup && (
-            <button
-              type="button"
-              onClick={onOpenMasterSetup}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF9DB] hover:bg-[#FFF5B8] text-[#0E1525] border border-[#EFE1AA] text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-            >
-              <Sliders className="w-3.5 h-3.5" />
-              <span>Master Rules ({stdWorkingDays}d · {employerPensionPct}%/{employeePensionPct}%)</span>
-            </button>
-          )}
           {canApprovePayroll && onAddPayrollRecord && (
             <button
               type="button"
@@ -304,7 +294,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs">
           <div className="text-xs text-slate-500 dark:text-slate-400">Total Gross Pay (Additions)</div>
-          <div className="text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums mt-0.5">
+          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tabular-nums mt-0.5">
             ETB {totalGross.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400">Basic + Transport + Mobile + House + OT</span>
@@ -317,7 +307,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
               Non-Deductible
             </span>
           </div>
-          <div className="text-lg font-bold text-indigo-700 dark:text-indigo-400 tabular-nums mt-0.5">
+          <div className="text-xl sm:text-2xl font-black text-indigo-700 dark:text-indigo-400 tabular-nums mt-0.5">
             ETB {totalEmployerPension11.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400">Employer contribution (not deducted from Net)</span>
@@ -325,15 +315,15 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs">
           <div className="text-xs text-rose-600 dark:text-rose-400 font-medium">Total Deductions</div>
-          <div className="text-lg font-bold text-rose-600 dark:text-rose-400 tabular-nums mt-0.5">
+          <div className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tabular-nums mt-0.5">
             -ETB {totalEmployeeDeductions.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400">Tax + {employeePensionPct}% Pension + Penalties + Food Cost</span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs ring-1 ring-emerald-500/20">
           <div className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">Total Net Payable</div>
-          <div className="text-lg font-bold text-emerald-700 dark:text-emerald-400 tabular-nums mt-0.5">
+          <div className="text-xl sm:text-2xl font-black text-emerald-700 dark:text-emerald-400 tabular-nums mt-0.5">
             ETB {totalNet.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400">Final take-home bank disbursement</span>
@@ -380,12 +370,12 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           <table className="w-full text-left text-xs min-w-[1380px]">
             <thead>
               {/* Group Header Row */}
-              <tr className="bg-[#FFF9DB] dark:bg-slate-900 text-[#0E1525] dark:text-slate-100 text-[11px] uppercase tracking-wider font-extrabold border-b border-amber-300 dark:border-slate-700">
-                <th colSpan={3} className="py-2.5 px-3 bg-[#FFF5B8] dark:bg-slate-900 text-[#0E1525] dark:text-slate-100 border-r border-amber-300 dark:border-slate-700">Employee & Working Days ({stdWorkingDays} Days Full)</th>
+              <tr className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 text-[11px] uppercase tracking-wider font-extrabold border-b border-[#EFE7D8] dark:border-[#3D3633]">
+                <th colSpan={3} className="py-2.5 px-3 bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-r border-[#EFE7D8] dark:border-[#3D3633]">Employee & Working Days ({stdWorkingDays} Days Full)</th>
                 <th colSpan={6} className="py-2.5 px-3 text-center bg-emerald-100 dark:bg-emerald-950/80 text-emerald-950 dark:text-emerald-200 border-r border-amber-300 dark:border-slate-700">Additions (Earnings in ETB)</th>
                 <th colSpan={1} className="py-2.5 px-3 text-center bg-indigo-100 dark:bg-indigo-950/90 text-indigo-950 dark:text-indigo-200 border-r border-amber-300 dark:border-slate-700">Non-Deductible ({employerPensionPct}%)</th>
                 <th colSpan={5} className="py-2.5 px-3 text-center bg-rose-100 dark:bg-rose-950/80 text-rose-950 dark:text-rose-200 border-r border-amber-300 dark:border-slate-700">Deductions (ETB)</th>
-                <th colSpan={2} className="py-2.5 px-3 text-right bg-[#FFF5B8] dark:bg-slate-900 text-[#0E1525] dark:text-slate-100">Net & Actions</th>
+                <th colSpan={2} className="py-2.5 px-3 text-right bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100">Net & Actions</th>
               </tr>
               {/* Column Sub-Headers */}
               <tr className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b-2 border-slate-200 dark:border-slate-700 font-bold uppercase tracking-wider text-[10px]">
@@ -487,7 +477,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
                     </td>
 
                     {/* Net Pay & Actions */}
-                    <td className="py-3 px-3 text-right font-mono tabular-nums font-black text-emerald-700 dark:text-emerald-400 text-xs">
+                    <td className="py-3 px-3 text-right font-mono tabular-nums font-black text-emerald-700 dark:text-emerald-400 text-sm tracking-tight">
                       ETB {r.netPay.toLocaleString()}
                     </td>
                     <td className="py-3 px-3 text-right">

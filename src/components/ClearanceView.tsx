@@ -249,18 +249,15 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
   return (
     <div className="space-y-6">
       
-      {/* Light Header Banner */}
+      {/* Header Banner */}
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="text-xs font-semibold text-amber-700 uppercase tracking-wide">
-            HR-Owned Clearance Procedure
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            Clearance Procedure
           </div>
           <h1 className="text-xl font-bold text-slate-900 mt-0.5">
             Employee Exit & Company Item Verification
           </h1>
-          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
-            Before an employee exits, HR verifies return of all issued items (Security uniforms, batons, radios vs Cleaning overalls, gloves, keys) and coordinates department sign-offs.
-          </p>
         </div>
 
         {canInitiateClearance ? (
@@ -451,19 +448,11 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
 
               {/* Item Return Checklist */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-                      <Package className="w-3.5 h-3.5 text-amber-700" />
-                      <span>Company-Issued Items & Gear Return Verification</span>
-                    </h3>
-                    <p className="text-xs text-slate-500">
-                      {selectedClearance.serviceType === 'Security'
-                        ? 'Inspect tactical uniform, boots, beret, baton, two-way radio, and ID credentials.'
-                        : 'Inspect sanitization overalls, heavy cleaning gloves, safety boots, and chemical dispensary keys.'}
-                    </p>
-                  </div>
-                  <span className="text-[11px] text-slate-500">Check box to confirm receipt</span>
+                <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                    <Package className="w-3.5 h-3.5 text-slate-600" />
+                    <span>Company-Issued Items & Gear Return</span>
+                  </h3>
                 </div>
 
                 <div className="border border-slate-200 rounded-xl overflow-x-auto bg-white shadow-xs">

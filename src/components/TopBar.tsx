@@ -9,8 +9,7 @@ import {
   Bell,
   Power,
   ArrowRight,
-  ChevronDown,
-  Brain
+  ChevronDown
 } from 'lucide-react';
 import { ServiceType, ManagementPerson } from '../types/hrm';
 import { HabMonogramIcon } from './HabLogo';
@@ -35,24 +34,23 @@ interface TopBarProps {
   onLogout?: () => void;
   pendingLeaveCount?: number;
   activeClearanceCount?: number;
-  onOpenCopilot?: () => void;
 }
 
 const QUICK_SEARCH_MODULES = [
-  { id: 'overview', label: 'Overview Dashboard', keywords: 'dashboard overview metrics kpi' },
-  { id: 'management', label: 'Employee Directory', keywords: 'employees staff guards cleaners directory' },
-  { id: 'recruitment', label: 'Recruitment Pipeline', keywords: 'recruitment candidates hiring applicants' },
-  { id: 'onboarding', label: 'Onboarding Checklists', keywords: 'onboarding checklist guarantor uniform' },
-  { id: 'deployment', label: 'Client Site Deployments', keywords: 'deployment sites cbe airlines hyatt hospital' },
-  { id: 'attendance', label: 'Daily Shift Attendance', keywords: 'attendance roll call shift clock in overtime' },
-  { id: 'leave', label: 'Leave Requests & Relief', keywords: 'leave vacation sick relief officer' },
-  { id: 'payroll', label: '30-Day Payroll Sheet', keywords: 'payroll salary pension tax allowance' },
-  { id: 'store', label: 'Store & Stock Control', keywords: 'store stock warehouse 3d uniform boots' },
-  { id: 'transfers', label: 'Transfers & Promotions', keywords: 'transfer promotion site rotation' },
-  { id: 'clearance', label: 'Exit Clearance', keywords: 'clearance exit termination handover' },
-  { id: 'experience', label: 'Experience Certificates', keywords: 'experience certificate testimonial' },
-  { id: 'org', label: 'Organization & Roles', keywords: 'organization hierarchy roles settings' },
-  { id: 'master-setup', label: 'System Master Setup (Tax, Pension & Rules)', keywords: 'master setup super admin tax pension overtime salary grades penalty rules' }
+  { id: 'overview', label: 'Company summary', keywords: 'dashboard overview summary report' },
+  { id: 'management', label: 'Employees', keywords: 'employees staff guards cleaners directory' },
+  { id: 'recruitment', label: 'Job applicants', keywords: 'recruitment candidates hiring applicants' },
+  { id: 'onboarding', label: 'New employees', keywords: 'onboarding checklist guarantor uniform' },
+  { id: 'deployment', label: 'Work sites', keywords: 'deployment sites cbe airlines hyatt hospital' },
+  { id: 'attendance', label: 'Attendance', keywords: 'attendance roll call shift clock in overtime' },
+  { id: 'leave', label: 'Leave requests', keywords: 'leave vacation sick relief officer' },
+  { id: 'payroll', label: 'Payroll', keywords: 'payroll salary pension tax allowance' },
+  { id: 'store', label: 'Company property', keywords: 'store stock warehouse uniform boots property' },
+  { id: 'transfers', label: 'Transfers', keywords: 'transfer promotion site rotation' },
+  { id: 'clearance', label: 'Employee exit', keywords: 'clearance exit termination handover' },
+  { id: 'experience', label: 'Work letters', keywords: 'experience certificate testimonial' },
+  { id: 'org', label: 'Teams and roles', keywords: 'organization hierarchy roles settings' },
+  { id: 'master-setup', label: 'Settings', keywords: 'settings tax pension overtime salary grades penalty rules' }
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -67,8 +65,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onNavigateTab,
   onLogout,
   pendingLeaveCount = 0,
-  activeClearanceCount = 0,
-  onOpenCopilot
+  activeClearanceCount = 0
 }) => {
   const { t, i18n } = useTranslation();
   const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
@@ -93,7 +90,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   const totalNotifications = pendingLeaveCount + activeClearanceCount;
 
   return (
-    <header className="bg-[#FFF9DB] dark:bg-slate-900 border-b border-[#EFE1AA] dark:border-slate-800 sticky top-0 z-30 transition-colors">
+    <header className="bg-[#FCF0DA] dark:bg-[#2C2724] border-b border-[#EFE7D8] dark:border-[#3D3633] sticky top-0 z-30 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
         
         {/* Left: Sidebar Toggle (Mobile & Full-Screen Desktop) + Search Input */}
@@ -101,27 +98,27 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onOpenMobileSidebar}
-            className="lg:hidden p-1.5 rounded-lg text-[#0E1525] hover:bg-black/5 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="lg:hidden p-1.5 rounded-lg text-[#4C4541] hover:bg-black/5 dark:text-slate-200 dark:hover:bg-[#3D3633]"
             aria-label="Open sidebar"
           >
             <Menu className="w-5 h-5" />
           </button>
 
-          <div className="lg:hidden w-7 h-7 rounded-md bg-[#EBE834] p-1 flex items-center justify-center border border-[#0E1525]/15 shrink-0">
+          <div className="lg:hidden w-7 h-7 rounded-md bg-[#F2C46A] p-1 flex items-center justify-center border border-[#4C4541]/15 shrink-0">
             <HabMonogramIcon className="w-full h-full" forceBlack />
           </div>
 
           <div className="relative flex-1">
-            <div className="flex items-center bg-[#FFFDE8] dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-[#EFE1AA] dark:border-slate-700">
-              <Search className="w-3.5 h-3.5 text-[#0E1525]/60 dark:text-slate-400 shrink-0 mr-2" />
+            <div className="flex items-center bg-white dark:bg-[#1E1B19] rounded-lg px-3 py-1.5 border border-[#EFE7D8] dark:border-[#3D3633]">
+              <Search className="w-3.5 h-3.5 text-[#4C4541]/60 dark:text-slate-400 shrink-0 mr-2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 180)}
-                placeholder={i18n.language === 'am' ? 'ፈልግ...' : 'Jump to module...'}
-                className="w-full bg-transparent text-xs font-medium text-[#0E1525] dark:text-slate-100 placeholder-[#0E1525]/50 dark:placeholder-slate-400 focus:outline-none"
+                placeholder={i18n.language === 'am' ? 'ፈልግ...' : 'Find a page...'}
+                className="w-full bg-transparent text-xs font-medium text-[#4C4541] dark:text-[#F7F4EE] placeholder-[#4C4541]/50 dark:placeholder-slate-400 focus:outline-none"
               />
             </div>
 
@@ -136,7 +133,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                       setSearchQuery('');
                       setIsSearchFocused(false);
                     }}
-                    className="w-full px-3 py-2 text-left text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-[#FFF9DB] dark:hover:bg-slate-800 flex items-center justify-between"
+                    className="w-full px-3 py-2 text-left text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-[#FCF0DA] dark:hover:bg-slate-800 flex items-center justify-between"
                   >
                     <span>{mod.label}</span>
                     <ArrowRight className="w-3 h-3 text-slate-400" />
@@ -147,24 +144,12 @@ export const TopBar: React.FC<TopBarProps> = ({
           </div>
         </div>
 
-        {/* Right: Copilot Trigger, Language, Theme, Notifications & Active Role */}
+        {/* Right: Language, Theme, Notifications & Active Role */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {onOpenCopilot && (
-            <button
-              type="button"
-              onClick={onOpenCopilot}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#0E1525] hover:bg-[#19233C] text-[#FFF9DB] text-xs font-semibold transition-colors cursor-pointer"
-              title="Open HAB Routine Copilot"
-            >
-              <Brain className="w-3.5 h-3.5 text-[#EBE834]" />
-              <span className="hidden sm:inline">Routine Copilot</span>
-            </button>
-          )}
-
           <button
             type="button"
             onClick={toggleLanguage}
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-slate-800 text-xs font-semibold text-[#0E1525] dark:text-slate-200 transition-colors cursor-pointer"
+            className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-[#3D3633] text-xs font-semibold text-[#4C4541] dark:text-slate-200 transition-colors cursor-pointer"
             title={i18n.language === 'am' ? "Switch to English" : "ወደ አማርኛ ቀይር"}
           >
             <Languages className="w-3.5 h-3.5" />
@@ -176,7 +161,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               type="button"
               onClick={onToggleDarkMode}
               title={darkMode ? "Switch to Day Mode" : "Switch to Low-Light Mode"}
-              className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-slate-800 text-[#0E1525] dark:text-amber-400 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-[#3D3633] text-[#4C4541] dark:text-[#F2C46A] transition-colors cursor-pointer"
               aria-label="Toggle theme"
             >
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -188,12 +173,12 @@ export const TopBar: React.FC<TopBarProps> = ({
             <button
               type="button"
               onClick={() => setIsNotifOpen(!isNotifOpen)}
-              className="relative p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-slate-800 text-[#0E1525] dark:text-slate-100 transition-colors cursor-pointer"
+              className="relative p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-[#3D3633] text-[#4C4541] dark:text-slate-100 transition-colors cursor-pointer"
               aria-label="Notifications"
             >
               <Bell className="w-4 h-4" />
               {totalNotifications > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#0E1525] dark:bg-amber-400" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#F2C46A] dark:bg-[#F2C46A]" />
               )}
             </button>
 
@@ -202,7 +187,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 <div className="fixed inset-0 z-40" onClick={() => setIsNotifOpen(false)} />
                 <div className="absolute right-0 mt-1.5 w-64 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 p-3 z-50 text-xs space-y-2">
                   <div className="font-semibold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">
-                    Pending Actions ({totalNotifications})
+                    Needs attention ({totalNotifications})
                   </div>
                   <button
                     type="button"
@@ -213,7 +198,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     className="w-full text-left p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between"
                   >
                     <span className="text-slate-700 dark:text-slate-300">Leave Requests</span>
-                    <span className="font-mono font-bold tabular-nums text-[#0E1525] dark:text-white">{pendingLeaveCount}</span>
+                    <span className="font-mono font-bold tabular-nums text-[#4C4541] dark:text-white">{pendingLeaveCount}</span>
                   </button>
                   <button
                     type="button"
@@ -224,7 +209,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     className="w-full text-left p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between"
                   >
                     <span className="text-slate-700 dark:text-slate-300">Exit Clearances</span>
-                    <span className="font-mono font-bold tabular-nums text-[#0E1525] dark:text-white">{activeClearanceCount}</span>
+                    <span className="font-mono font-bold tabular-nums text-[#4C4541] dark:text-white">{activeClearanceCount}</span>
                   </button>
                 </div>
               </>
@@ -237,21 +222,21 @@ export const TopBar: React.FC<TopBarProps> = ({
               <button
                 type="button"
                 onClick={() => setIsRoleMenuOpen(!isRoleMenuOpen)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#FFFDE8] dark:bg-slate-800 border border-[#EFE1AA] dark:border-slate-700 hover:border-[#0E1525]/30 transition-colors cursor-pointer text-left"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1E1B19] border border-[#EFE7D8] dark:border-[#3D3633] hover:border-[#4C4541]/30 transition-colors cursor-pointer text-left"
                 title={`${activeUser.name} — ${activeUser.title}`}
               >
-                <div className="w-6 h-6 rounded-full bg-[#0E1525] text-[#FFF9DB] flex items-center justify-center font-bold text-[11px] shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[#F2C46A] text-[#4C4541] flex items-center justify-center font-bold text-[11px] shrink-0">
                   {activeUser.name.split(' ')[1] ? activeUser.name.split(' ')[1][0] : activeUser.name[0]}
                 </div>
                 <div className="hidden md:block min-w-0 max-w-[140px]">
-                  <div className="text-xs font-semibold text-[#0E1525] dark:text-slate-100 truncate leading-tight">
+                  <div className="text-xs font-semibold text-[#4C4541] dark:text-[#F7F4EE] truncate leading-tight">
                     {activeUser.name}
                   </div>
-                  <div className="text-[10px] text-[#0E1525]/65 dark:text-slate-400 truncate leading-tight">
+                  <div className="text-[10px] text-[#4C4541]/65 dark:text-slate-400 truncate leading-tight">
                     {activeUser.title}
                   </div>
                 </div>
-                <ChevronDown className="w-3.5 h-3.5 text-[#0E1525]/60 dark:text-slate-400 shrink-0" />
+                <ChevronDown className="w-3.5 h-3.5 text-[#4C4541]/60 dark:text-slate-400 shrink-0" />
               </button>
 
               {isRoleMenuOpen && (
@@ -266,7 +251,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                         {t('topbar.switchPersona')}
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                        Select role view
+                        Choose a user
                       </div>
                     </div>
 
@@ -283,11 +268,11 @@ export const TopBar: React.FC<TopBarProps> = ({
                             }}
                             className={`w-full flex items-center gap-2.5 p-2 rounded-md text-left text-xs transition-colors cursor-pointer ${
                               isSelected 
-                                ? 'bg-[#FFF9DB] dark:bg-slate-800 text-[#0E1525] dark:text-white font-semibold' 
+                                ? 'bg-[#FCF0DA] dark:bg-slate-800 text-[#4C4541] dark:text-white font-semibold' 
                                 : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                             }`}
                           >
-                            <div className="w-6 h-6 rounded-full bg-[#0E1525] text-[#FFF9DB] flex items-center justify-center font-bold text-[11px] shrink-0">
+                            <div className="w-6 h-6 rounded-full bg-[#F2C46A] text-[#4C4541] flex items-center justify-center font-bold text-[11px] shrink-0">
                               {p.name.split(' ')[1] ? p.name.split(' ')[1][0] : p.name[0]}
                             </div>
                             <div className="min-w-0 flex-1">
@@ -311,7 +296,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                             setIsRoleMenuOpen(false);
                             onLogout();
                           }}
-                          className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-md bg-[#0E1525] hover:bg-[#19233C] text-white font-semibold text-xs transition-colors cursor-pointer"
+                          className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-md bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] font-semibold text-xs transition-colors cursor-pointer"
                         >
                           <Power className="w-3.5 h-3.5" />
                           <span>Sign Out</span>

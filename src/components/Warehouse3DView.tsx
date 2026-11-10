@@ -1234,7 +1234,7 @@ export const Warehouse3DView: React.FC<Warehouse3DViewProps> = ({
       className={
         isFullscreen
           ? 'fixed inset-0 z-50 w-screen h-screen bg-slate-950 overflow-hidden'
-          : 'relative w-full h-[640px] rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden shadow-xl'
+          : 'relative w-full h-[680px] rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden shadow-xl'
       }
     >
       {/* Dedicated Isolated WebGL Canvas Mount Container */}
@@ -1285,12 +1285,12 @@ export const Warehouse3DView: React.FC<Warehouse3DViewProps> = ({
         </button>
       </div>
 
-      {/* Unified Collapsible Bottom Control Dock (Zero Side-Panel Clutter, <= 15% Viewport Footprint) */}
+      {/* Unified Collapsible Bottom Control Dock */}
       <div
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-[940px] pointer-events-auto transition-transform duration-300"
+        className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[96%] max-w-[960px] pointer-events-auto transition-transform duration-300 z-20"
         style={{
           transform: isHudCollapsed
-            ? 'translate(-50%, calc(100% - 34px))'
+            ? 'translate(-50%, calc(100% - 32px))'
             : 'translate(-50%, 0)'
         }}
       >

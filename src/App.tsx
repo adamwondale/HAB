@@ -2,24 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
 import { DashboardOverview } from './components/DashboardOverview';
-import { EmployeeManagementView } from './components/EmployeeManagementView';
-import { DeploymentView } from './components/DeploymentView';
-import { ClearanceView } from './components/ClearanceView';
-import { AttendanceView } from './components/AttendanceView';
-import { LeaveManagementView } from './components/LeaveManagementView';
-import { RecruitmentView } from './components/RecruitmentView';
-import { OnboardingView } from './components/OnboardingView';
-import { PayrollView } from './components/PayrollView';
-import { TransferPromotionView } from './components/TransferPromotionView';
-import { WorkExperienceView } from './components/WorkExperienceView';
-import { ManagementOrgView } from './components/ManagementOrgView';
-import { StoreManagementView } from './components/StoreManagementView';
+import { SimpleWorkspace } from './components/simple-workspace/SimpleWorkspace';
 import { getRoleAllowedTabs } from './utils/roleConfig';
 import { HabMonogramIcon } from './components/HabLogo';
 import { LoginView } from './components/LoginView';
-import { HabRoutineCopilot } from './components/HabRoutineCopilot';
-import { SystemMasterSetupView } from './components/SystemMasterSetupView';
-import { FigmaHtmlConverterModal } from './components/FigmaHtmlConverterModal';
 import { SystemMasterConfig } from './types/masterConfig';
 import {
   DEFAULT_SYSTEM_MASTER_CONFIG,
@@ -27,17 +13,6 @@ import {
   recalculateAllPayrollWithMaster,
   recalculateStockThresholdsWithMaster
 } from './utils/masterConfigEngine';
-import {
-  INITIAL_LEARNED_HABITS,
-  computeProactiveNudges,
-  mapTabToErpModule
-} from './utils/copilotEngine';
-import {
-  CopilotAction,
-  LearnedHabit,
-  RippleSimulationScenario,
-  UserActionTelemetry
-} from './types/copilot';
 
 import {
   INITIAL_CLIENT_SITES,
@@ -148,11 +123,6 @@ export default function App() {
     setPayroll(prev => recalculateAllPayrollWithMaster(prev, configToSync, false));
     setClearances(prev => recalculateAllClearancesWithMaster(prev, configToSync));
     setStockItems(prev => recalculateStockThresholdsWithMaster(prev, configToSync));
-    recordTelemetryEvent(
-      'Finance',
-      `Synchronized System Master Setup (v${configToSync.version})`,
-      `Recalculated active Payroll sheets (${configToSync.pensionAndPayroll.standardWorkingDays}d, ${configToSync.pensionAndPayroll.employerPensionPercent}%/${configToSync.pensionAndPayroll.employeePensionPercent}% pension), Clearance gear penalties, and Store reorder thresholds`
-    );
   };
 
   const handleUpdateMasterConfig = (nextConfig: SystemMasterConfig, triggerSync: boolean = true) => {
@@ -170,83 +140,8 @@ export default function App() {
   };
 
   // HAB Routine Copilot States
-  const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
-  const [isFigmaConverterOpen, setIsFigmaConverterOpen] = useState<boolean>(true);
-  const [learnedHabits, setLearnedHabits] = useState<LearnedHabit[]>(INITIAL_LEARNED_HABITS);
-  const [executedActionIds, setExecutedActionIds] = useState<string[]>([]);
-  const [copilotToast, setCopilotToast] = useState<{
-    title: string;
-    detail: string;
-    targetTabId?: string;
-  } | null>(null);
-  const [actionTelemetry, setActionTelemetry] = useState<UserActionTelemetry[]>([
-    {
-      id: 'tel-init-1',
-      timestamp: '08:30 AM',
-      actorName: 'Ato Dawit Mekonnen',
-      actorRole: 'General Manager',
-      module: 'HRM',
-      actionLabel: 'Checked Bole & CBE Morning Shift Roll-Call',
-      rippleSummary: 'Synced working days with Finance 30-day payroll ledger'
-    },
-    {
-      id: 'tel-init-2',
-      timestamp: '08:42 AM',
-      actorName: 'W/ro Tigist Alemu',
-      actorRole: 'HR Talent Officer',
-      module: 'HRM',
-      actionLabel: 'Verified Kebele Guarantor for New Security Recruits',
-      rippleSummary: 'Queued uniform kit issuance in Inventory & salary setup in Finance'
-    },
-    {
-      id: 'tel-init-3',
-      timestamp: '09:05 AM',
-      actorName: 'AtoKebede Tadesse',
-      actorRole: 'Storekeeper',
-      module: 'Inventory',
-      actionLabel: 'Audited Central Warehouse Safety Stock Buffers',
-      rippleSummary: 'Flagged Cleaning Sanitizer & Tactical Boots for Finance PO'
-    }
-  ]);
-
-  const recordTelemetryEvent = (
-    module: UserActionTelemetry['module'],
-    actionLabel: string,
-    rippleSummary: string
-  ) => {
-    const entry: UserActionTelemetry = {
-      id: `tel-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      actorName: activeUser.name,
-      actorRole: activeUser.title,
-      module,
-      actionLabel,
-      rippleSummary
-    };
-    setActionTelemetry(prev => [entry, ...prev.slice(0, 24)]);
-  };
-
-  const handleNavigateTabWithTelemetry = (nextTab: string) => {
+  const handleNavigateTab = (nextTab: string) => {
     setActiveTab(nextTab);
-    const mod = mapTabToErpModule(nextTab);
-    recordTelemetryEvent(
-      mod,
-      `Opened ${nextTab.charAt(0).toUpperCase() + nextTab.slice(1)} View`,
-      `Routine observer updated preference & sequential habit loop for ${mod}`
-    );
-    // Boost confidence slightly on matching routines
-    setLearnedHabits(prev =>
-      prev.map(h =>
-        h.linkedModules.includes(mod)
-          ? {
-              ...h,
-              confidence: Math.min(99, h.confidence + 1),
-              occurrences: h.occurrences + 1,
-              lastTriggered: 'Just now'
-            }
-          : h
-      )
-    );
   };
 
   // Switch role and automatically navigate to an authorized tab if needed
@@ -594,339 +489,30 @@ export default function App() {
 
   const handleQuickAction = (action: string) => {
     if (action === 'deploy') {
-      handleNavigateTabWithTelemetry('deployment');
+      setActiveTab('deployment');
     } else if (action === 'clearance') {
-      handleNavigateTabWithTelemetry('clearance');
+      setActiveTab('clearance');
     } else if (action === 'attendance') {
-      handleNavigateTabWithTelemetry('attendance');
+      setActiveTab('attendance');
     }
   };
-
-  // 1-Click Copilot Decision Executor across all 6 ERP Modules
-  const handleExecuteCopilotAction = (action: CopilotAction) => {
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    switch (action.actionType) {
-      case 'APPROVE_PAYROLL_VOUCHER': {
-        setPayroll(prev =>
-          prev.map(rec => ({
-            ...rec,
-            paymentStatus: 'Disbursed'
-          }))
-        );
-        recordTelemetryEvent(
-          'Finance',
-          '1-Click Approved & Disbursed 30-Day Payroll Vouchers',
-          'Closed pending Finance handoffs and notified HRM & Operations'
-        );
-        setCopilotToast({
-          title: 'Payroll Vouchers Approved & Disbursed',
-          detail:
-            'All 30-day salary and 11% employer pension vouchers have been marked Disbursed for CBE bulk transfer. HRM and Management KPIs updated.',
-          targetTabId: 'payroll'
-        });
-        break;
-      }
-
-      case 'AUTO_RESTOCK_SANITIZER': {
-        setStockItems(prev =>
-          prev.map(item =>
-            item.division === 'Cleaning' || item.name.toLowerCase().includes('disinfectant') || item.name.toLowerCase().includes('sanitizer') || item.quantityInStock <= item.minReorderLevel
-              ? {
-                  ...item,
-                  quantityInStock: item.quantityInStock + 20,
-                  lastUpdated: todayStr
-                }
-              : item
-          )
-        );
-        const restockTx: StockTransaction = {
-          id: `tx-cop-${Date.now()}`,
-          date: todayStr,
-          itemId: stockItems[0]?.id || 'stk-1',
-          itemCode: 'CLN-SAN-200',
-          itemName: 'Heavy-Duty Hospital Sanitizer & Disinfectant Drums',
-          division: 'Cleaning',
-          transactionType: 'Received (Restock)',
-          quantity: 20,
-          unit: 'Liters',
-          recipientOrSource: 'Addis Chemical & Hygiene Suppliers PLC',
-          referenceCode: `PO-COP-${Math.floor(1000 + Math.random() * 9000)}`,
-          handledBy: activeUser.name,
-          notes: 'Auto-restocked via HAB Routine Copilot 1-Click Decision'
-        };
-        setStockTransactions(prev => [restockTx, ...prev]);
-        recordTelemetryEvent(
-          'Inventory',
-          'Auto-Restocked 20 Drums Cleaning Sanitizer',
-          'Updated Central Store safety buffers and logged Finance purchase requisition'
-        );
-        setCopilotToast({
-          title: 'Auto-Restocked 20 Drums in Central Store',
-          detail:
-            'Inventory levels replenished above minimum buffer. Purchase requisition queued in Finance and Hospital/Hotel site supervisors notified.',
-          targetTabId: 'store'
-        });
-        break;
-      }
-
-      case 'AUTO_RESTOCK_BOOTS': {
-        setStockItems(prev =>
-          prev.map(item =>
-            item.division === 'Security' || item.name.toLowerCase().includes('boot')
-              ? {
-                  ...item,
-                  quantityInStock: item.quantityInStock + 25,
-                  lastUpdated: todayStr
-                }
-              : item
-          )
-        );
-        const bootTx: StockTransaction = {
-          id: `tx-cop-boots-${Date.now()}`,
-          date: todayStr,
-          itemId: stockItems[0]?.id || 'stk-2',
-          itemCode: 'SEC-BT-042',
-          itemName: 'Security Tactical Patrol Boots (Size 41-44)',
-          division: 'Security',
-          transactionType: 'Received (Restock)',
-          quantity: 25,
-          unit: 'Pairs',
-          recipientOrSource: 'Kangaro Shoe Factory Addis Ababa',
-          referenceCode: `PO-SEC-${Math.floor(1000 + Math.random() * 9000)}`,
-          handledBy: activeUser.name,
-          notes: 'Auto-restocked via HAB Routine Copilot 1-Click Decision'
-        };
-        setStockTransactions(prev => [bootTx, ...prev]);
-        recordTelemetryEvent(
-          'Inventory',
-          'Auto-Restocked 25 Pairs Security Tactical Boots',
-          'Unblocked HRM onboarding equipment issuance and updated Finance PO ledger'
-        );
-        setCopilotToast({
-          title: '25 Pairs of Tactical Boots Restocked',
-          detail:
-            'Central Store Bay A (Security Gear) replenished. Incoming recruits in HRM Onboarding are now cleared for immediate kit handout.',
-          targetTabId: 'store'
-        });
-        break;
-      }
-
-      case 'ASSIGN_RELIEF_GUARD': {
-        setLeaveRequests(prev =>
-          prev.map(req =>
-            req.status === 'Pending'
-              ? {
-                  ...req,
-                  status: 'Approved',
-                  replacementEmployeeName: 'Platoon Bravo Standby Officer',
-                  reviewedBy: activeUser.name
-                }
-              : req
-          )
-        );
-        setSites(prev =>
-          prev.map(site => ({
-            ...site,
-            securityStaffDeployed: Math.max(site.securityStaffDeployed, site.securityStaffRequired),
-            cleaningStaffDeployed: Math.max(site.cleaningStaffDeployed, site.cleaningStaffRequired)
-          }))
-        );
-        recordTelemetryEvent(
-          'Property/Sales',
-          'Assigned Standby Relief Guard & Closed Site Staffing Gaps',
-          'Approved pending HRM leave requests and brought all client sites to 100% SLA coverage'
-        );
-        setCopilotToast({
-          title: 'Standby Relief Officer Assigned',
-          detail:
-            'Pending leave requests approved with Platoon Standby relief coverage. All client sites (CBE Tower, EAL Cargo) are now at 100% SLA fulfillment.',
-          targetTabId: 'deployment'
-        });
-        break;
-      }
-
-      case 'ISSUE_UNIFORM_QUEUE_PAYROLL': {
-        setOnboardingList(prev =>
-          prev.map(ob => ({
-            ...ob,
-            progressPercent: 100,
-            contractSigned: true,
-            tasks: ob.tasks.map(t => ({
-              ...t,
-              completed: true,
-              completedAt: todayStr
-            }))
-          }))
-        );
-        recordTelemetryEvent(
-          'HRM',
-          'Completed Onboarding Uniform Handout & Queued 30-Day Payroll',
-          'Executed 3-step Habit Loop across HRM → Inventory → Finance'
-        );
-        setCopilotToast({
-          title: 'Uniforms Issued & 30-Day Payroll Queued',
-          detail:
-            'All onboarding checklists marked 100% complete, store uniform kits deducted from Inventory, and recruits added to the 30-day Finance payroll sheet.',
-          targetTabId: 'onboarding'
-        });
-        break;
-      }
-
-      case 'RECONCILE_BOLE_ATTENDANCE': {
-        setAttendance(prev =>
-          prev.map(att =>
-            att.status === 'Absent' || att.status === 'Late'
-              ? {
-                  ...att,
-                  status: 'Present',
-                  checkInTime: att.checkInTime || '06:00',
-                  notes: 'Reconciled with standby relief cover via HAB Routine Copilot'
-                }
-              : att
-          )
-        );
-        recordTelemetryEvent(
-          'HRM',
-          'Reconciled Morning Shift Attendance Across Bole & CBE Sites',
-          'Synced verified 30-day working counts with Finance Payroll'
-        );
-        setCopilotToast({
-          title: 'Morning Shift Attendance Reconciled',
-          detail:
-            'All shift roll-call logs across Bole Medhanialem and CBE Tower verified at 100% coverage and synced with the 30-day Payroll ledger.',
-          targetTabId: 'attendance'
-        });
-        break;
-      }
-
-      case 'APPROVE_CLEARANCE_SETTLEMENT': {
-        setClearances(prev =>
-          prev.map(c => ({
-            ...c,
-            status: 'Cleared',
-            siteSupervisorSignoff: { ...c.siteSupervisorSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr },
-            storeAssetSignoff: { ...c.storeAssetSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr },
-            financeSignoff: { ...c.financeSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr },
-            hrClearanceSignoff: { ...c.hrClearanceSignoff, completed: true, signedBy: activeUser.name, signedDate: todayStr, certificateIssued: true }
-          }))
-        );
-        recordTelemetryEvent(
-          'Asset Management',
-          'Signed Off 4-Gate Exit Clearances & Property Recovery',
-          'Settled unreturned store gear deductions in Finance and authorized HR Experience Certificates'
-        );
-        setCopilotToast({
-          title: '4-Gate Exit Clearances Finalized',
-          detail:
-            'Store property handovers, Finance severance deductions, and HR Work Experience Certificates have been signed off.',
-          targetTabId: 'clearance'
-        });
-        break;
-      }
-
-      case 'SCHEDULE_GENERATOR_MAINTENANCE': {
-        const maintTx: StockTransaction = {
-          id: `tx-maint-${Date.now()}`,
-          date: todayStr,
-          itemId: stockItems[0]?.id || 'stk-maint',
-          itemCode: 'PRP-MNT-108',
-          itemName: 'Generator Filter & Rotary Scrubber Brush Kit',
-          division: 'Property Management',
-          transactionType: 'Issued (Out)',
-          quantity: 2,
-          unit: 'Sets',
-          recipientOrSource: 'Bole Medhanialem Mixed-Use Complex',
-          referenceCode: `WO-${Math.floor(1000 + Math.random() * 9000)}`,
-          handledBy: activeUser.name,
-          notes: 'Preventive maintenance parts dispatched via Routine Copilot'
-        };
-        setStockTransactions(prev => [maintTx, ...prev]);
-        recordTelemetryEvent(
-          'Asset Management',
-          'Scheduled Generator & Scrubber Service at Bole Complex',
-          'Reserved spare parts in Inventory and queued Finance maintenance voucher'
-        );
-        setCopilotToast({
-          title: 'Generator & Scrubber Maintenance Dispatched',
-          detail:
-            'Spare parts reserved in Central Store Bay C, technician dispatched to Bole Complex, and expense voucher queued in Finance.',
-          targetTabId: 'store'
-        });
-        break;
-      }
-
-      case 'NAVIGATE_MODULE':
-      default: {
-        if (action.targetTabId) {
-          handleNavigateTabWithTelemetry(action.targetTabId);
-        }
-        setCopilotToast({
-          title: `Opened ${action.targetModule}`,
-          detail: action.description
-        });
-        break;
-      }
-    }
-
-    setExecutedActionIds(prev =>
-      prev.includes(action.actionType) ? prev : [...prev, action.actionType]
-    );
-  };
-
-  const handleTriggerRippleScenario = (scenario: RippleSimulationScenario) => {
-    recordTelemetryEvent(
-      scenario.crossModuleImpact[0]?.module || 'Management Dashboard',
-      `Simulated ${scenario.category}: ${scenario.title}`,
-      `Traced impact across ${scenario.crossModuleImpact.map(c => c.module).join(' → ')}`
-    );
-  };
-
-  const proactiveNudges = computeProactiveNudges({
-    employees,
-    sites,
-    deployments,
-    attendance,
-    leaveRequests,
-    payroll,
-    stockItems,
-    clearances,
-    onboardingList,
-    activeUser
-  });
 
   if (!isAuthenticated) {
     return (
-      <>
-        <LoginView
-          managementPersons={managementPersons}
-          onLogin={handleLogin}
-        />
-        <button
-          type="button"
-          onClick={() => setIsFigmaConverterOpen(true)}
-          className="fixed bottom-4 left-4 z-40 px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] border border-[#EBE834]/50 shadow-lg text-xs font-bold flex items-center gap-2 hover:bg-slate-800 cursor-pointer"
-        >
-          <span className="font-mono bg-[#EBE834] text-[#0E1525] px-1.5 py-0.5 rounded text-[11px] font-bold">
-            h2d
-          </span>
-          Figma html.to.design (15 HTML+CSS Files)
-        </button>
-        <FigmaHtmlConverterModal
-          isOpen={isFigmaConverterOpen}
-          onClose={() => setIsFigmaConverterOpen(false)}
-        />
-      </>
+      <LoginView
+        managementPersons={managementPersons}
+        onLogin={handleLogin}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-[#0E1525] dark:text-slate-100 flex antialiased transition-colors">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#1A1715] text-[#4C4541] dark:text-[#F7F4EE] flex antialiased transition-colors">
       
       {/* Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
-        setActiveTab={handleNavigateTabWithTelemetry}
+        setActiveTab={handleNavigateTab}
         serviceFilter={serviceFilter}
         setServiceFilter={setServiceFilter}
         totalEmployees={employees.length}
@@ -964,37 +550,10 @@ export default function App() {
           activeUser={activeUser}
           managementPersons={managementPersons}
           onSelectActiveUser={handleSelectActiveUser}
-          onNavigateTab={handleNavigateTabWithTelemetry}
+          onNavigateTab={handleNavigateTab}
           onLogout={handleLogout}
           pendingLeaveCount={pendingLeaves}
           activeClearanceCount={activeClearances}
-          onOpenCopilot={() => setIsCopilotOpen(true)}
-        />
-
-        {/* HAB Routine Copilot: Persistent Smart Nudge Bar + Floating Slide-Over Drawer */}
-        <HabRoutineCopilot
-          isOpen={isCopilotOpen}
-          onOpen={() => setIsCopilotOpen(true)}
-          onClose={() => setIsCopilotOpen(false)}
-          activeUser={activeUser}
-          employees={employees}
-          sites={sites}
-          deployments={deployments}
-          attendance={attendance}
-          leaveRequests={leaveRequests}
-          payroll={payroll}
-          stockItems={stockItems}
-          clearances={clearances}
-          onboardingList={onboardingList}
-          proactiveNudges={proactiveNudges}
-          learnedHabits={learnedHabits}
-          actionTelemetry={actionTelemetry}
-          executedActionIds={executedActionIds}
-          onExecuteCopilotAction={handleExecuteCopilotAction}
-          onTriggerRippleScenario={handleTriggerRippleScenario}
-          toastMessage={copilotToast}
-          onDismissToast={() => setCopilotToast(null)}
-          onNavigateTab={handleNavigateTabWithTelemetry}
         />
 
         {/* Main Content Area */}
@@ -1023,160 +582,30 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'org' && (
-          <ManagementOrgView
-            managementPersons={managementPersons}
-            activeUser={activeUser}
-            onSelectActiveUser={handleSelectActiveUser}
-            onNavigateTab={setActiveTab}
-          />
-        )}
-
-        {activeTab === 'recruitment' && (
-          <RecruitmentView
-            candidates={candidates}
-            onUpdateCandidateStage={handleUpdateCandidateStage}
-            onSendToOnboarding={handleSendToOnboarding}
-            onAddCandidate={(c) => setCandidates(prev => [c, ...prev])}
-          />
-        )}
-
-        {activeTab === 'onboarding' && (
-          <OnboardingView
-            onboardingList={onboardingList}
-            sites={sites}
-            activeUser={activeUser}
-            onToggleTask={handleToggleOnboardingTask}
-            onCompleteOnboarding={handleCompleteOnboarding}
-          />
-        )}
-
-        {activeTab === 'management' && (
-          <EmployeeManagementView
-            employees={employees}
-            sites={sites}
-            activeUser={activeUser}
-            masterConfig={masterConfig}
-            onAddEmployee={handleAddEmployee}
-            onInitiateClearanceFromEmployee={() => {
-              setActiveTab('clearance');
+        {activeTab !== 'overview' && (
+          <SimpleWorkspace
+            activeTab={activeTab}
+            data={{
+              employees,
+              sites,
+              deployments,
+              attendance,
+              leaveRequests,
+              clearances,
+              candidates,
+              onboardingList,
+              payroll,
+              transfers,
+              workExperiences,
+              managementPersons,
+              stockItems,
+              stockTransactions,
+              masterConfig
             }}
-            onDeployFromEmployee={() => {
-              setActiveTab('deployment');
-            }}
-          />
-        )}
-
-        {activeTab === 'deployment' && (
-          <DeploymentView
-            sites={sites}
-            deployments={deployments}
-            employees={employees}
             onDeployEmployee={handleDeployEmployee}
             onRelieveDeployment={handleRelieveDeployment}
-          />
-        )}
-
-        {activeTab === 'attendance' && (
-          <AttendanceView
-            attendanceRecords={attendance}
-            sites={sites}
-            onUpdateAttendanceStatus={handleUpdateAttendanceStatus}
-            onAddAttendanceRecord={(r) => setAttendance(prev => [r, ...prev])}
-          />
-        )}
-
-        {activeTab === 'leave' && (
-          <LeaveManagementView
-            leaveRequests={leaveRequests}
-            employees={employees}
-            sites={sites}
-            activeUser={activeUser}
-            masterConfig={masterConfig}
-            onApproveLeave={handleApproveLeave}
-            onRejectLeave={handleRejectLeave}
-            onAddLeaveRequest={(newReq) => setLeaveRequests(prev => [newReq, ...prev])}
-          />
-        )}
-
-        {activeTab === 'payroll' && (
-          <PayrollView
-            payrollRecords={payroll}
-            employees={employees}
-            activeUser={activeUser}
-            masterConfig={masterConfig}
-            onOpenMasterSetup={() => handleNavigateTabWithTelemetry('master-setup')}
-            onApproveBatch={() => {
-              setPayroll(prev => prev.map(p => ({ ...p, paymentStatus: 'Approved' })));
-            }}
-            onDisburseBatch={() => {
-              setPayroll(prev => prev.map(p => ({ ...p, paymentStatus: 'Disbursed' })));
-            }}
-            onUpdatePayrollRecord={(updated) => {
-              setPayroll(prev => prev.map(p => (p.id === updated.id ? updated : p)));
-            }}
-            onAddPayrollRecord={(newRec) => {
-              setPayroll(prev => [newRec, ...prev]);
-            }}
-          />
-        )}
-
-        {activeTab === 'store' && (
-          <StoreManagementView
-            stockItems={stockItems}
-            stockTransactions={stockTransactions}
-            employees={employees}
-            sites={sites}
-            activeUser={activeUser}
             onAddStockItem={handleAddStockItem}
-            onRecordTransaction={handleRecordStockTransaction}
-          />
-        )}
-
-        {activeTab === 'transfers' && (
-          <TransferPromotionView
-            transfers={transfers}
-            employees={employees}
-            sites={sites}
-            onExecuteTransfer={(trId) => {
-              setTransfers(prev => prev.map(t => t.id === trId ? { ...t, status: 'Executed' } : t));
-            }}
-            onAddTransfer={(rec) => setTransfers(prev => [rec, ...prev])}
-          />
-        )}
-
-        {activeTab === 'experience' && (
-          <WorkExperienceView
-            records={workExperiences}
-            employees={employees}
-            onGenerateCertificate={(rec) => setWorkExperiences(prev => [rec, ...prev])}
-          />
-        )}
-
-        {activeTab === 'clearance' && (
-          <ClearanceView
-            clearances={clearances}
-            employees={employees}
-            activeUser={activeUser}
-            masterConfig={masterConfig}
-            onUpdateClearance={handleUpdateClearance}
-            onInitiateClearance={handleInitiateClearance}
-          />
-        )}
-
-        {activeTab === 'master-setup' && (
-          <SystemMasterSetupView
-            masterConfig={masterConfig}
-            activeUser={activeUser}
-            managementPersons={managementPersons}
-            payrollRecords={payroll}
-            clearances={clearances}
-            stockItems={stockItems}
-            employees={employees}
-            onUpdateMasterConfig={handleUpdateMasterConfig}
-            onForceSyncAllModules={handleForceSyncAllModules}
-            onSelectActiveUser={handleSelectActiveUser}
-            onNavigateTab={handleNavigateTabWithTelemetry}
+            onRecordStockTransaction={handleRecordStockTransaction}
           />
         )}
 
@@ -1205,23 +634,6 @@ export default function App() {
       </footer>
 
       </div>
-
-      {/* Persistent Trigger & Modal for One-by-One Figma html.to.design Conversion */}
-      <button
-        type="button"
-        onClick={() => setIsFigmaConverterOpen(true)}
-        className="fixed bottom-4 left-4 z-40 px-3.5 py-2 rounded-lg bg-[#0E1525] text-[#FFF9DB] border border-[#EBE834]/50 shadow-lg text-xs font-bold flex items-center gap-2 hover:bg-slate-800 cursor-pointer no-print"
-      >
-        <span className="font-mono bg-[#EBE834] text-[#0E1525] px-1.5 py-0.5 rounded text-[11px] font-bold">
-          h2d
-        </span>
-        Figma html.to.design (15 HTML+CSS Files)
-      </button>
-
-      <FigmaHtmlConverterModal
-        isOpen={isFigmaConverterOpen}
-        onClose={() => setIsFigmaConverterOpen(false)}
-      />
     </div>
   );
 }

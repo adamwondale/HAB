@@ -25,6 +25,7 @@ import {
   WorkExperienceRecord
 } from '../types/hrm';
 import { downloadCsv } from '../utils/csvExport';
+import { WorkforceDistributionChart } from './WorkforceDistributionChart';
 
 interface DashboardOverviewProps {
   employees: Employee[];
@@ -132,7 +133,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-lg bg-[#F2C46A] px-4 text-sm font-semibold text-[#4C4541] transition-colors hover:bg-[#E5B558] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C46A] focus-visible:ring-offset-2 dark:bg-[#F2C46A] dark:text-[#4C4541]"
         >
           <FileDown className="h-4 w-4" />
-          Download report
+          Export Report
         </button>
       </section>
 
@@ -149,30 +150,91 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </StatusBadge>
         </div>
 
-        <div className="grid grid-cols-1 border-y border-slate-200 dark:border-slate-800 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: 'Employees', value: activeEmployees.length.toLocaleString(), note: `${newStaff.length} new staff in progress`, icon: Users },
-            { label: 'Monthly pay', value: `ETB ${monthlyPay.toLocaleString()}`, note: `${payroll.length} payroll records`, icon: Wallet },
-            { label: 'Store supplies', value: `ETB ${propertyValue.toLocaleString()}`, note: `${stockItems.length} stock items`, icon: Package },
-            { label: 'Needs attention', value: itemsToCheck.toLocaleString(), note: 'Open work from all teams', icon: AlertTriangle }
-          ].map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={item.label}
-                className={`py-5 sm:px-5 ${index > 0 ? 'border-t border-slate-200 dark:border-slate-800 sm:border-t-0' : ''} ${index % 2 === 1 ? 'sm:border-l' : ''} ${index === 2 ? 'sm:border-t lg:border-l lg:border-t-0' : ''} ${index === 3 ? 'lg:border-l' : ''}`}
-              >
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                  {item.label}
-                </div>
-                <div className="mt-3 font-mono text-xl font-bold tabular-nums text-slate-950 dark:text-white sm:text-2xl">
-                  {item.value}
-                </div>
-                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">{item.note}</div>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-12">
+          {/* Left: 4 KPI Cards in a balanced 2x2 grid (7 cols) */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:col-span-7">
+            {[
+              {
+                label: 'Employees',
+                value: activeEmployees.length.toLocaleString(),
+                note: `${newStaff.length} new in progress`,
+                action: 'View Team',
+                icon: Users,
+                tab: 'management',
+                iconTone: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
+              },
+              {
+                label: 'Monthly pay',
+                value: `ETB ${monthlyPay.toLocaleString()}`,
+                note: `${payroll.length} payroll records`,
+                action: 'View Payroll',
+                icon: Wallet,
+                tab: 'payroll',
+                iconTone: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+              },
+              {
+                label: 'Store supplies',
+                value: `ETB ${propertyValue.toLocaleString()}`,
+                note: `${stockItems.length} stock items`,
+                action: 'View Store',
+                icon: Package,
+                tab: 'store',
+                iconTone: 'bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+              },
+              {
+                label: 'Needs attention',
+                value: itemsToCheck.toLocaleString(),
+                note: 'Open tasks across units',
+                action: 'Review Items',
+                icon: AlertTriangle,
+                tab: 'leave',
+                iconTone: 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300'
+              }
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => onNavigateTab(item.tab)}
+                  className="group flex flex-col justify-between rounded-xl border border-slate-200/90 bg-white p-4.5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#F2C46A] hover:shadow-md hover:ring-1 hover:ring-[#F2C46A]/40 active:scale-[0.99] dark:border-slate-800 dark:bg-slate-900 dark:shadow-none dark:hover:border-[#F2C46A] dark:hover:ring-[#F2C46A]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C46A] cursor-pointer"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-2 rounded-lg ${item.iconTone} transition-transform group-hover:scale-105 duration-200`}>
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                      </div>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-tight">
+                        {item.label}
+                      </span>
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 group-hover:text-[#4C4541] dark:group-hover:text-[#F2C46A] transition-colors rounded-md px-1.5 py-0.5 group-hover:bg-[#FFF9DB] dark:group-hover:bg-slate-800">
+                      Open <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                  </div>
+
+                  <div className="mt-3 font-mono text-xl font-bold tabular-nums text-slate-950 dark:text-white sm:text-2xl tracking-tight">
+                    {item.value}
+                  </div>
+
+                  <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5 dark:border-slate-800/80 w-full text-xs">
+                    <span className="text-slate-500 dark:text-slate-400 text-[11px] truncate">
+                      {item.note}
+                    </span>
+                    <span className="font-bold text-[#4C4541] group-hover:text-amber-800 dark:text-[#F2C46A] inline-flex items-center gap-1 shrink-0 text-[11px]">
+                      <span>{item.action}</span>
+                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right: Workforce Distribution Donut Chart (5 cols) */}
+          <div className="lg:col-span-5">
+            <WorkforceDistributionChart employees={activeEmployees} />
+          </div>
         </div>
       </section>
 

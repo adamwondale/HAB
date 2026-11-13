@@ -387,11 +387,53 @@ export type ManagementDepartment =
   | 'Property Administration'
   | 'Marketing';
 
+export type CoreRoleType = 'super_admin' | 'executive' | 'hr' | 'finance';
+
+export interface UserAccount {
+  id: string;
+  username: string;
+  password: string;
+  email: string;
+  fullName: string;
+  amharicName?: string;
+  role: CoreRoleType;
+  roleTitle: string;
+  roleAmharicTitle: string;
+  department: ManagementDepartment | string;
+  avatarColor: string;
+  phone?: string;
+  officeLocation?: string;
+  // Compatibility with ManagementPerson
+  name?: string;
+  title?: string;
+  roleCategory?: 'Executive' | 'Department Head' | 'HR Management' | 'Operations & Field' | 'Finance & Stores';
+  responsibilities?: string[];
+  permissions?: {
+    canApproveClearance: boolean;
+    canApprovePayroll: boolean;
+    canManageShiftsAndDeployments: boolean;
+    canManageRecruitmentAndGuarantors: boolean;
+    canVerifyInventoryReturn: boolean;
+    canSignWorkExperience: boolean;
+    canEditEmployees: boolean;
+  };
+  reportsToTitle?: string;
+  reportsToId?: string;
+}
+
+export type AuthUser = UserAccount;
+
 export interface ManagementPerson {
   id: string;
   name: string;
+  fullName?: string;
+  username?: string;
+  password?: string;
   amharicName?: string;
   title: string;
+  role?: CoreRoleType;
+  roleTitle?: string;
+  roleAmharicTitle?: string;
   department: ManagementDepartment;
   reportsToTitle?: string;
   reportsToId?: string;

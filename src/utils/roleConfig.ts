@@ -56,8 +56,7 @@ export const ROLE_ALLOWED_TABS: Record<CoreRoleType, string[] | 'ALL'> = {
     'recruitment',
     'onboarding',
     'clearance',
-    'experience',
-    'store'
+    'experience'
   ],
   finance: ['overview', 'payroll', 'store', 'clearance', 'attendance']
 };

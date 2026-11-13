@@ -6,6 +6,11 @@ import { SimpleWorkspace } from './components/simple-workspace/SimpleWorkspace';
 import { getRoleAllowedTabs } from './utils/roleConfig';
 import { HabMonogramIcon } from './components/HabLogo';
 import { LoginView } from './components/LoginView';
+import {
+  getActiveSession,
+  setActiveSession,
+  accountToManagementPerson
+} from './utils/authStorage';
 import { SystemMasterConfig } from './types/masterConfig';
 import {
   DEFAULT_SYSTEM_MASTER_CONFIG,
@@ -102,9 +107,13 @@ export default function App() {
   const [stockItems, setStockItems] = useState<StockItem[]>(INITIAL_STOCK_ITEMS);
   const [stockTransactions, setStockTransactions] = useState<StockTransaction[]>(INITIAL_STOCK_TRANSACTIONS);
   const [activeUser, setActiveUser] = useState<ManagementPerson>(() => {
+    const saved = getActiveSession();
+    if (saved) return accountToManagementPerson(saved);
     return INITIAL_MANAGEMENT_PERSONS.find(p => p.id === 'mgmt-hr-head') || INITIAL_MANAGEMENT_PERSONS[0];
   });
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return !!getActiveSession();
+  });
 
   // System Master Setup Configuration State (persisted in localStorage)
   const [masterConfig, setMasterConfig] = useState<SystemMasterConfig>(() => {
@@ -158,7 +167,8 @@ export default function App() {
     setIsAuthenticated(true);
   };
 
-  const handleLogout = () => {
+  const handleSignOut = () => {
+    setActiveSession(null);
     setIsAuthenticated(false);
   };
 
@@ -529,7 +539,7 @@ export default function App() {
         darkMode={darkMode}
         onToggleDarkMode={toggleDarkMode}
         activeUser={activeUser}
-        onLogout={handleLogout}
+        onLogout={handleSignOut}
       />
 
       {/* Main Content Column */}
@@ -551,7 +561,8 @@ export default function App() {
           managementPersons={managementPersons}
           onSelectActiveUser={handleSelectActiveUser}
           onNavigateTab={handleNavigateTab}
-          onLogout={handleLogout}
+          onLogout={handleSignOut}
+          onSignOut={handleSignOut}
           pendingLeaveCount={pendingLeaves}
           activeClearanceCount={activeClearances}
         />

@@ -18,3 +18,23 @@ The application interface shall implement the Warm Earth design system palette a
 
 4. **Light Surface Chrome (`#FCF0DA`):**
    - `#FCF0DA` (Warm Linen) shall be the background color for the application sidebar, top navigation bar, and enterprise data table headers in light mode.
+
+---
+
+## Access Control & Authentication
+
+### REQ-AUTH-001: 4-Role Access Control & Dedicated Authentication
+The system shall restrict access to 4 distinct operational personas with dedicated credentials:
+1. **Personas & Default Credentials**:
+   - **Super Admin (`admin`)**: Initial password `hab2026`. Sole authority to configure system master setups, tax/pension parameters, and manage user accounts/passwords.
+   - **CEO Overview (`ceo`)**: Initial password `hab2026`. Executive read-only oversight across all operational dashboards, attendance, and payroll aggregates without record edit capabilities.
+   - **Human Resource (`hr`)**: Initial password `hab2026`. Authority over employee dossiers, recruitment, deployments, daily attendance, leave requests, exit clearances, and service certificates. Blocked from finance payroll calculations and system master setups.
+   - **Finance (`finance`)**: Initial password `hab2026`. Authority over the 30-day payroll sheet, statutory deductions, bank remittances, finance clearance sign-offs, and central store asset valuation. Blocked from HR dossiers and system master setups.
+
+2. **Authentication Flow**:
+   - The application shall require valid credential matching (username or corporate email with password) via `LoginView`.
+   - The dev-mode top role switcher bar (`RoleAccessBar`) shall be removed from the standard authenticated app shell.
+   - Sign-out shall clear active session state and return the user to the login screen.
+
+3. **Super Admin Credential Management**:
+   - The System Master Setup view shall provide a dedicated credential management panel allowing the Super Admin to update usernames, display names, and passwords, persisted in client storage (`localStorage`).

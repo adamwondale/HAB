@@ -342,6 +342,8 @@ export interface StockTransaction {
   notes?: string;
 }
 
+export type TransferStatus = 'Pending HR Approval' | 'Approved' | 'Executed' | 'pending' | 'approved' | 'rejected';
+
 export interface TransferPromotionRecord {
   id: string;
   employeeId: string;
@@ -351,6 +353,8 @@ export interface TransferPromotionRecord {
   type: 'Site Transfer' | 'Role Promotion' | 'Shift Change';
   fromSite: string;
   toSite: string;
+  currentSite?: string;
+  destinationSite?: string;
   fromRole: string;
   toRole: string;
   fromShift: ShiftType;
@@ -359,7 +363,7 @@ export interface TransferPromotionRecord {
   effectiveDate: string;
   reason: string;
   approvedBy: string;
-  status: 'Pending HR Approval' | 'Approved' | 'Executed';
+  status: TransferStatus;
 }
 
 export interface WorkExperienceRecord {

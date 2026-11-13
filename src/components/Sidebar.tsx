@@ -81,7 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onLogout
 }) => {
   const { t, i18n } = useTranslation();
-  const allowedTabs = getRoleAllowedTabs(activeUser?.id);
+  const allowedTabs = getRoleAllowedTabs(activeUser?.role || activeUser?.id);
 
   const [tooltip, setTooltip] = useState<{ text: string; top: number } | null>(null);
 
@@ -281,7 +281,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             type="button"
             onClick={() => {
-              setActiveTab('overview');
+              if (allowedTabs === 'ALL' || allowedTabs.includes('overview')) {
+                setActiveTab('overview');
+              }
               onCloseMobile();
             }}
             onMouseEnter={(e) => showTooltip(e, 'HAB ERP — Integrated Operations Overview')}
@@ -339,33 +341,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Navigation Links */}
         <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-1">
           {/* Overview Item */}
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('overview');
-              onCloseMobile();
-            }}
-            onMouseEnter={(e) => showTooltip(e, overviewFullName)}
-            onMouseLeave={hideTooltip}
-            className={`w-full flex items-center ${
-              isCollapsed ? 'lg:justify-center lg:px-0' : 'justify-between px-3'
-            } py-2 rounded-lg text-[13px] transition-colors text-left cursor-pointer ${
-              isOverviewActive
-                ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
-                : 'text-[#4C4541] dark:text-slate-200 hover:bg-[#F2C46A]/15 dark:hover:bg-[#3D3633] font-medium'
-            }`}
-          >
-            <div className={`flex items-center ${isCollapsed ? 'lg:justify-center' : 'gap-2.5'} min-w-0`}>
-              <LayoutDashboard
-                className={`w-4 h-4 shrink-0 ${
-                  isOverviewActive ? 'text-[#4C4541]' : 'text-[#4C4541]/75 dark:text-slate-400'
-                }`}
-              />
-              <span className={`truncate ${isCollapsed ? 'lg:hidden' : ''}`}>
-                {i18n.language === 'am' ? t('nav.dashboard') : 'Overview'}
-              </span>
-            </div>
-          </button>
+          {(allowedTabs === 'ALL' || allowedTabs.includes('overview')) && (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('overview');
+                onCloseMobile();
+              }}
+              onMouseEnter={(e) => showTooltip(e, overviewFullName)}
+              onMouseLeave={hideTooltip}
+              className={`w-full flex items-center ${
+                isCollapsed ? 'lg:justify-center lg:px-0' : 'justify-between px-3'
+              } py-2 rounded-lg text-[13px] transition-colors text-left cursor-pointer ${
+                isOverviewActive
+                  ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs'
+                  : 'text-[#4C4541] dark:text-slate-200 hover:bg-[#F2C46A]/15 dark:hover:bg-[#3D3633] font-medium'
+              }`}
+            >
+              <div className={`flex items-center ${isCollapsed ? 'lg:justify-center' : 'gap-2.5'} min-w-0`}>
+                <LayoutDashboard
+                  className={`w-4 h-4 shrink-0 ${
+                    isOverviewActive ? 'text-[#4C4541]' : 'text-[#4C4541]/75 dark:text-slate-400'
+                  }`}
+                />
+                <span className={`truncate ${isCollapsed ? 'lg:hidden' : ''}`}>
+                  {i18n.language === 'am' ? t('nav.dashboard') : 'Overview'}
+                </span>
+              </div>
+            </button>
+          )}
 
           {/* Category Groups */}
           {visibleCategories.map((category) => {

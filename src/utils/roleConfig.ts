@@ -1,8 +1,7 @@
-import { ManagementPerson } from '../types/hrm';
+import { ManagementPerson, CoreRoleType } from '../types/hrm';
 
-export type RoleInterfaceType = 
-  | 'executive'
-  | 'finance'
+export type RoleInterfaceType =
+  | CoreRoleType
   | 'storekeeper'
   | 'site_supervisor'
   | 'hr_talent'
@@ -20,6 +19,7 @@ export interface RoleConfig {
   allowedTabs: string[] | 'ALL';
   description: string;
   amharicDescription: string;
+  readOnly?: boolean;
   primaryActions: {
     label: string;
     amharicLabel: string;
@@ -32,33 +32,161 @@ export interface RoleConfig {
   }[];
 }
 
-export function getRoleAllowedTabs(userId?: string): string[] | 'ALL' {
-  switch (userId) {
-    case 'mgmt-fin-head':
-      return ['overview', 'payroll', 'store', 'clearance', 'attendance', 'master-setup'];
-    case 'mgmt-storekeeper':
-      return ['overview', 'store', 'clearance', 'onboarding', 'management', 'master-setup'];
-    case 'mgmt-supervisor-dan':
-      return ['overview', 'attendance', 'deployment', 'leave', 'store', 'clearance', 'master-setup'];
-    case 'mgmt-hr-talent':
-      return ['overview', 'recruitment', 'onboarding', 'management', 'experience', 'master-setup'];
-    case 'mgmt-hr-ops':
-      return ['overview', 'deployment', 'attendance', 'leave', 'transfers', 'store', 'management', 'payroll', 'master-setup'];
-    case 'mgmt-legal':
-      return ['overview', 'clearance', 'experience', 'management', 'master-setup'];
+export const ROLE_ALLOWED_TABS: Record<CoreRoleType, string[] | 'ALL'> = {
+  super_admin: 'ALL',
+  executive: [
+    'overview',
+    'management',
+    'deployment',
+    'attendance',
+    'leave',
+    'recruitment',
+    'onboarding',
+    'payroll',
+    'store',
+    'clearance',
+    'experience'
+  ],
+  hr: [
+    'overview',
+    'management',
+    'deployment',
+    'attendance',
+    'leave',
+    'recruitment',
+    'onboarding',
+    'clearance',
+    'experience',
+    'store'
+  ],
+  finance: ['overview', 'payroll', 'store', 'clearance', 'attendance']
+};
+
+export function getRoleAllowedTabs(target?: string | ManagementPerson): string[] | 'ALL' {
+  const id = typeof target === 'string' ? target : target?.role || target?.id;
+  switch (id) {
+    case 'super_admin':
+    case 'admin':
     case 'mgmt-gm':
-    case 'mgmt-ceo':
     case 'mgmt-ops-head':
+      return ROLE_ALLOWED_TABS.super_admin;
+    case 'executive':
+    case 'ceo':
+    case 'mgmt-ceo':
+      return ROLE_ALLOWED_TABS.executive;
+    case 'hr':
     case 'mgmt-hr-head':
+    case 'mgmt-hr-ops':
+    case 'mgmt-hr-talent':
+      return ROLE_ALLOWED_TABS.hr;
+    case 'finance':
+    case 'mgmt-fin-head':
+      return ROLE_ALLOWED_TABS.finance;
+    case 'mgmt-storekeeper':
+      return ['overview', 'store', 'clearance', 'onboarding', 'management'];
+    case 'mgmt-supervisor-dan':
+      return ['overview', 'attendance', 'deployment', 'leave', 'store', 'clearance'];
+    case 'mgmt-legal':
+      return ['overview', 'clearance', 'experience', 'management'];
     default:
       return 'ALL';
   }
 }
 
 export function getRoleConfig(person?: ManagementPerson): RoleConfig {
-  const id = person?.id || 'mgmt-hr-head';
+  const key = person?.role || person?.id || 'admin';
 
-  switch (id) {
+  switch (key) {
+    case 'super_admin':
+    case 'admin':
+      return {
+        type: 'super_admin',
+        title: 'Super Admin & System Controller',
+        amharicTitle: 'የሲስተም ዋና አስተዳዳሪ (ሙሉ ፈቃድ)',
+        badge: 'Super Admin',
+        badgeAmharic: 'ዋና አስተዳዳሪ',
+        badgeColor: 'bg-slate-800 text-white border-slate-700 dark:bg-slate-900 dark:text-slate-100',
+        defaultTab: 'overview',
+        allowedTabs: 'ALL',
+        description: 'Full system authority: master setups, system parameters, credential administration, and all functional modules.',
+        amharicDescription: 'የሲስተም ማስተር ሴትአፕ፣ የተጠቃሚዎች መለያ አስተዳደር እና ሁሉንም ሞጁሎች የመቆጣጠር ሙሉ ስልጣን።',
+        readOnly: false,
+        primaryActions: [
+          { label: 'System Master Setup', amharicLabel: 'ማስተር ሴትአፕ', tabId: 'master-setup', icon: 'Sliders' },
+          { label: 'Corporate Overview', amharicLabel: 'አጠቃላይ ዳሽቦርድ', tabId: 'overview', icon: 'LayoutDashboard' },
+          { label: '30-Day Payroll Sheet', amharicLabel: 'የደመወዝ መዝገብ', tabId: 'payroll', icon: 'CreditCard' }
+        ],
+        capabilities: [
+          { label: 'System Master Setup & Accounts', allowed: true },
+          { label: 'All 12 HRM & Operations Modules', allowed: true },
+          { label: '30-Day Payroll Sheet & Disbursement', allowed: true },
+          { label: 'All Exit Clearance Sign-offs', allowed: true },
+          { label: 'Staff Roster & Deployments', allowed: true }
+        ]
+      };
+
+    case 'executive':
+    case 'ceo':
+    case 'mgmt-ceo':
+    case 'mgmt-gm':
+    case 'mgmt-ops-head':
+      return {
+        type: 'executive',
+        title: 'CEO Executive Oversight (Read-Only)',
+        amharicTitle: 'ዋና ሥራ አስፈፃሚ (ተቆጣጣሪ — የንባብ ብቻ)',
+        badge: 'CEO Overview',
+        badgeAmharic: 'ዋና ሥራ አስፈፃሚ',
+        badgeColor: 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-700',
+        defaultTab: 'overview',
+        allowedTabs: ROLE_ALLOWED_TABS.executive,
+        description: 'Executive read-only visibility into company-wide operational health, headcount, payroll costs, and divisional dashboards.',
+        amharicDescription: 'በ4ቱም ዘርፎች፣ በሰው ኃይል፣ በስራ ክንውን እና በፋይናንስ ወጪዎች ላይ አጠቃላይ የተቆጣጣሪነት እይታ።',
+        readOnly: true,
+        primaryActions: [
+          { label: 'Corporate Overview', amharicLabel: 'አጠቃላይ ዳሽቦርድ', tabId: 'overview', icon: 'LayoutDashboard' },
+          { label: 'Review Payroll Costs', amharicLabel: 'የደመወዝ ወጪዎች', tabId: 'payroll', icon: 'CreditCard' },
+          { label: 'Workforce Deployment', amharicLabel: 'የጣቢያዎች ድልድል', tabId: 'deployment', icon: 'MapPin' }
+        ],
+        capabilities: [
+          { label: 'Company-Wide Dashboard Oversight', allowed: true },
+          { label: 'Read-Only Payroll & Cost Review', allowed: true },
+          { label: 'Read-Only Shift & Deployment View', allowed: true },
+          { label: 'Direct Record Mutation / Edits', allowed: false },
+          { label: 'System Master Setup Access', allowed: false }
+        ]
+      };
+
+    case 'hr':
+    case 'mgmt-hr-head':
+    case 'mgmt-hr-ops':
+    case 'mgmt-hr-talent':
+      return {
+        type: 'hr',
+        title: 'Human Resource & Workforce Operations',
+        amharicTitle: 'የሰው ኃይል እና ሰራተኞች አስተዳደር',
+        badge: 'HR Head',
+        badgeAmharic: 'የሰው ኃይል ኃላፊ',
+        badgeColor: 'bg-teal-100 text-teal-900 border-teal-300 dark:bg-teal-950/70 dark:text-teal-200 dark:border-teal-700',
+        defaultTab: 'management',
+        allowedTabs: ROLE_ALLOWED_TABS.hr,
+        description: 'Authorized to manage employee lifecycle: dossiers, recruitment, shifts, attendance, leaves, transfers, and clearances.',
+        amharicDescription: 'የሰራተኞች መዝገብ፣ ምልመላ፣ የሺፍት ድልድል፣ አቴንዳንስ፣ ፈቃዶች እና የስንብት ክሊራንስ አስተዳደር።',
+        readOnly: false,
+        primaryActions: [
+          { label: 'Employee Dossiers', amharicLabel: 'የሰራተኞች መዝገብ', tabId: 'management', icon: 'Users' },
+          { label: 'Shift Deployments', amharicLabel: 'የጣቢያዎች ድልድል', tabId: 'deployment', icon: 'MapPin' },
+          { label: 'Clearance HR Gates', amharicLabel: 'የስንብት ክሊራንስ', tabId: 'clearance', icon: 'LogOut' }
+        ],
+        capabilities: [
+          { label: 'Manage Employee Dossiers & Intake', allowed: true },
+          { label: 'Configure Shifts & Deployments', allowed: true },
+          { label: 'Clearance Gates #1, #2 & #4', allowed: true },
+          { label: 'Edit 30-Day Payroll Sheet', allowed: false },
+          { label: 'System Master Setup Access', allowed: false }
+        ]
+      };
+
+    case 'finance':
     case 'mgmt-fin-head':
       return {
         type: 'finance',
@@ -68,9 +196,10 @@ export function getRoleConfig(person?: ManagementPerson): RoleConfig {
         badgeAmharic: 'የፋይናንስና ደመወዝ ኃላፊ',
         badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950/70 dark:text-emerald-200 dark:border-emerald-700',
         defaultTab: 'payroll',
-        allowedTabs: ['overview', 'payroll', 'store', 'clearance', 'attendance'],
-        description: 'Authorized to edit the 30-day payroll sheet, additions/deductions, 11% non-deductible pension, bank disbursements, and clearance financial settlements.',
+        allowedTabs: ROLE_ALLOWED_TABS.finance,
+        description: 'Authorized to edit 30-day payroll sheets, additions/deductions, 11% pension, bank disbursements, and clearance finance sign-off.',
         amharicDescription: 'የ30 ቀን የደመወዝ ሉህ፣ አበሎችና ተቀናሾች፣ 11% የአሰሪ ጡረታ፣ የባንክ ክፍያ እና የስንብት ሂሳብ ማጽደቂያ።',
+        readOnly: false,
         primaryActions: [
           { label: '30-Day Payroll Sheet', amharicLabel: 'የ30 ቀን ደመወዝ መዝገብ', tabId: 'payroll', icon: 'CreditCard' },
           { label: 'Clearance Finance Sign-off', amharicLabel: 'የስንብት ሂሳብ አጽድቅ', tabId: 'clearance', icon: 'LogOut' },
@@ -79,169 +208,31 @@ export function getRoleConfig(person?: ManagementPerson): RoleConfig {
         capabilities: [
           { label: 'Edit & Disburse 30-Day Payroll', allowed: true },
           { label: 'Clearance Gate #3 (Finance Pay)', allowed: true },
-          { label: 'Store & Stock Valuation Control', allowed: true },
+          { label: 'Store Valuation & Inventory Audit', allowed: true },
           { label: 'Edit Employee HR Dossiers', allowed: false },
           { label: 'Manage Shift Rosters', allowed: false }
         ]
       };
 
-    case 'mgmt-storekeeper':
-      return {
-        type: 'storekeeper',
-        title: 'Central Logistics & Store Stock Management',
-        amharicTitle: 'የማዕከላዊ ንብረትና ስቶክ ቁጥጥር ክፍል',
-        badge: 'Store & Equipment Controller',
-        badgeAmharic: 'የዕቃና ስቶክ ተቆጣጣሪ',
-        badgeColor: 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-700',
-        defaultTab: 'store',
-        allowedTabs: ['overview', 'store', 'clearance', 'onboarding', 'management'],
-        description: 'Scoped to store/stock inventory across all 4 divisions, property handover sign-offs, uniform sizing directory, and unreturned gear deductions.',
-        amharicDescription: 'የ4ቱም ዘርፎች የስቶክ ክምችት፣ የንብረት ርክክብ፣ የዩኒፎርም እደላ እና ያልተመለሱ ዕቃዎች ተቀናሽ ማረጋገጫ።',
-        primaryActions: [
-          { label: 'Store & Stock Ledger', amharicLabel: 'የስቶክ እና ንብረት መዝገብ', tabId: 'store', icon: 'Package' },
-          { label: 'Verify Property Return', amharicLabel: 'የንብረት ርክክብ አረጋግጥ', tabId: 'clearance', icon: 'LogOut' },
-          { label: 'Uniform Sizing Directory', amharicLabel: 'የሰራተኞች ልክ መዝገብ', tabId: 'management', icon: 'Users' }
-        ],
-        capabilities: [
-          { label: 'Issue, Restock & Add Store Items', allowed: true },
-          { label: 'Clearance Gate #2 (Store Return)', allowed: true },
-          { label: 'Employee Uniform Sizing View', allowed: true },
-          { label: 'Approve Payroll / Salaries', allowed: false },
-          { label: 'Grant Final HR Release', allowed: false }
-        ]
-      };
-
-    case 'mgmt-supervisor-dan':
-      return {
-        type: 'site_supervisor',
-        title: 'Field Operations & Site Patrol',
-        amharicTitle: 'የመስክ ቁጥጥር እና የጥበቃ ጣቢያዎች አመራር',
-        badge: 'Field Site Supervisor',
-        badgeAmharic: 'የመስክ ጣቢያዎች ሱፐርቫይዘር',
-        badgeColor: 'bg-indigo-100 text-indigo-900 border-indigo-300 dark:bg-indigo-950/70 dark:text-indigo-200 dark:border-indigo-700',
-        defaultTab: 'attendance',
-        allowedTabs: ['overview', 'attendance', 'deployment', 'leave', 'store', 'clearance'],
-        description: 'Scoped to daily guard roll-call attendance, active post coverage, site requisitions, shift relief requests, and Site Supervisor clearance sign-offs.',
-        amharicDescription: 'የዕለት የጥበቃ አባላት የተሟላ መገኘት ቁጥጥር፣ የጣቢያዎች ድልድል እና የአደጋ ጊዜ ተረኛ ቅያሬ።',
-        primaryActions: [
-          { label: 'Mark Shift Attendance', amharicLabel: 'የተረኛ አቴንዳንስ መዝግብ', tabId: 'attendance', icon: 'Clock' },
-          { label: 'Review Post Allocations', amharicLabel: 'የጣቢያዎች ድልድል ተመልከት', tabId: 'deployment', icon: 'MapPin' },
-          { label: 'Site Clearance Handover', amharicLabel: 'የጣቢያ ርክክብ አረጋግጥ', tabId: 'clearance', icon: 'LogOut' }
-        ],
-        capabilities: [
-          { label: 'Mark Roll-Call & Overtime', allowed: true },
-          { label: 'Clearance Gate #1 (Site Handover)', allowed: true },
-          { label: 'Deploy & Rotate Site Posts', allowed: true },
-          { label: 'Approve Payroll Ledger', allowed: false },
-          { label: 'Edit Master Employee Salary', allowed: false }
-        ]
-      };
-
-    case 'mgmt-hr-talent':
-      return {
-        type: 'hr_talent',
-        title: 'Talent Acquisition & Employee Records',
-        amharicTitle: 'የቅጥር፣ የዋስ ማረጋገጫና ሰነዶች ክፍል',
-        badge: 'Talent Acquisition & Records',
-        badgeAmharic: 'የቅጥርና ሰነድ ኃላፊ',
-        badgeColor: 'bg-teal-100 text-teal-900 border-teal-300 dark:bg-teal-950/70 dark:text-teal-200 dark:border-teal-700',
-        defaultTab: 'recruitment',
-        allowedTabs: ['overview', 'recruitment', 'onboarding', 'management', 'experience'],
-        description: 'Scoped to candidate recruitment pipeline, Kebele & Guarantor verifications, onboarding tasks, and work certificates.',
-        amharicDescription: 'የእጩዎች ምልመላ፣ የነዋሪነትና የዋስትና ሰነዶች ማጣራት፣ አዳዲስ ቅጥሮች እና የስራ ልምድ ምስክር ወረቀት።',
-        primaryActions: [
-          { label: 'Review Candidates', amharicLabel: 'እጩዎችን መርምር', tabId: 'recruitment', icon: 'UserPlus' },
-          { label: 'Verify Guarantors', amharicLabel: 'የዋስትና ሰነዶች አረጋግጥ', tabId: 'onboarding', icon: 'CheckSquare' },
-          { label: 'Issue Experience Certificate', amharicLabel: 'የስራ ልምድ ሰርተፍኬት አውጣ', tabId: 'experience', icon: 'Award' }
-        ],
-        capabilities: [
-          { label: 'Recruit & Vet Guarantors', allowed: true },
-          { label: 'Register & Edit Employees', allowed: true },
-          { label: 'Issue Experience Certificates', allowed: true },
-          { label: 'Approve Payroll Disbursement', allowed: false },
-          { label: 'Manage Store Inventory', allowed: false }
-        ]
-      };
-
-    case 'mgmt-hr-ops':
-      return {
-        type: 'hr_ops',
-        title: 'HR Operations & Cyclic Rosters',
-        amharicTitle: 'የሰው ኃይል ኦፕሬሽንስና የሺፍት ሮስተር',
-        badge: 'HR Operations Officer',
-        badgeAmharic: 'የኤችአር ኦፕሬሽንስ ኃላፊ',
-        badgeColor: 'bg-sky-100 text-sky-900 border-sky-300 dark:bg-sky-950/70 dark:text-sky-200 dark:border-sky-700',
-        defaultTab: 'deployment',
-        allowedTabs: ['overview', 'deployment', 'attendance', 'leave', 'transfers', 'store', 'management', 'payroll'],
-        description: 'Scoped to 24h duty rosters (Platoons Alpha/Bravo/Charlie), Monday cleaning shift rotation, post reassignments, and attendance-to-payroll audit.',
-        amharicDescription: 'የ24 ሰዓት ጥበቃ ፕላቶን ሮስተር፣ የሰኞ የፅዳት ሺፍት ቅያሬ እና የጣቢያዎች ሰራተኛ ዝውውር።',
-        primaryActions: [
-          { label: 'Manage Post Deployments', amharicLabel: 'የጣቢያዎች ድልድል አስተዳድር', tabId: 'deployment', icon: 'MapPin' },
-          { label: 'Audit Attendance & Overtime', amharicLabel: 'አቴንዳንስና የትርፍ ሰዓት ኦዲት', tabId: 'attendance', icon: 'Clock' },
-          { label: 'Process Site Transfers', amharicLabel: 'የሰራተኛ ዝውውር አከናውን', tabId: 'transfers', icon: 'ArrowRightLeft' }
-        ],
-        capabilities: [
-          { label: 'Deploy Staff & Rotate Shifts', allowed: true },
-          { label: 'Approve Leave & Transfers', allowed: true },
-          { label: 'View-Only Payroll Audit', allowed: true },
-          { label: 'Disburse Bank Payroll', allowed: false },
-          { label: 'Grant Final Exit Clearance', allowed: false }
-        ]
-      };
-
-    case 'mgmt-legal':
-      return {
-        type: 'legal',
-        title: 'Legal Advisory & Labor Compliance',
-        amharicTitle: 'የህግ አማካሪ እና የስራ ህግ ተገዢነት',
-        badge: 'Legal Advisor',
-        badgeAmharic: 'የህግ አማካሪ',
-        badgeColor: 'bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950/70 dark:text-purple-200 dark:border-purple-700',
-        defaultTab: 'clearance',
-        allowedTabs: ['overview', 'clearance', 'experience', 'management'],
-        description: 'Scoped to Labor Proclamation No. 1156/2019 legal compliance, guarantor legal dossiers, severance settlements, and contract termination sign-offs.',
-        amharicDescription: 'በአሰሪና ሠራተኛ አዋጅ ቁ. 1156/2011 መሰረት የውል ማቋረጥ፣ የስንብት ክፍያ እና ህጋዊ የቅሬታ ኦዲት።',
-        primaryActions: [
-          { label: 'Audit Exit Clearances', amharicLabel: 'የስንብት ህጋዊነት መርምር', tabId: 'clearance', icon: 'LogOut' },
-          { label: 'Authenticate Experience Records', amharicLabel: 'የስራ ልምድ ማስረጃ አረጋግጥ', tabId: 'experience', icon: 'Award' },
-          { label: 'Guarantor Legal Dossiers', amharicLabel: 'የቅጥር ውሎችን ኦዲት አድርግ', tabId: 'management', icon: 'Users' }
-        ],
-        capabilities: [
-          { label: 'Clearance Gate #4 (Legal/HR Release)', allowed: true },
-          { label: 'Authenticate Work Certificates', allowed: true },
-          { label: 'Guarantor Legal Compliance View', allowed: true },
-          { label: 'Edit Payroll / Store Stock', allowed: false },
-          { label: 'Manage Field Shift Rosters', allowed: false }
-        ]
-      };
-
-    case 'mgmt-gm':
-    case 'mgmt-ceo':
-    case 'mgmt-ops-head':
-    case 'mgmt-hr-head':
     default:
       return {
-        type: 'executive',
-        title: 'Executive Corporate Governance (Full Access)',
-        amharicTitle: 'የከፍተኛ አመራርና አስተዳደር ማዕከል (ሙሉ ፈቃድ)',
-        badge: person?.title || 'Executive Leadership',
-        badgeAmharic: person?.amharicName ? `${person.amharicName} (ከፍተኛ አመራር)` : 'ከፍተኛ አመራር',
-        badgeColor: 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-700',
+        type: 'super_admin',
+        title: 'Super Admin & System Controller',
+        amharicTitle: 'የሲስተም ዋና አስተዳዳሪ (ሙሉ ፈቃድ)',
+        badge: person?.title || 'Super Admin',
+        badgeAmharic: person?.amharicName ? `${person.amharicName} (ዋና አስተዳዳሪ)` : 'ዋና አስተዳዳሪ',
+        badgeColor: 'bg-slate-800 text-white border-slate-700 dark:bg-slate-900 dark:text-slate-100',
         defaultTab: 'overview',
         allowedTabs: 'ALL',
-        description: 'Full corporate authority across all 4 divisions (Security, Cleaning, Property Management, Head Office), 30-day payroll sign-offs, store stock, and clearances.',
-        amharicDescription: 'በ4ቱም ዘርፎች፣ በደመወዝ ክፍያ፣ በንብረት ስቶክ፣ በጣቢያ ውሎች እና በሰው ኃይል ላይ ሙሉ የውሳኔ ሰጪነት ስልጣን።',
+        description: 'Full system authority across all modules.',
+        amharicDescription: 'በሁሉም ዘርፎችና ሞጁሎች ላይ ሙሉ ስልጣን።',
+        readOnly: false,
         primaryActions: [
-          { label: 'Corporate Overview', amharicLabel: 'አጠቃላይ ዳሽቦርድ', tabId: 'overview', icon: 'LayoutDashboard' },
-          { label: '30-Day Payroll Sheet', amharicLabel: 'የደመወዝ መዝገብ አረጋግጥ', tabId: 'payroll', icon: 'CreditCard' },
-          { label: 'Store & Stock Control', amharicLabel: 'የስቶክ ቁጥጥር', tabId: 'store', icon: 'Package' }
+          { label: 'System Master Setup', amharicLabel: 'ማስተር ሴትአፕ', tabId: 'master-setup', icon: 'Sliders' },
+          { label: 'Corporate Overview', amharicLabel: 'አጠቃላይ ዳሽቦርድ', tabId: 'overview', icon: 'LayoutDashboard' }
         ],
         capabilities: [
-          { label: 'All 12 HRM & Store Modules', allowed: true },
-          { label: 'Approve & Disburse 30-Day Payroll', allowed: true },
-          { label: 'All 4 Clearance Sign-Off Gates', allowed: true },
-          { label: 'Full Store & Stock Administration', allowed: true },
-          { label: 'Deploy, Transfer & Edit Workforce', allowed: true }
+          { label: 'All Modules & System Setup', allowed: true }
         ]
       };
   }

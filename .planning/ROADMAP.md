@@ -7,7 +7,7 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 ## Phases
 
 - [x] **Phase 1: Warm Earth Palette Migration** - Migrate DESIGN.md, global CSS tokens, navigation shell (Sidebar & TopBar), and key view components to the new palette.
-- [ ] **Phase 2: 4-Role Authentication and Access Control** - Implement strict authentication for Super Admin, CEO Overview, HR, and Finance with client credential persistence and role-scoped permissions.
+- [x] **Phase 2: 4-Role Authentication and Access Control** - Implement strict authentication for Super Admin, CEO Overview, HR, and Finance with client credential persistence and role-scoped permissions.
 
 ## Phase Details
 
@@ -44,5 +44,5 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: Auth data models, credential persistence (authStorage.ts), role tab filtering, and Sidebar navigation.
-- [ ] 02-02: Login screen credential validation, session controls in TopBar, retirement of top switcher bar, and Super Admin user credential manager.
+- [x] 02-01: Auth data models, credential persistence (authStorage.ts), role tab filtering, and Sidebar navigation.
+- [x] 02-02: Login screen credential validation, session controls in TopBar, retirement of top switcher bar, and Super Admin user credential manager.

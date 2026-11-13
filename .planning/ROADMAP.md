@@ -8,6 +8,8 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 
 - [x] **Phase 1: Warm Earth Palette Migration** - Migrate DESIGN.md, global CSS tokens, navigation shell (Sidebar & TopBar), and key view components to the new palette.
 - [x] **Phase 2: 4-Role Authentication and Access Control** - Implement strict authentication for Super Admin, CEO Overview, HR, and Finance with client credential persistence and role-scoped permissions.
+- [ ] **Phase 3: HR Operations, Slide One Ledger & Automated Leave** - Implement Slide One master table, recruitment 2-stage probation & drill-down, approvable transfers, and automated leave deduction.
+- [ ] **Phase 4: Finance, Store, Management Dashboards & Copilot** - Implement 9-column payroll, cheque/cash dashboard, material depreciation with Excel export, store issue/receive & min stock alerts, Technical Manager & CEO dashboards, and Copilot chatbot.
 
 ## Phase Details
 
@@ -41,8 +43,48 @@ Plans:
   4. Super Admin can manage user accounts and reset passwords in System Master Setup with `localStorage` persistence.
   5. TopBar displays the active user badge and explicit Sign Out action.
   6. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+
 **Plans:** 2 plans
 
 Plans:
 - [x] 02-01: Auth data models, credential persistence (authStorage.ts), role tab filtering, and Sidebar navigation.
 - [x] 02-02: Login screen credential validation, session controls in TopBar, retirement of top switcher bar, and Super Admin user credential manager.
+
+### Phase 3: HR Operations, Slide One Ledger & Automated Leave
+
+**Goal:** Implement the primary Slide One employee master record table, centralized recruitment with 2-stage probation and assignment drill-down, performance evaluation, approvable transfer workflows, and automated leave deduction while removing store visibility from HR.
+**Depends on:** Phase 2
+**Requirements:** REQ-MOD-001
+**Success Criteria** (what must be TRUE):
+  1. The Store module is completely removed from HR tab visibility and navigation.
+  2. HR dashboard features an Attrition Pie Chart and Workforce Distribution analytics.
+  3. The main HR landing view renders the Slide One Employee Master Record Table with columns: `[Employee Name/ID | HR Profile | Pay Record | Leave Days | Overtime Record | Site | KPI]`, with interactive drill-down drawers.
+  4. Recruitment tracks onboarding in two explicit stages (`Probation` vs. `Finished Probation`), provides a clickable Assigned Employee drill-down `[Assignment | Quantity | Location / Site]`, links to applicant CV data, and generates official documents (`Work Letter` and `Clearance`).
+  5. Includes a dedicated Performance Evaluation scoring interface.
+  6. Transfers support an explicit approval workflow (`Pending`, `Approved`, `Rejected`) with site location tracking.
+  7. Leave Management splits into `Request` and `Available` views, clearly displaying balance days, and automatically deducts approved days from employee balances upon approval.
+  8. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 3 to break down)
+
+### Phase 4: Finance, Store, Management Dashboards & Copilot
+
+**Goal:** Implement the 9-column Ethiopian payroll table, statutory tax/cash/cheque tracking, material depreciation with Excel export, store daily issue/receive & min stock alerts, CEO and Technical Manager dashboards, contextual comments, Copilot chatbot, and expand accounts to 6 dedicated logins.
+**Depends on:** Phase 3
+**Requirements:** REQ-MOD-002
+**Success Criteria** (what must be TRUE):
+  1. Finance payroll table renders all 9 standard columns: `[Name | Position | Basic | Non-Taxable Allowance | Taxable Allowance | Gross | Income Tax | Pension (7% / 11%) | Net]`.
+  2. Financial dashboard tracks debited/credited cheques and aggregate totals across Petty Cash and Cheques, with statutory tracking (VAT, income tax, 7%/11% pension, withholding).
+  3. Material depreciation tracking with attributes `[Item | Price | Quantity]`, product coding, and Excel integration/export.
+  4. Store module logs daily issue/receive, monitors company assets, and triggers minimum store stock level alerts.
+  5. CEO / GM Dashboard renders high-level summaries for Recruitment General, Finance General, and Store General.
+  6. Technical Manager Dashboard provides site status (Active vs. Inactive), real-time available personnel, attendance overview, and store stock summary.
+  7. Contextual comment writeup and interactive Copilot chatbot are active and responsive.
+  8. Account system expands to 6 dedicated logins (`admin`, `ceo`, `hr`, `finance`, `tech`, `store` with password `hab2026`).
+  9. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 4 to break down)

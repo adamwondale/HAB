@@ -38,3 +38,46 @@ The system shall restrict access to 4 distinct operational personas with dedicat
 
 3. **Super Admin Credential Management**:
    - The System Master Setup view shall provide a dedicated credential management panel allowing the Super Admin to update usernames, display names, and passwords, persisted in client storage (`localStorage`).
+
+---
+
+## Operational Modules & Workflows
+
+### REQ-MOD-001: HR Master Table, Recruitment, Transfers & Automated Leave
+The application shall implement streamlined HR operational management:
+1. **HR Scope & Controls**:
+   - Remove store inventory sections/tabs from the HR module.
+   - Provide monthly payment & increment oversight metrics.
+   - Display attrition analytics in a dedicated pie chart format alongside workforce distribution.
+2. **Slide One — Employee Master Record Table**:
+   - Main table configured with columns: `[Employee Name/ID | HR Profile | Pay Record | Leave Days | Overtime Record | Site | KPI]`.
+   - Support interactive drill-down inspection for profile, compensation, leave balances, and KPI scores.
+3. **Recruitment & Workforce Workflows**:
+   - Track onboarding status into two explicit stages: `Probation` and `Finished Probation`.
+   - Provide clickable Assigned Employee drill-down: `[Assignment | Quantity | Location / Site]`.
+   - Link applicant records directly to candidate CV and personal profile.
+   - Support existing employee document generation for `Work Letter` and `Clearance`.
+   - Include a Performance Evaluation scoring module under HR.
+4. **Transfer & Leave Management**:
+   - Transfers shall require an approvable workflow with explicit approval states and site location tracking.
+   - Leave module shall split into `Request` (applications) and `Available` (remaining balance per employee).
+   - Approving a leave application shall automatically deduct the approved days from the employee's active leave balance.
+
+### REQ-MOD-002: Finance, Store, Management Dashboards & Copilot
+The application shall implement finance compliance, store tracking, executive dashboards, and AI intelligence:
+1. **Finance & Payroll**:
+   - Salary calculation table with columns: `[Name | Position | Basic | Non-Taxable Allowance | Taxable Allowance | Gross | Income Tax | Pension (7% / 11%) | Net]`.
+   - Statutory compliance tracking for VAT, Income Tax, Pension (7%/11%), and Withholding tax.
+   - Dashboard cash & cheque tracking: debited/credited cheques and aggregate totals across Petty Cash and Cheques.
+   - Support HR attendance attachments, on-leave employee access, and material depreciation tracking `[Item | Price | Quantity]` with product coding and Excel export.
+2. **Store Module**:
+   - Daily Issue / Receive movement logs.
+   - Asset monitoring and minimum store stock level alert thresholds.
+3. **Executive & Technical Dashboards**:
+   - CEO / GM Dashboard: High-level summaries for Recruitment General, Finance General, and Store General.
+   - Technical Manager Dashboard: Categorized project sites (Active vs. Inactive), real-time available personnel, workforce attendance overview, and store available stock.
+4. **Collaboration & Intelligence**:
+   - Support comment writeups on employee dossiers and financial entries.
+   - Integrate an interactive Copilot chatbot for routine actions and inquiries.
+5. **Role Expansion**:
+   - Expand credentials and access permissions to support 6 dedicated logins: `admin`, `ceo`, `hr`, `finance`, `tech`, and `store` (default password `hab2026`).

@@ -64,10 +64,12 @@ Plans:
   6. Transfers support an explicit approval workflow (`Pending`, `Approved`, `Rejected`) with site location tracking.
   7. Leave Management splits into `Request` and `Available` views, clearly displaying balance days, and automatically deducts approved days from employee balances upon approval.
   8. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
-**Plans:** 0 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 3 to break down)
+- [ ] 03-01: HR Scope, Attrition Pie Chart, and Slide One Master Table with inspection drawers.
+- [ ] 03-02: Centralized Recruitment, 2-Stage Probation, Assigned Employee drill-down modal, Document Generator (Work Letter & Clearance), and Performance Evaluation.
+- [ ] 03-03: Approvable Transfer workflow with site tracking, Split Leave Request/Available views, and automated balance deduction on approval.
 
 ### Phase 4: Finance, Store, Management Dashboards & Copilot
 

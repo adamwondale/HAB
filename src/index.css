@@ -24,6 +24,21 @@
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Typography craft rules: balanced headings, pretty body wrap */
+  h1, h2, h3, h4, .text-balance {
+    text-wrap: balance;
+  }
+  p, .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Micro-interaction polish: smooth transition without layout shift */
+  button, input, select, textarea, a {
+    transition-property: color, background-color, border-color, box-shadow, opacity;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
 }
 
 /* HAB Business PLC Refined Table Header Theme */

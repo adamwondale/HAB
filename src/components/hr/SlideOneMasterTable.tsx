@@ -131,7 +131,7 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
 
                   {/* 3. Pay Record */}
                   <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'pay')}>
-                    <div className="font-mono font-bold text-slate-900 dark:text-white">
+                    <div className="font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                       ETB {emp.salary.baseSalary.toLocaleString()}
                     </div>
                     <div className="text-[11px] text-amber-800 dark:text-amber-400 font-semibold">
@@ -141,7 +141,7 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
 
                   {/* 4. Leave Days */}
                   <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'leave')}>
-                    <div className="flex items-center gap-1 font-mono font-bold text-slate-900 dark:text-white">
+                    <div className="flex items-center gap-1 font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                       <Calendar className="w-3 h-3 text-emerald-600" />
                       <span>{remainingDays} / 16 d</span>
                     </div>
@@ -150,7 +150,7 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
 
                   {/* 5. Overtime Record */}
                   <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'overtime')}>
-                    <div className="flex items-center gap-1 font-mono font-bold text-slate-900 dark:text-white">
+                    <div className="flex items-center gap-1 font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                       <Clock className="w-3 h-3 text-blue-600" />
                       <span>{otHours} hrs</span>
                     </div>
@@ -168,7 +168,7 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
 
                   {/* 7. KPI */}
                   <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'kpi')}>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-mono font-bold text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-mono tabular-nums font-bold text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
                       <Award className="w-3 h-3" />
                       <span>94%</span>
                     </span>

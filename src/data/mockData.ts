@@ -4,6 +4,7 @@ import {
   Deployment,
   AttendanceRecord,
   LeaveRequest,
+  EmployeeLeaveBalance,
   ClearanceRecord,
   Candidate,
   OnboardingChecklist,
@@ -1017,7 +1018,7 @@ export const INITIAL_LEAVE_REQUESTS: LeaveRequest[] = [
     appliedDate: '2026-09-25',
     replacementEmployeeId: 'emp-108',
     replacementEmployeeName: 'Tariku Girma (Reserve Pool Guard)',
-    reviewedBy: 'Kidus Worku (HR Operations Officer)'
+    reviewedBy: 'Solomon Teshome (HR Director)'
   },
   {
     id: 'lve-02',
@@ -1036,7 +1037,72 @@ export const INITIAL_LEAVE_REQUESTS: LeaveRequest[] = [
     appliedDate: '2026-10-01',
     replacementEmployeeId: '',
     replacementEmployeeName: ''
+  },
+  {
+    id: 'lve-03',
+    employeeId: 'emp-101',
+    employeeCode: 'HAB-SEC-0101',
+    employeeName: 'Abebe Kassahun',
+    serviceType: 'Security',
+    siteId: 'site-1',
+    siteName: 'Commercial Bank of Ethiopia Tower (HQ)',
+    leaveType: 'Annual Leave',
+    startDate: '2026-11-01',
+    endDate: '2026-11-05',
+    days: 4,
+    reason: 'Family harvest and seasonal travel to Bishoftu.',
+    status: 'Pending',
+    appliedDate: '2026-10-24',
+    replacementEmployeeId: '',
+    replacementEmployeeName: ''
+  },
+  {
+    id: 'lve-04',
+    employeeId: 'emp-102',
+    employeeCode: 'HAB-SEC-0102',
+    employeeName: 'Dawit Tadesse',
+    serviceType: 'Security',
+    siteId: 'site-1',
+    siteName: 'Commercial Bank of Ethiopia Tower (HQ)',
+    leaveType: 'Compassionate',
+    startDate: '2026-09-10',
+    endDate: '2026-09-18',
+    days: 8,
+    reason: 'Extended bereavement leave exceeding statutory quota.',
+    status: 'Rejected',
+    appliedDate: '2026-09-08',
+    reviewedBy: 'Solomon Teshome (Exceeds compassionate allowance)'
+  },
+  {
+    id: 'lve-05',
+    employeeId: 'emp-106',
+    employeeCode: 'HAB-CLN-0203',
+    employeeName: 'Meseret Dagne',
+    serviceType: 'Cleaning',
+    siteId: 'site-3',
+    siteName: 'Hyatt Regency Addis Ababa',
+    leaveType: 'Compassionate',
+    startDate: '2026-08-15',
+    endDate: '2026-08-18',
+    days: 3,
+    reason: 'Immediate family bereavement ceremony.',
+    status: 'Approved',
+    appliedDate: '2026-08-12',
+    reviewedBy: 'Solomon Teshome (HR Director)'
   }
+];
+
+export const INITIAL_LEAVE_BALANCES: EmployeeLeaveBalance[] = [
+  { employeeId: 'emp-101', employeeCode: 'HAB-SEC-0101', employeeName: 'Abebe Kassahun', serviceType: 'Security', annual: 14, sick: 28, compassionate: 7, totalRemaining: 49 },
+  { employeeId: 'emp-102', employeeCode: 'HAB-SEC-0102', employeeName: 'Dawit Tadesse', serviceType: 'Security', annual: 12, sick: 30, compassionate: 7, totalRemaining: 49 },
+  { employeeId: 'emp-103', employeeCode: 'HAB-CLN-0201', employeeName: 'Tigist Haile', serviceType: 'Cleaning', annual: 16, sick: 30, compassionate: 7, totalRemaining: 53 },
+  { employeeId: 'emp-104', employeeCode: 'HAB-CLN-0202', employeeName: 'Mulu Tesfaye', serviceType: 'Cleaning', annual: 15, sick: 27, compassionate: 7, totalRemaining: 49 },
+  { employeeId: 'emp-105', employeeCode: 'HAB-SEC-0105', employeeName: 'Yohannes Mekonnen', serviceType: 'Security', annual: 10, sick: 30, compassionate: 7, totalRemaining: 47 },
+  { employeeId: 'emp-106', employeeCode: 'HAB-CLN-0203', employeeName: 'Meseret Dagne', serviceType: 'Cleaning', annual: 11, sick: 30, compassionate: 4, totalRemaining: 45 },
+  { employeeId: 'emp-107', employeeCode: 'HAB-SEC-0106', employeeName: 'Almaz Bekele', serviceType: 'Security', annual: 16, sick: 30, compassionate: 7, totalRemaining: 53 },
+  { employeeId: 'emp-108', employeeCode: 'HAB-SEC-0108', employeeName: 'Tariku Girma', serviceType: 'Security', annual: 13, sick: 29, compassionate: 7, totalRemaining: 49 },
+  { employeeId: 'emp-109', employeeCode: 'HAB-CLN-0204', employeeName: 'Bethelhem Shiferaw', serviceType: 'Cleaning', annual: 16, sick: 30, compassionate: 7, totalRemaining: 53 },
+  { employeeId: 'emp-110', employeeCode: 'HAB-SEC-0110', employeeName: 'Fitsum Assefa', serviceType: 'Security', annual: 10, sick: 25, compassionate: 7, totalRemaining: 42 }
 ];
 
 // CRITICAL CLEARANCE RECORDS: Highlighting HR-owned clearance, service-specific items (Security uniforms/batons vs Cleaning overalls/heavy gloves)
@@ -1578,6 +1644,8 @@ export const INITIAL_TRANSFERS: TransferPromotionRecord[] = [
     type: 'Role Promotion',
     fromSite: 'Bole Medhanialem Commercial Complex',
     toSite: 'Commercial Bank of Ethiopia Tower (HQ)',
+    currentSite: 'Bole Medhanialem Commercial Complex',
+    destinationSite: 'Commercial Bank of Ethiopia Tower (HQ)',
     fromRole: 'Senior Guard',
     toRole: 'Security Supervisor',
     fromShift: 'Day (06:00 - 18:00)',
@@ -1586,7 +1654,7 @@ export const INITIAL_TRANSFERS: TransferPromotionRecord[] = [
     effectiveDate: '2024-01-01',
     reason: 'Exceptional vigilance during incident handling; recommended by Operations Director.',
     approvedBy: 'Solomon Teshome (HR Director)',
-    status: 'Executed'
+    status: 'approved'
   },
   {
     id: 'tr-02',
@@ -1597,6 +1665,8 @@ export const INITIAL_TRANSFERS: TransferPromotionRecord[] = [
     type: 'Site Transfer',
     fromSite: "St. Paul's Hospital Millennium Medical College",
     toSite: 'Hyatt Regency Addis Ababa',
+    currentSite: "St. Paul's Hospital Millennium Medical College",
+    destinationSite: 'Hyatt Regency Addis Ababa',
     fromRole: 'Commercial Cleaner',
     toRole: 'Commercial Cleaner',
     fromShift: 'Morning (07:00 - 15:00)',
@@ -1604,8 +1674,71 @@ export const INITIAL_TRANSFERS: TransferPromotionRecord[] = [
     salaryChangeETB: 400,
     effectiveDate: '2024-03-20',
     reason: 'Employee residence relocation closer to Meskel Square; operational vacancy filled.',
-    approvedBy: 'Kidus Worku (HR Operations Officer)',
-    status: 'Executed'
+    approvedBy: 'Solomon Teshome (HR Director)',
+    status: 'approved'
+  },
+  {
+    id: 'tr-03',
+    employeeId: 'emp-102',
+    employeeCode: 'HAB-SEC-0102',
+    employeeName: 'Dawit Tadesse',
+    serviceType: 'Security',
+    type: 'Site Transfer',
+    fromSite: 'Commercial Bank of Ethiopia Tower (HQ)',
+    toSite: 'Bole Medhanialem Commercial Complex',
+    currentSite: 'Commercial Bank of Ethiopia Tower (HQ)',
+    destinationSite: 'Bole Medhanialem Commercial Complex',
+    fromRole: 'Armed Security Officer',
+    toRole: 'Armed Security Officer',
+    fromShift: 'Day (06:00 - 18:00)',
+    toShift: 'Day (06:00 - 18:00)',
+    salaryChangeETB: 0,
+    effectiveDate: '2026-11-20',
+    reason: 'Reinforcement for holiday shopping security cordon.',
+    approvedBy: '',
+    status: 'pending'
+  },
+  {
+    id: 'tr-04',
+    employeeId: 'emp-103',
+    employeeCode: 'HAB-CLN-0201',
+    employeeName: 'Tigist Haile',
+    serviceType: 'Cleaning',
+    type: 'Role Promotion',
+    fromSite: 'Sunshine Real Estate Luxury Residences',
+    toSite: 'Hyatt Regency Addis Ababa',
+    currentSite: 'Sunshine Real Estate Luxury Residences',
+    destinationSite: 'Hyatt Regency Addis Ababa',
+    fromRole: 'Commercial Cleaner',
+    toRole: 'Cleaning Supervisor',
+    fromShift: 'Morning (07:00 - 15:00)',
+    toShift: 'Morning (07:00 - 15:00)',
+    salaryChangeETB: 1200,
+    effectiveDate: '2026-10-15',
+    reason: 'Promotion request outside current district quota.',
+    approvedBy: 'Operations Director',
+    status: 'rejected'
+  },
+  {
+    id: 'tr-05',
+    employeeId: 'emp-108',
+    employeeCode: 'HAB-SEC-0108',
+    employeeName: 'Tariku Girma',
+    serviceType: 'Security',
+    type: 'Site Transfer',
+    fromSite: 'Reserve Pool / HQ',
+    toSite: 'Ethiopian Airlines Cargo Terminal Hub',
+    currentSite: 'Reserve Pool / HQ',
+    destinationSite: 'Ethiopian Airlines Cargo Terminal Hub',
+    fromRole: 'Tactical Patrol Guard',
+    toRole: 'Tactical Patrol Guard',
+    fromShift: 'Day (06:00 - 18:00)',
+    toShift: '24h Duty (24hr ON / 48hr REST)',
+    salaryChangeETB: 500,
+    effectiveDate: '2026-11-25',
+    reason: 'Permanent transfer from standby pool to air cargo gate checkpoint.',
+    approvedBy: '',
+    status: 'pending'
   }
 ];
 

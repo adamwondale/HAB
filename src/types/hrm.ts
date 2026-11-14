@@ -167,6 +167,17 @@ export interface LeaveRequest {
   reviewedBy?: string;
 }
 
+export interface EmployeeLeaveBalance {
+  employeeId: string;
+  employeeCode: string;
+  employeeName: string;
+  serviceType: ServiceType;
+  annual: number;
+  sick: number;
+  compassionate: number;
+  totalRemaining: number;
+}
+
 export interface IssuedClearanceItem {
   id: string;
   name: string;

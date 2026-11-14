@@ -29,6 +29,8 @@ import { WorkforceDistributionChart } from './WorkforceDistributionChart';
 import { AttritionPieChart } from './AttritionPieChart';
 import { PaymentIncrementOversightCard } from './PaymentIncrementOversightCard';
 import { SharedRecordsTable } from './SharedRecordsTable';
+import { ExecutiveCeoSummary } from './dashboard/ExecutiveCeoSummary';
+import { TechnicalManagerDashboard } from './dashboard/TechnicalManagerDashboard';
 
 interface DashboardOverviewProps {
   employees: Employee[];
@@ -53,6 +55,8 @@ interface DashboardOverviewProps {
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   employees,
+  sites = [],
+  attendance = [],
   clearances,
   leaveRequests,
   onboardingList,
@@ -136,6 +140,31 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           );
         })}
       </section>
+
+      {/* Role-Specific Executive & Technical Dashboards */}
+      {(activeUser?.role === 'executive' || activeUser?.role === 'super_admin') && (
+        <section aria-labelledby="ceo-summary-title">
+          <ExecutiveCeoSummary
+            employees={activeEmployees}
+            candidates={candidates}
+            payroll={payroll}
+            stockItems={stockItems}
+            onNavigateTab={onNavigateTab}
+          />
+        </section>
+      )}
+
+      {(activeUser?.role === 'tech' || activeUser?.role === 'super_admin') && (
+        <section aria-labelledby="tech-summary-title">
+          <TechnicalManagerDashboard
+            sites={sites}
+            employees={activeEmployees}
+            attendance={attendance}
+            stockItems={stockItems}
+            onNavigateTab={onNavigateTab}
+          />
+        </section>
+      )}
 
       {/* Analytics Charts: Workforce Distribution alongside Attrition Analytics */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-2">

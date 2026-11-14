@@ -90,8 +90,8 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 04-01: 6-Role Authentication Expansion & Shared Craft Design Tokens.
-- [ ] 04-02: Finance 9-Column Payroll, Tax & Cheque Controls, and Material Depreciation.
-- [ ] 04-03: Store Daily Issue/Receive, Asset Register, and Minimum Stock Alerts.
-- [ ] 04-04: Executive & Technical Dashboards, Record Comments, and Copilot Chatbot.
-- [ ] 04-05: Global UI Unslop & Design-Craft Audit across all ERP views.
+- [x] 04-01: 6-Role Authentication Expansion & Shared Craft Design Tokens.
+- [x] 04-02: Finance 9-Column Payroll, Tax & Cheque Controls, and Material Depreciation.
+- [x] 04-03: Store Daily Issue/Receive, Asset Register, and Minimum Stock Alerts.
+- [x] 04-04: Executive & Technical Dashboards, Record Comments, and Copilot Chatbot.
+- [x] 04-05: Global UI Unslop & Design-Craft Audit across all ERP views.

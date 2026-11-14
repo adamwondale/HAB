@@ -45,6 +45,22 @@ export const DEFAULT_ACCOUNTS: UserAccount[] = [
     department: 'Finance', avatarColor: 'bg-emerald-600 text-white',
     permissions: { ...READ_ONLY_PERMS, canApproveClearance: true, canApprovePayroll: true, canVerifyInventoryReturn: true },
     responsibilities: ['30-Day payroll sheets', 'Statutory taxes & pension', 'Clearance financial settlements', 'Store inventory valuation']
+  },
+  {
+    id: 'tech', username: 'tech', password: 'hab2026', email: 'tech.ops@hab-business.com',
+    fullName: 'Eng. Solomon Fikre', name: 'Eng. Solomon Fikre', amharicName: 'ኢ/ር ሰለሞን ፍቅሬ',
+    role: 'tech', roleTitle: 'Technical Operations Manager', roleAmharicTitle: 'የቴክኒክ ስራዎች ኃላፊ',
+    department: 'Operations', avatarColor: 'bg-blue-600 text-white',
+    permissions: { ...READ_ONLY_PERMS, canManageShiftsAndDeployments: true, canVerifyInventoryReturn: true },
+    responsibilities: ['Technical operations oversight', 'Project site deployments', 'Field workforce monitoring', 'Equipment coordination']
+  },
+  {
+    id: 'store', username: 'store', password: 'hab2026', email: 'store@hab-business.com',
+    fullName: 'Ato Girma Wolde', name: 'Ato Girma Wolde', amharicName: 'አቶ ግርማ ወልዴ',
+    role: 'store', roleTitle: 'Store & Inventory Controller', roleAmharicTitle: 'የዕቃ ግምጃ ቤትና ንብረት ተቆጣጣሪ',
+    department: 'Property Administration', avatarColor: 'bg-amber-700 text-white',
+    permissions: { ...READ_ONLY_PERMS, canVerifyInventoryReturn: true },
+    responsibilities: ['Store daily issue & receipt', 'Asset register maintenance', 'Minimum stock threshold alerts', 'Clearance property handovers']
   }
 ];
 
@@ -57,7 +73,16 @@ export function getStoredAccounts(): UserAccount[] {
       return DEFAULT_ACCOUNTS;
     }
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      const existingIds = new Set(parsed.map((a: UserAccount) => a.id));
+      const missing = DEFAULT_ACCOUNTS.filter((def) => !existingIds.has(def.id));
+      if (missing.length > 0) {
+        const merged = [...parsed, ...missing];
+        saveAccounts(merged);
+        return merged;
+      }
+      return parsed;
+    }
   } catch (err) {
     console.error('Failed reading stored accounts', err);
   }

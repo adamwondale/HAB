@@ -45,7 +45,7 @@ export const UserCredentialManager: React.FC<UserCredentialManagerProps> = ({ on
   const handleResetAll = () => {
     resetToDefaults();
     setAccounts(getStoredAccounts());
-    notify('All 4 system user accounts reset to default credentials (hab2026).');
+    notify('All 6 system user accounts reset to default credentials (hab2026).');
     if (onAccountUpdated) onAccountUpdated();
   };
 
@@ -58,7 +58,7 @@ export const UserCredentialManager: React.FC<UserCredentialManagerProps> = ({ on
             <span>User Credentials & Access Control</span>
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Super Admin authority to view, change passwords, and reset credentials for the 4 core ERP accounts.
+            Super Admin authority to view, change passwords, and reset credentials for all 6 core ERP accounts.
           </p>
         </div>
         <button

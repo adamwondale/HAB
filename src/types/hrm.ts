@@ -402,7 +402,7 @@ export type ManagementDepartment =
   | 'Property Administration'
   | 'Marketing';
 
-export type CoreRoleType = 'super_admin' | 'executive' | 'hr' | 'finance';
+export type CoreRoleType = 'super_admin' | 'executive' | 'hr' | 'finance' | 'tech' | 'store';
 
 export interface UserAccount {
   id: string;

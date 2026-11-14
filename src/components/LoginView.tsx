@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ManagementPerson } from '../types/hrm';
 import { HabMonogramIcon } from './HabLogo';
 import { authenticate, accountToManagementPerson, setActiveSession } from '../utils/authStorage';
-import { ShieldCheck, Eye, Users, DollarSign, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Eye, Users, DollarSign, Wrench, Package, AlertCircle } from 'lucide-react';
 
 interface LoginViewProps {
   managementPersons?: ManagementPerson[];
@@ -21,7 +21,9 @@ const QUICK_FILL_ROLES: QuickFillRole[] = [
   { roleId: 'admin', label: 'Admin', username: 'admin', icon: ShieldCheck, roleHint: 'Super Admin' },
   { roleId: 'ceo', label: 'CEO', username: 'ceo', icon: Eye, roleHint: 'Executive' },
   { roleId: 'hr', label: 'HR', username: 'hr', icon: Users, roleHint: 'Operations' },
-  { roleId: 'finance', label: 'Finance', username: 'finance', icon: DollarSign, roleHint: 'Payroll' }
+  { roleId: 'finance', label: 'Finance', username: 'finance', icon: DollarSign, roleHint: 'Payroll' },
+  { roleId: 'tech', label: 'Tech', username: 'tech', icon: Wrench, roleHint: 'Operations' },
+  { roleId: 'store', label: 'Store', username: 'store', icon: Package, roleHint: 'Inventory' }
 ];
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
@@ -82,7 +84,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="admin, ceo, hr, or finance"
+                placeholder="admin, ceo, hr, finance, tech, store"
                 required
                 className="w-full bg-white text-[#4C4541] placeholder-[#8C847E] rounded-lg px-3.5 py-2.5 text-sm border border-[#EFE7D8] focus:outline-none focus:ring-2 focus:ring-[#F2C46A] shadow-xs"
               />

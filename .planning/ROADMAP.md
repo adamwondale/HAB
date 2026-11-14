@@ -75,9 +75,9 @@ Plans:
 
 **Goal:** Implement the 9-column Ethiopian payroll table, statutory tax/cash/cheque tracking, material depreciation with Excel export, store daily issue/receive & min stock alerts, CEO and Technical Manager dashboards, contextual comments, Copilot chatbot, and expand accounts to 6 dedicated logins.
 **Depends on:** Phase 3
-**Requirements:** REQ-MOD-002
+**Requirements:** REQ-MOD-002, REQ-CRAFT-001
 **Success Criteria** (what must be TRUE):
-  1. Finance payroll table renders all 9 standard columns: `[Name | Position | Basic | Non-Taxable Allowance | Taxable Allowance | Gross | Income Tax | Pension (7% / 11%) | Net]`.
+  1. Finance payroll table renders all 9 standard columns: `[Name | Position | Basic | Non-Taxable Allowance | Taxable Allowance | Gross | Income Tax | Pension (7% / 11%) | Net]` with `tabular-nums` formatting.
   2. Financial dashboard tracks debited/credited cheques and aggregate totals across Petty Cash and Cheques, with statutory tracking (VAT, income tax, 7%/11% pension, withholding).
   3. Material depreciation tracking with attributes `[Item | Price | Quantity]`, product coding, and Excel integration/export.
   4. Store module logs daily issue/receive, monitors company assets, and triggers minimum store stock level alerts.
@@ -85,8 +85,13 @@ Plans:
   6. Technical Manager Dashboard provides site status (Active vs. Inactive), real-time available personnel, attendance overview, and store stock summary.
   7. Contextual comment writeup and interactive Copilot chatbot are active and responsive.
   8. Account system expands to 6 dedicated logins (`admin`, `ceo`, `hr`, `finance`, `tech`, `store` with password `hab2026`).
-  9. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
-**Plans:** 0 plans
+  9. Comprehensive design-craft audit (`charles-unslop` and `charles-polish`) executed across all ERP modules ensuring 0 AI tells, 4px grid spacing, and smooth micro-interactions.
+  10. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+**Plans:** 5 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 4 to break down)
+- [ ] 04-01: 6-Role Authentication Expansion & Shared Craft Design Tokens.
+- [ ] 04-02: Finance 9-Column Payroll, Tax & Cheque Controls, and Material Depreciation.
+- [ ] 04-03: Store Daily Issue/Receive, Asset Register, and Minimum Stock Alerts.
+- [ ] 04-04: Executive & Technical Dashboards, Record Comments, and Copilot Chatbot.
+- [ ] 04-05: Global UI Unslop & Design-Craft Audit across all ERP views.

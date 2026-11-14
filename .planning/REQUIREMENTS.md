@@ -81,3 +81,21 @@ The application shall implement finance compliance, store tracking, executive da
    - Integrate an interactive Copilot chatbot for routine actions and inquiries.
 5. **Role Expansion**:
    - Expand credentials and access permissions to support 6 dedicated logins: `admin`, `ceo`, `hr`, `finance`, `tech`, and `store` (default password `hab2026`).
+
+---
+
+## Design Craft & Interface Rigor
+
+### REQ-CRAFT-001: Design Craft, Anti-Slop & Micro-Interaction Standards
+All application views and components shall implement the design-craft principles established in `charles-skills`:
+1. **Anti-Slop Subtraction**:
+   - Delete unnecessary hairline dividers and container nesting; rely on strict 4px grid spacing hierarchy (`gap-3` within groups, `gap-6` between groups).
+   - Eliminate decorative badges, gradient borders, and generic emoji icons. Functional indicators shall use consistent Lucide line icons.
+2. **Typography & Tabular Numerals**:
+   - All currency (ETB), tax rates, hours, balances, and numerical quantities shall apply `tabular-nums` (`font-variant-numeric: tabular-nums`) to prevent layout shifts during updates.
+   - Headings shall apply `text-wrap: balance` for clean, professional typographic rag.
+3. **Contrast & Surface Hierarchy**:
+   - Maintain resting state contrast between input fields (`bg-white`) and action buttons (`#F2C46A` gold CTA or `#FCF0DA` secondary), avoiding ambiguous identical white slabs.
+   - Text contrast on `#F2C46A` and `#FCF0DA` shall strictly use `#4C4541` (Deep Espresso) meeting WCAG AAA.
+4. **Motion & Feedback**:
+   - State transitions and modal animations shall use responsive durations (100–250ms) with physics-based springs, avoiding jarring cuts or sluggish floats.

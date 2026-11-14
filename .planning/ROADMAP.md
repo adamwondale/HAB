@@ -8,7 +8,7 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 
 - [x] **Phase 1: Warm Earth Palette Migration** - Migrate DESIGN.md, global CSS tokens, navigation shell (Sidebar & TopBar), and key view components to the new palette.
 - [x] **Phase 2: 4-Role Authentication and Access Control** - Implement strict authentication for Super Admin, CEO Overview, HR, and Finance with client credential persistence and role-scoped permissions.
-- [ ] **Phase 3: HR Operations, Slide One Ledger & Automated Leave** - Implement Slide One master table, recruitment 2-stage probation & drill-down, approvable transfers, and automated leave deduction.
+- [x] **Phase 3: HR Operations, Slide One Ledger & Automated Leave** - Implement Slide One master table, recruitment 2-stage probation & drill-down, approvable transfers, and automated leave deduction.
 - [ ] **Phase 4: Finance, Store, Management Dashboards & Copilot** - Implement 9-column payroll, cheque/cash dashboard, material depreciation with Excel export, store issue/receive & min stock alerts, Technical Manager & CEO dashboards, and Copilot chatbot.
 
 ## Phase Details
@@ -67,9 +67,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 03-01: HR Scope, Attrition Pie Chart, and Slide One Master Table with inspection drawers.
-- [ ] 03-02: Centralized Recruitment, 2-Stage Probation, Assigned Employee drill-down modal, Document Generator (Work Letter & Clearance), and Performance Evaluation.
-- [ ] 03-03: Approvable Transfer workflow with site tracking, Split Leave Request/Available views, and automated balance deduction on approval.
+- [x] 03-01: HR Scope, Attrition Pie Chart, and Slide One Master Table with inspection drawers.
+- [x] 03-02: Centralized Recruitment, 2-Stage Probation, Assigned Employee drill-down modal, Document Generator (Work Letter & Clearance), and Performance Evaluation.
+- [x] 03-03: Approvable Transfer workflow with site tracking, Split Leave Request/Available views, and automated balance deduction on approval.
 
 ### Phase 4: Finance, Store, Management Dashboards & Copilot
 

@@ -10,3 +10,7 @@ coverage/
 # Generated Figma HTML/CSS export folders
 /html/
 /public/html/
+.agents
+.aistudio
+.impeccable
+.planning

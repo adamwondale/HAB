@@ -1,5 +1,7 @@
 import { ManagementPerson, CoreRoleType } from '../types/hrm';
 import { CORE_ROLE_CONFIGS } from './roleDefinitions';
+import { ROLE_ALLOWED_TABS } from './roleTabs';
+export { ROLE_ALLOWED_TABS } from './roleTabs';
 
 export type RoleInterfaceType =
   | CoreRoleType
@@ -32,37 +34,6 @@ export interface RoleConfig {
     allowed: boolean;
   }[];
 }
-
-export const ROLE_ALLOWED_TABS: Record<CoreRoleType, string[] | 'ALL'> = {
-  super_admin: 'ALL',
-  executive: [
-    'overview',
-    'management',
-    'deployment',
-    'attendance',
-    'leave',
-    'recruitment',
-    'onboarding',
-    'payroll',
-    'store',
-    'clearance',
-    'experience'
-  ],
-  hr: [
-    'overview',
-    'management',
-    'deployment',
-    'attendance',
-    'leave',
-    'recruitment',
-    'onboarding',
-    'clearance',
-    'experience'
-  ],
-  finance: ['overview', 'payroll', 'store', 'clearance', 'attendance'],
-  tech: ['overview', 'deployment', 'attendance', 'store', 'management'],
-  store: ['overview', 'store', 'clearance', 'onboarding']
-};
 
 export function getRoleAllowedTabs(target?: string | ManagementPerson): string[] | 'ALL' {
   const id = typeof target === 'string' ? target : target?.role || target?.id;

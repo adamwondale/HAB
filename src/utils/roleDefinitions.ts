@@ -1,5 +1,5 @@
-import { RoleConfig } from './roleConfig';
-import { ROLE_ALLOWED_TABS } from './roleConfig';
+import type { RoleConfig } from './roleConfig';
+import { ROLE_ALLOWED_TABS } from './roleTabs';
 
 export const CORE_ROLE_CONFIGS: Record<string, RoleConfig> = {
   super_admin: {

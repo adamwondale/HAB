@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Search, Download, Plus, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { StockItem, ServiceType } from '../../types/hrm';
+import { Division } from '../../types/division';
 import { downloadCsv } from '../../utils/csvExport';
 
 interface StockCatalogTableProps {
   stockItems: StockItem[];
+  divisions?: Division[];
   canManage: boolean;
   onOpenAddItem: () => void;
   onOpenQuickTx: (item: StockItem, type: 'Issued (Out)' | 'Received (Restock)') => void;
@@ -12,15 +14,24 @@ interface StockCatalogTableProps {
 
 export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
   stockItems,
+  divisions,
   canManage,
   onOpenAddItem,
   onOpenQuickTx
 }) => {
-  const [selectedDivision, setSelectedDivision] = useState<'All' | ServiceType>('All');
+  const [selectedDivision, setSelectedDivision] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const divisionList = divisions && divisions.length > 0
+    ? ['All', ...divisions.map((d) => d.name)]
+    : ['All', 'Security', 'Cleaning', 'Property Management', 'Head Office Staff'];
+
+  const categories = Array.from(new Set(stockItems.map((i) => i.category)));
 
   const filtered = stockItems.filter((item) => {
     if (selectedDivision !== 'All' && item.division !== selectedDivision) return false;
+    if (selectedCategory !== 'All' && item.category !== selectedCategory) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       return (
@@ -87,7 +98,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
       {/* Filters and search */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
-          {(['All', 'Security', 'Cleaning', 'Property Management', 'Head Office Staff'] as const).map((div) => (
+          {divisionList.map((div) => (
             <button
               key={div}
               type="button"
@@ -102,15 +113,27 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
             </button>
           ))}
         </div>
-        <div className="relative w-full sm:w-64">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search catalog by name, code..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs"
-          />
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium"
+          >
+            <option value="All">All Categories</option>
+            {categories.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <div className="relative w-full sm:w-56">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search catalog..."
+              className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs"
+            />
+          </div>
         </div>
       </div>
 
@@ -130,7 +153,14 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {filtered.map((i) => {
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="py-8 text-center text-slate-400 italic">
+                  No catalog items found matching selected filters.
+                </td>
+              </tr>
+            ) : (
+              filtered.map((i) => {
               const isLow = i.quantityInStock <= i.minReorderLevel;
               return (
                 <tr key={i.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
@@ -172,7 +202,8 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
                   </td>
                 </tr>
               );
-            })}
+            })
+            )}
           </tbody>
         </table>
       </div>

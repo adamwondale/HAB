@@ -12,12 +12,14 @@ import {
   StockItem,
   StockTransaction,
   TransferPromotionRecord,
-  WorkExperienceRecord
+  WorkExperienceRecord,
+  Division
 } from '../../types/hrm';
 import { SystemMasterConfig } from '../../types/masterConfig';
 
 export type ModuleId =
   | 'org'
+  | 'divisions'
   | 'recruitment'
   | 'onboarding'
   | 'management'
@@ -29,7 +31,8 @@ export type ModuleId =
   | 'transfers'
   | 'experience'
   | 'clearance'
-  | 'master-setup';
+  | 'master-setup'
+  | 'audit';
 
 export type CellTone = 'good' | 'warn' | 'bad' | 'quiet';
 
@@ -78,5 +81,6 @@ export interface WorkspaceData {
   managementPersons: ManagementPerson[];
   stockItems: StockItem[];
   stockTransactions: StockTransaction[];
+  divisions?: Division[];
   masterConfig: SystemMasterConfig;
 }

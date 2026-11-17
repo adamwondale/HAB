@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   Users, MapPin, Clock, Calendar, CreditCard, ArrowRightLeft, 
   Award, LogOut, CheckSquare, UserPlus, Package, Sliders,
-  Briefcase, ShieldCheck, Wallet, Scale 
+  Briefcase, ShieldCheck, Wallet, Scale, Building2 
 } from 'lucide-react';
 
 import { ServiceType, ManagementPerson } from '../../types/hrm';
@@ -63,6 +63,12 @@ export function buildNavCategories(params: NavCategoryParams): NavCategory[] {
       fullName: isAmharic ? 'የሰው ኃይል፣ ምልመላ እና ቅጥር አስተዳደር' : 'Employee records and hiring',
       icon: Briefcase,
       items: [
+        {
+          id: 'divisions',
+          label: isAmharic ? 'ዲቪዥኖች' : 'Divisions',
+          fullName: isAmharic ? 'የስራ ክፍሎች እና ዲቪዥን አስተዳደር' : 'Manage company divisions',
+          icon: Building2
+        },
         {
           id: 'management',
           label: isAmharic ? t('nav.employees') : 'Employees',
@@ -161,6 +167,12 @@ export function buildNavCategories(params: NavCategoryParams): NavCategory[] {
           label: isAmharic ? 'ማስተር ሴትአፕ' : 'Settings',
           fullName: isAmharic ? 'የሲስተም ማስተር ሴትአፕ እና የቀመር ህጎች' : 'View important system rules',
           icon: Sliders
+        },
+        {
+          id: 'audit',
+          label: isAmharic ? 'የስርዓት ኦዲት' : 'Audit Log',
+          fullName: isAmharic ? 'የስርዓት ኦዲት እና የክስተቶች መዝገብ' : 'View sensitive activity audit trail',
+          icon: ShieldCheck
         }
       ]
     }

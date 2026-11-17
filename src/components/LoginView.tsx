@@ -19,11 +19,11 @@ interface QuickFillRole {
 
 const QUICK_FILL_ROLES: QuickFillRole[] = [
   { roleId: 'admin', label: 'Admin', username: 'admin', icon: ShieldCheck, roleHint: 'Super Admin' },
-  { roleId: 'ceo', label: 'CEO', username: 'ceo', icon: Eye, roleHint: 'Executive' },
-  { roleId: 'hr', label: 'HR', username: 'hr', icon: Users, roleHint: 'Operations' },
-  { roleId: 'finance', label: 'Finance', username: 'finance', icon: DollarSign, roleHint: 'Payroll' },
-  { roleId: 'tech', label: 'Tech', username: 'tech', icon: Wrench, roleHint: 'Operations' },
-  { roleId: 'store', label: 'Store', username: 'store', icon: Package, roleHint: 'Inventory' }
+  { roleId: 'hr', label: 'HR', username: 'hr', icon: Users, roleHint: 'Workforce & Rosters' },
+  { roleId: 'finance', label: 'Finance', username: 'finance', icon: DollarSign, roleHint: '30-Day Payroll' },
+  { roleId: 'store', label: 'Store', username: 'store', icon: Package, roleHint: 'Inventory & Gear' },
+  { roleId: 'operations', label: 'Operations', username: 'operations', icon: Wrench, roleHint: 'Site Deployments' },
+  { roleId: 'ceo', label: 'CEO', username: 'ceo', icon: Eye, roleHint: 'Executive Oversight' }
 ];
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {

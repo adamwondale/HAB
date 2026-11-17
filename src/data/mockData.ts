@@ -13,8 +13,64 @@ import {
   WorkExperienceRecord,
   ManagementPerson,
   StockItem,
-  StockTransaction
+  StockTransaction,
+  Division
 } from '../types/hrm';
+
+export const INITIAL_DIVISIONS: Division[] = [
+  {
+    id: 'div-sec',
+    code: 'SEC',
+    name: 'Security',
+    amharicName: 'የጥበቃ እና ደህንነት አገልግሎት',
+    description: 'Corporate guard deployments, access control turnstiles, VIP executive protection, and 24/7 client asset surveillance.',
+    status: 'Active',
+    headOfDivision: 'Captain Berhanu Tesfaye',
+    headEmail: 'security.lead@hab-business.com',
+    headPhone: '+251 911 445 566',
+    establishedDate: '2019-01-15',
+    targetHeadcount: 60
+  },
+  {
+    id: 'div-cln',
+    code: 'CLN',
+    name: 'Cleaning',
+    amharicName: 'የጽዳት እና ሳኒቴሽን አገልግሎት',
+    description: 'Commercial janitorial services, hospital sanitization, deep floor care, industrial scrubbing, and waste handling.',
+    status: 'Active',
+    headOfDivision: 'W/ro Selamawit Alemu',
+    headEmail: 'cleaning.lead@hab-business.com',
+    headPhone: '+251 922 778 899',
+    establishedDate: '2019-03-01',
+    targetHeadcount: 50
+  },
+  {
+    id: 'div-prop',
+    code: 'PROP',
+    name: 'Property Management',
+    amharicName: 'የንብረት እና ተቋማት አስተዳደር',
+    description: 'Commercial complex facilities management, HVAC and electrical systems, backup generator maintenance, and tenant SLA upkeep.',
+    status: 'Active',
+    headOfDivision: 'Ato Daniel Kebede',
+    headEmail: 'property.lead@hab-business.com',
+    headPhone: '+251 933 112 233',
+    establishedDate: '2021-06-10',
+    targetHeadcount: 20
+  },
+  {
+    id: 'div-hq',
+    code: 'HQ',
+    name: 'Head Office Staff',
+    amharicName: 'የዋና መስሪያ ቤት አመራር እና ድጋፍ ሰጪ',
+    description: 'Executive management, HR recruitment and payroll administration, finance, store logistics, and corporate compliance.',
+    status: 'Active',
+    headOfDivision: 'Ato Dawit Mekonnen',
+    headEmail: 'gm@hab-business.com',
+    headPhone: '+251 911 223 344',
+    establishedDate: '2018-11-01',
+    targetHeadcount: 15
+  }
+];
 
 export const INITIAL_CLIENT_SITES: ClientSite[] = [
   {

@@ -9,9 +9,52 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 1: Warm Earth Palette Migration** - Migrate DESIGN.md, global CSS tokens, navigation shell (Sidebar & TopBar), and key view components to the new palette.
 - [x] **Phase 2: 4-Role Authentication and Access Control** - Implement strict authentication for Super Admin, CEO Overview, HR, and Finance with client credential persistence and role-scoped permissions.
 - [x] **Phase 3: HR Operations, Slide One Ledger & Automated Leave** - Implement Slide One master table, recruitment 2-stage probation & drill-down, approvable transfers, and automated leave deduction.
-- [ ] **Phase 4: Finance, Store, Management Dashboards & Copilot** - Implement 9-column payroll, cheque/cash dashboard, material depreciation with Excel export, store issue/receive & min stock alerts, Technical Manager & CEO dashboards, and Copilot chatbot.
+- [x] **Phase 4: Finance, Store, Management Dashboards & Copilot** - Implement 9-column payroll, cheque/cash dashboard, material depreciation with Excel export, store issue/receive & min stock alerts, Technical Manager & CEO dashboards, and Copilot chatbot.
+- [x] **Phase 5: Division Management** - Manageable division records (Security, Cleaning, Property Management, Head Office Staff, and custom), dynamic CRUD, employee division assignment, and reports integration.
+- [x] **Phase 6: Payroll Management Enhancement** - Strict 30-day basis, 16-column calculation sheet, separate 11% non-deductible employer pension, allowance/deduction breakdowns, and totals.
+- [x] **Phase 7: Store and Inventory Management** - 7 item categories, Stock In, Stock Out with positive stock enforcement, Employee Equipment Allocation register, and Damaged/Lost item tracking.
+- [x] **Phase 8: Role-Based Access Control (RBAC)** - Role boundaries for Admin, HR, Finance, Store, and Operations, with navigation protection and audit logging.
+- [ ] **Phase 9: Integration and Final Polish** - Full cross-module sync, responsive checks, empty/error states, and end-to-end verification.
 
 ## Phase Details
+
+### Phase 8: Role-Based Access Control (RBAC)
+
+**Goal:** Implement departmental permissions for System Administrator, HR, Finance, Store, and Operations; 403 route-guard barrier; operation-level restrictions; and immutable activity audit logging.
+**Depends on:** Phase 7
+**Requirements:** REQ-RBAC-001
+**Success Criteria** (what must be TRUE):
+  1. Unauthorized URL alterations (e.g. ?tab=payroll for HR/Store) trigger the 403 AccessDeniedBarrier.
+  2. HR restricted from authorizing final payroll; Finance restricted from modifying HR employee records.
+  3. Store and Operations restricted from confidential payroll data.
+  4. Activity audit log persists state mutations (actor, action, timestamp, previous/new value).
+  5. 5 pre-configured accounts (admin, hr, finance, store, operations) accessible via quick-fill login chips.
+  6. All components <= 250 lines; TypeScript compilation clean.
+
+**Plans:** 1 plan
+
+Plans:
+- [x] 08-01: RBAC route barriers, operation-level permissions, audit trail logging, and pre-configured logins.
+
+### Phase 7: Store and Inventory Management
+
+**Goal:** Implement 7 item categories, Stock In, Stock Out with positive stock enforcement, Employee Equipment Allocation register, and Damaged/Lost item quarantine tracking.
+**Depends on:** Phase 6
+**Requirements:** REQ-STORE-001
+**Success Criteria** (what must be TRUE):
+  1. StockCategory supports all 7 client categories (Cleaning Equipment, Cleaning Chemicals, Security Equipment, Uniforms, Safety Equipment, Office Supplies, General Consumables).
+  2. Stock In records supplier, quantity, cost, reference code.
+  3. Stock Out prevents negative stock balance with strict input validation.
+  4. Employee Equipment Allocation tracks employee, item, quantity, issue date, expected return date, actual return date, and condition.
+  5. Damaged or lost items are quarantined and not automatically added back to available inventory.
+  6. Inventory dashboard displays SKUs, physical stock, low stock, out of stock, in-field gear, and valuation.
+  7. Direct workspace routing for activeTab === 'store'.
+  8. All components strictly under 250 lines; TypeScript compilation clean.
+
+**Plans:** 1 plan
+
+Plans:
+- [x] 07-01: Store catalog, non-negative movements, equipment allocation, quarantined returns, and inventory dashboard.
 
 ### Phase 1: Warm Earth Palette Migration
 

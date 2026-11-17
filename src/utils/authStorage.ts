@@ -47,6 +47,14 @@ export const DEFAULT_ACCOUNTS: UserAccount[] = [
     responsibilities: ['30-Day payroll sheets', 'Statutory taxes & pension', 'Clearance financial settlements', 'Store inventory valuation']
   },
   {
+    id: 'operations', username: 'operations', password: 'hab2026', email: 'operations@hab-business.com',
+    fullName: 'Eng. Solomon Fikre', name: 'Eng. Solomon Fikre', amharicName: 'አቶ ሰለሞን ፍቅሬ',
+    role: 'operations', roleTitle: 'Operations & Site Deployments Manager', roleAmharicTitle: 'የኦፕሬሽንና ስምሪት ኃላፊ',
+    department: 'Operations', avatarColor: 'bg-blue-600 text-white',
+    permissions: { ...READ_ONLY_PERMS, canManageShiftsAndDeployments: true, canVerifyInventoryReturn: true },
+    responsibilities: ['Field service deployments', 'Client site operations', 'Guards & cleaners roster', 'Equipment requisition']
+  },
+  {
     id: 'tech', username: 'tech', password: 'hab2026', email: 'tech.ops@hab-business.com',
     fullName: 'Eng. Solomon Fikre', name: 'Eng. Solomon Fikre', amharicName: 'ኢ/ር ሰለሞን ፍቅሬ',
     role: 'tech', roleTitle: 'Technical Operations Manager', roleAmharicTitle: 'የቴክኒክ ስራዎች ኃላፊ',

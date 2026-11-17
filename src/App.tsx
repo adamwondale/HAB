@@ -4,6 +4,9 @@ import { TopBar } from './components/TopBar';
 import { DashboardOverview } from './components/DashboardOverview';
 import { SimpleWorkspace } from './components/simple-workspace/SimpleWorkspace';
 import { getRoleAllowedTabs } from './utils/roleConfig';
+import { isTabAllowedForRole } from './utils/rbacPermissions';
+import { AccessDeniedBarrier } from './components/rbac/AccessDeniedBarrier';
+import { logAuditEvent } from './utils/auditLogger';
 import { HabMonogramIcon } from './components/HabLogo';
 import { LoginView } from './components/LoginView';
 import {
@@ -33,7 +36,8 @@ import {
   INITIAL_WORK_EXPERIENCES,
   INITIAL_MANAGEMENT_PERSONS,
   INITIAL_STOCK_ITEMS,
-  INITIAL_STOCK_TRANSACTIONS
+  INITIAL_STOCK_TRANSACTIONS,
+  INITIAL_DIVISIONS
 } from './data/mockData';
 
 import {
@@ -53,7 +57,8 @@ import {
   ShiftType,
   ManagementPerson,
   StockItem,
-  StockTransaction
+  StockTransaction,
+  Division
 } from './types/hrm';
 
 // Helper to calculate ISO calendar week number
@@ -66,7 +71,14 @@ function getISOWeekNumber(date: Date = new Date()): number {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam) return tabParam;
+    }
+    return 'overview';
+  });
   const [serviceFilter, setServiceFilter] = useState<'All' | ServiceType>('All');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
@@ -106,6 +118,27 @@ export default function App() {
   const [managementPersons, setManagementPersons] = useState<ManagementPerson[]>(INITIAL_MANAGEMENT_PERSONS);
   const [stockItems, setStockItems] = useState<StockItem[]>(INITIAL_STOCK_ITEMS);
   const [stockTransactions, setStockTransactions] = useState<StockTransaction[]>(INITIAL_STOCK_TRANSACTIONS);
+  const [divisions, setDivisions] = useState<Division[]>(() => {
+    try {
+      const saved = localStorage.getItem('hab_divisions_v1');
+      if (saved) return JSON.parse(saved);
+    } catch (_) {}
+    return INITIAL_DIVISIONS;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('hab_divisions_v1', JSON.stringify(divisions));
+    } catch (_) {}
+  }, [divisions]);
+
+  const handleUpdatePayrollRecord = (updated: PayrollRecord) => {
+    setPayroll(prev => prev.map(p => p.id === updated.id ? updated : p));
+  };
+
+  const handleAddPayrollRecord = (newRecord: PayrollRecord) => {
+    setPayroll(prev => [newRecord, ...prev]);
+  };
   const [activeUser, setActiveUser] = useState<ManagementPerson>(() => {
     const saved = getActiveSession();
     if (saved) return accountToManagementPerson(saved);
@@ -182,7 +215,16 @@ export default function App() {
     setStockItems(prev =>
       prev.map(item => {
         if (item.id !== tx.itemId) return item;
-        const delta = tx.transactionType === 'Issued (Out)' ? -tx.quantity : tx.quantity;
+        let delta = 0;
+        if (tx.transactionType === 'Received (Restock)') {
+          delta = tx.quantity;
+        } else if (tx.transactionType === 'Issued (Out)') {
+          delta = -tx.quantity;
+        } else if (tx.transactionType === 'Returned (In)') {
+          delta = tx.condition === 'Good' ? tx.quantity : 0;
+        } else if (tx.transactionType === 'Damaged / Lost (Write-off)') {
+          delta = -tx.quantity;
+        }
         return {
           ...item,
           quantityInStock: Math.max(0, item.quantityInStock + delta),
@@ -190,6 +232,118 @@ export default function App() {
         };
       })
     );
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'Store Keeper',
+      actorRole: activeUser.role || 'store',
+      action: 'RECORD_STOCK_MOVEMENT',
+      targetModule: 'Store',
+      targetId: tx.itemCode,
+      newValue: `${tx.transactionType}: ${tx.quantity} ${tx.unit}`,
+      details: `${tx.transactionType} ${tx.quantity} ${tx.unit} of ${tx.itemName} (${tx.recipientOrSource})`,
+      status: tx.condition === 'Damaged' || tx.condition === 'Lost' ? 'WARNING' : 'SUCCESS'
+    });
+  };
+
+  const handleAddDivision = (newDiv: Division) => {
+    setDivisions(prev => [...prev, newDiv]);
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'Admin',
+      actorRole: activeUser.role || 'super_admin',
+      action: 'CREATE_DIVISION',
+      targetModule: 'Divisions',
+      targetId: newDiv.id,
+      newValue: `${newDiv.name} (${newDiv.status})`,
+      details: `Created new organizational division: ${newDiv.name} [${newDiv.code}]`,
+      status: 'SUCCESS'
+    });
+  };
+
+  const handleUpdateDivision = (updatedDiv: Division) => {
+    setDivisions(prev => prev.map(d => d.id === updatedDiv.id ? updatedDiv : d));
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'Admin',
+      actorRole: activeUser.role || 'super_admin',
+      action: 'UPDATE_DIVISION',
+      targetModule: 'Divisions',
+      targetId: updatedDiv.id,
+      newValue: `${updatedDiv.name} (${updatedDiv.status})`,
+      details: `Updated division details for: ${updatedDiv.name}`,
+      status: 'SUCCESS'
+    });
+  };
+
+  const handleToggleDivisionStatus = (divId: string) => {
+    setDivisions(prev =>
+      prev.map(d => {
+        if (d.id !== divId) return d;
+        const newStatus = d.status === 'Active' ? 'Inactive' : 'Active';
+        logAuditEvent({
+          actorId: activeUser.id,
+          actorName: activeUser.name || activeUser.fullName || 'Admin',
+          actorRole: activeUser.role || 'super_admin',
+          action: 'TOGGLE_DIVISION_STATUS',
+          targetModule: 'Divisions',
+          targetId: divId,
+          previousValue: d.status,
+          newValue: newStatus,
+          details: `Changed division ${d.name} status from ${d.status} to ${newStatus}`,
+          status: 'SUCCESS'
+        });
+        return { ...d, status: newStatus };
+      })
+    );
+  };
+
+  const handleAssignEmployeeDivision = (employeeId: string, targetDivisionName: ServiceType) => {
+    const emp = employees.find(e => e.id === employeeId);
+    setEmployees(prev =>
+      prev.map(e => e.id === employeeId ? { ...e, serviceType: targetDivisionName } : e)
+    );
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'Admin',
+      actorRole: activeUser.role || 'super_admin',
+      action: 'REASSIGN_EMPLOYEE_DIVISION',
+      targetModule: 'Divisions',
+      targetId: employeeId,
+      previousValue: emp?.serviceType || 'Unknown',
+      newValue: targetDivisionName,
+      details: `Reassigned employee ${emp ? `${emp.firstName} ${emp.lastName}` : employeeId} to ${targetDivisionName}`,
+      status: 'SUCCESS'
+    });
+  };
+
+  const handleApprovePayrollBatch = () => {
+    setPayroll(prev => prev.map(p => ({ ...p, paymentStatus: 'Approved' })));
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'Finance',
+      actorRole: activeUser.role || 'finance',
+      action: 'APPROVE_PAYROLL',
+      targetModule: 'Payroll',
+      previousValue: 'Draft',
+      newValue: 'Approved',
+      details: 'Approved monthly salary batch commitments and statutory remittances',
+      status: 'SUCCESS'
+    });
+  };
+
+  const handleDisbursePayrollBatch = () => {
+    setPayroll(prev => prev.map(p => ({ ...p, paymentStatus: 'Disbursed' })));
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'Finance',
+      actorRole: activeUser.role || 'finance',
+      action: 'DISBURSE_PAYROLL',
+      targetModule: 'Payroll',
+      previousValue: 'Approved',
+      newValue: 'Disbursed',
+      details: 'Disbursed approved payroll batch payments to employee bank accounts',
+      status: 'SUCCESS'
+    });
   };
 
   // Counts for navbar badges
@@ -594,30 +748,48 @@ export default function App() {
         )}
 
         {activeTab !== 'overview' && (
-          <SimpleWorkspace
-            activeTab={activeTab}
-            data={{
-              employees,
-              sites,
-              deployments,
-              attendance,
-              leaveRequests,
-              clearances,
-              candidates,
-              onboardingList,
-              payroll,
-              transfers,
-              workExperiences,
-              managementPersons,
-              stockItems,
-              stockTransactions,
-              masterConfig
-            }}
-            onDeployEmployee={handleDeployEmployee}
-            onRelieveDeployment={handleRelieveDeployment}
-            onAddStockItem={handleAddStockItem}
-            onRecordStockTransaction={handleRecordStockTransaction}
-          />
+          !isTabAllowedForRole(activeUser?.role || activeUser?.id, activeTab) ? (
+            <AccessDeniedBarrier
+              activeUser={activeUser}
+              attemptedTab={activeTab}
+              onReturnToOverview={() => setActiveTab('overview')}
+              onSignOut={handleSignOut}
+            />
+          ) : (
+            <SimpleWorkspace
+              activeTab={activeTab}
+              data={{
+                employees,
+                sites,
+                deployments,
+                attendance,
+                leaveRequests,
+                clearances,
+                candidates,
+                onboardingList,
+                payroll,
+                transfers,
+                workExperiences,
+                managementPersons,
+                stockItems,
+                stockTransactions,
+                divisions,
+                masterConfig
+              }}
+              onDeployEmployee={handleDeployEmployee}
+              onRelieveDeployment={handleRelieveDeployment}
+              onAddStockItem={handleAddStockItem}
+              onRecordStockTransaction={handleRecordStockTransaction}
+              onAddDivision={handleAddDivision}
+              onUpdateDivision={handleUpdateDivision}
+              onToggleDivisionStatus={handleToggleDivisionStatus}
+              onReassignEmployeeDivision={handleAssignEmployeeDivision}
+              onUpdatePayrollRecord={handleUpdatePayrollRecord}
+              onAddPayrollRecord={handleAddPayrollRecord}
+              onApprovePayrollBatch={handleApprovePayrollBatch}
+              onDisbursePayrollBatch={handleDisbursePayrollBatch}
+            />
+          )
         )}
 
       </main>

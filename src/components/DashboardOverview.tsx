@@ -199,18 +199,11 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               { label: 'Leave requests', count: pendingLeave.length, tab: 'leave' },
               { label: 'Employee clearances', count: openClearance.length, tab: 'clearance' },
               { label: 'Low stock items', count: lowStock.length, tab: 'store' }
-            ].map((item, index) => (
-              <button
-                key={item.label}
-                type="button"
-                onClick={() => onNavigateTab(item.tab)}
-                className={`flex min-h-14 w-full items-center justify-between gap-4 px-4 text-left hover:bg-[#FCF0DA] dark:hover:bg-slate-800 ${index > 0 ? 'border-t border-slate-100 dark:border-slate-800' : ''}`}
-              >
+            ].map((item, idx) => (
+              <button key={item.label} type="button" onClick={() => onNavigateTab(item.tab)} className={`flex min-h-14 w-full items-center justify-between gap-4 px-4 text-left hover:bg-[#FCF0DA] dark:hover:bg-slate-800 ${idx > 0 ? 'border-t border-slate-100 dark:border-slate-800' : ''}`}>
                 <span>
-                  <span className="block text-sm font-semibold text-slate-900 dark:text-white">{item.label}</span>
-                  <span className="mt-0.5 block text-xs text-slate-500">
-                    {item.count === 0 ? 'No open items' : `${item.count} open ${item.count === 1 ? 'item' : 'items'}`}
-                  </span>
+                  <span className="block text-sm font-semibold text-slate-950 dark:text-white">{item.label}</span>
+                  <span className="mt-0.5 block text-xs text-slate-500">{item.count === 0 ? 'No open items' : `${item.count} open ${item.count === 1 ? 'item' : 'items'}`}</span>
                 </span>
                 {item.count === 0 ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <ArrowRight className="h-4 w-4 text-slate-500" />}
               </button>
@@ -233,12 +226,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           ].map(item => {
             const Icon = item.icon;
             return (
-              <button
-                key={item.title}
-                type="button"
-                onClick={() => onNavigateTab(item.tab)}
-                className="group flex min-h-32 flex-col items-start rounded-xl border border-slate-200 bg-white p-5 text-left hover:border-[#AEAC78] hover:bg-[#FCF0DA]/30 dark:border-slate-800 dark:bg-slate-900"
-              >
+              <button key={item.title} type="button" onClick={() => onNavigateTab(item.tab)} className="group flex min-h-32 flex-col items-start rounded-xl border border-slate-200 bg-white p-5 text-left hover:border-[#AEAC78] hover:bg-[#FCF0DA]/30 dark:border-slate-800 dark:bg-slate-900">
                 <Icon className="h-5 w-5 text-[#4C4541] dark:text-[#F2C46A]" />
                 <span className="mt-3 text-sm font-bold text-slate-950 dark:text-white">{item.title}</span>
                 <span className="mt-1 text-xs text-slate-600 dark:text-slate-400">{item.text}</span>

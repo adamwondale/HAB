@@ -84,44 +84,79 @@ export const Sidebar: React.FC<SidebarProps> = ({
         } ${isCollapsed ? 'lg:w-[68px]' : 'lg:w-60'}`}
       >
         {/* Brand Header */}
-        <div className="h-16 flex items-center justify-between px-3 border-b border-[#EFE7D8] dark:border-[#3D3633] shrink-0">
-          <button
-            type="button"
-            onClick={() => { setActiveTab('overview'); onCloseMobile(); }}
-            className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer"
-          >
-            <HabMonogramIcon className="w-9 h-9 shrink-0" forceBlack />
-            <div className={`min-w-0 ${isCollapsed ? 'lg:hidden' : ''}`}>
-              <div className="text-sm font-black text-[#4C4541] dark:text-[#F2C46A] truncate tracking-tight">
-                HAB BUSINESS
-              </div>
-              <div className="text-[11px] text-[#4C4541]/70 dark:text-[#8C847E] truncate">
-                Integrated Operations
-              </div>
+        <div className={`h-16 flex items-center ${isCollapsed ? 'lg:justify-center lg:px-2' : 'justify-between px-3'} border-b border-[#EFE7D8] dark:border-[#3D3633] shrink-0`}>
+          {isCollapsed ? (
+            <div className="hidden lg:flex items-center justify-center w-full">
+              <button
+                type="button"
+                onClick={() => { hideTooltip(); onToggleCollapse?.(); }}
+                onMouseEnter={(e) => showTooltip(e, 'Expand Sidebar')}
+                onMouseLeave={hideTooltip}
+                className="w-10 h-10 rounded-lg text-[#4C4541] hover:bg-[#F2C46A]/25 dark:text-[#F2C46A] dark:hover:bg-[#3D3633] transition-colors cursor-pointer flex items-center justify-center"
+                aria-label="Expand sidebar"
+              >
+                <PanelLeftOpen className="w-5 h-5" />
+              </button>
             </div>
-          </button>
+          ) : (
+            <div className="hidden lg:flex items-center justify-between w-full">
+              <button
+                type="button"
+                onClick={() => { setActiveTab('overview'); onCloseMobile(); }}
+                className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer"
+              >
+                <HabMonogramIcon className="w-9 h-9 shrink-0" forceBlack />
+                <div className="min-w-0">
+                  <div className="text-sm font-black text-[#4C4541] dark:text-[#F2C46A] truncate tracking-tight">
+                    HAB BUSINESS
+                  </div>
+                  <div className="text-[11px] text-[#4C4541]/70 dark:text-[#8C847E] truncate">
+                    Integrated Operations
+                  </div>
+                </div>
+              </button>
 
-          {onToggleCollapse && (
-            <button
-              type="button"
-              onClick={() => { hideTooltip(); onToggleCollapse(); }}
-              onMouseEnter={(e) => showTooltip(e, isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar')}
-              onMouseLeave={hideTooltip}
-              className="hidden lg:flex items-center justify-center p-2 rounded-lg text-[#4C4541]/80 hover:bg-[#F2C46A]/20 dark:text-slate-300 dark:hover:bg-[#3D3633] transition-colors cursor-pointer shrink-0"
-              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
-            </button>
+              {onToggleCollapse && (
+                <button
+                  type="button"
+                  onClick={() => { hideTooltip(); onToggleCollapse(); }}
+                  onMouseEnter={(e) => showTooltip(e, 'Collapse Sidebar')}
+                  onMouseLeave={hideTooltip}
+                  className="p-2 rounded-lg text-[#4C4541]/80 hover:bg-[#F2C46A]/20 dark:text-slate-300 dark:hover:bg-[#3D3633] transition-colors cursor-pointer shrink-0"
+                  aria-label="Collapse sidebar"
+                >
+                  <PanelLeftClose className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           )}
 
-          <button
-            type="button"
-            onClick={onCloseMobile}
-            className="lg:hidden p-1.5 rounded-lg text-[#4C4541]/70 hover:bg-black/5 dark:text-slate-300"
-            aria-label="Close sidebar"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {/* Mobile Drawer Header */}
+          <div className="lg:hidden flex items-center justify-between w-full">
+            <button
+              type="button"
+              onClick={() => { setActiveTab('overview'); onCloseMobile(); }}
+              className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer"
+            >
+              <HabMonogramIcon className="w-9 h-9 shrink-0" forceBlack />
+              <div className="min-w-0">
+                <div className="text-sm font-black text-[#4C4541] dark:text-[#F2C46A] truncate tracking-tight">
+                  HAB BUSINESS
+                </div>
+                <div className="text-[11px] text-[#4C4541]/70 dark:text-[#8C847E] truncate">
+                  Integrated Operations
+                </div>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="p-1.5 rounded-lg text-[#4C4541]/70 hover:bg-black/5 dark:text-slate-300"
+              aria-label="Close sidebar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}

@@ -1,3 +1,5 @@
+export * from './division';
+
 export type ServiceType = 'Security' | 'Cleaning' | 'Property Management' | 'Head Office Staff';
 
 export type EmployeeStatus = 
@@ -316,6 +318,13 @@ export interface PayrollRecord {
 }
 
 export type StockCategory = 
+  | 'Cleaning Equipment'
+  | 'Cleaning Chemicals'
+  | 'Security Equipment'
+  | 'Uniforms'
+  | 'Safety Equipment'
+  | 'Office Supplies'
+  | 'General Consumables'
   | 'Security Uniforms & Gear' 
   | 'Cleaning Supplies & Equipment' 
   | 'Property Management & Maintenance' 
@@ -328,7 +337,7 @@ export interface StockItem {
   amharicName?: string;
   category: StockCategory;
   division: ServiceType;
-  unit: 'Pcs' | 'Pairs' | 'Sets' | 'Liters' | 'Boxes' | 'Reams';
+  unit: 'Pcs' | 'Pairs' | 'Sets' | 'Liters' | 'Boxes' | 'Reams' | 'Rolls' | 'Drums' | 'Kg';
   quantityInStock: number;
   minReorderLevel: number;
   unitCostETB: number;
@@ -344,13 +353,18 @@ export interface StockTransaction {
   itemCode: string;
   itemName: string;
   division: ServiceType;
-  transactionType: 'Received (Restock)' | 'Issued (Out)' | 'Returned (In)';
+  transactionType: 'Received (Restock)' | 'Issued (Out)' | 'Returned (In)' | 'Damaged / Lost (Write-off)';
   quantity: number;
   unit: string;
   recipientOrSource: string; // Employee Name, Client Site, or Supplier
   referenceCode?: string;
   handledBy: string;
   notes?: string;
+  unitCostETB?: number;
+  expectedReturnDate?: string;
+  actualReturnDate?: string;
+  condition?: 'Good' | 'Damaged' | 'Lost' | 'Needs Repair';
+  serviceLocation?: string;
 }
 
 export type TransferStatus = 'Pending HR Approval' | 'Approved' | 'Executed' | 'pending' | 'approved' | 'rejected';
@@ -402,7 +416,7 @@ export type ManagementDepartment =
   | 'Property Administration'
   | 'Marketing';
 
-export type CoreRoleType = 'super_admin' | 'executive' | 'hr' | 'finance' | 'tech' | 'store';
+export type CoreRoleType = 'super_admin' | 'executive' | 'hr' | 'finance' | 'tech' | 'store' | 'operations';
 
 export interface UserAccount {
   id: string;

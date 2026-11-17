@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, UserPlus } from 'lucide-react';
+import { X, UserPlus, AlertCircle } from 'lucide-react';
 import { Candidate, ServiceType } from '../../types/hrm';
 
 interface NewApplicantModalProps {
@@ -22,20 +22,60 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
   const [experienceYears, setExperienceYears] = useState(2);
   const [notes, setNotes] = useState('');
 
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   if (!isOpen) return null;
+
+  const validate = (fieldValues = { fullName, phone, targetRole, experienceYears }) => {
+    const errs: Record<string, string> = {};
+    const nameWords = fieldValues.fullName.trim().split(/\s+/).filter(Boolean);
+    const phoneClean = fieldValues.phone.replace(/\s+/g, '');
+    const phoneRegex = /^(\+251[79]\d{8}|0[79]\d{8})$/;
+
+    if (!fieldValues.fullName.trim()) {
+      errs.fullName = 'Full applicant name is required.';
+    } else if (nameWords.length < 2 || fieldValues.fullName.trim().length < 3) {
+      errs.fullName = 'Enter at least first and father name (letters only).';
+    }
+
+    if (!phoneClean) {
+      errs.phone = 'Phone number is required.';
+    } else if (!phoneRegex.test(phoneClean)) {
+      errs.phone = 'Use valid Ethiopian mobile (+251 9/7... or 09/07...).';
+    }
+
+    if (!fieldValues.targetRole.trim()) {
+      errs.targetRole = 'Target role title is required.';
+    }
+
+    if (fieldValues.experienceYears < 0 || fieldValues.experienceYears > 45) {
+      errs.experienceYears = 'Experience must be between 0 and 45 years.';
+    }
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validate();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim()) return;
+    setTouched({ fullName: true, phone: true, targetRole: true, experienceYears: true });
+
+    if (!validate()) return;
 
     const newCand: Candidate = {
       id: `cand-${Date.now()}`,
       candidateCode: `REC-2026-0${existingCount + 45}`,
-      fullName,
+      fullName: fullName.trim(),
       gender: 'Male',
-      phone,
+      phone: phone.trim(),
       targetService,
-      targetRole,
+      targetRole: targetRole.trim(),
       appliedDate: new Date().toISOString().split('T')[0],
       stage: 'Applied',
       experienceYears,
@@ -44,14 +84,23 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
       kebeleCardProvided: true,
       guarantorProvided: false,
       medicalFit: false,
-      notes: notes || 'Centralized intake applicant registered'
+      notes: notes.trim() || 'Centralized intake applicant registered'
     };
 
     onAddCandidate(newCand);
     onClose();
     setFullName('');
     setNotes('');
+    setTouched({});
+    setErrors({});
   };
+
+  const inputClass = (field: string) =>
+    `w-full bg-slate-50 dark:bg-slate-800 border rounded p-2 text-slate-800 dark:text-white focus:outline-none transition-colors ${
+      touched[field] && errors[field]
+        ? 'border-rose-500 ring-1 ring-rose-500/20 bg-rose-50/20'
+        : 'border-slate-200 dark:border-slate-700 focus:border-amber-600'
+    }`;
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
@@ -74,12 +123,17 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
             <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Full Applicant Name *</label>
             <input
               type="text"
-              required
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={e => { setFullName(e.target.value); if (touched.fullName) validate({ ... { fullName: e.target.value, phone, targetRole, experienceYears } }); }}
+              onBlur={() => handleBlur('fullName')}
               placeholder="e.g. Solomon Girma"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded p-2 focus:outline-none focus:border-amber-600"
+              className={inputClass('fullName')}
             />
+            {touched.fullName && errors.fullName && (
+              <p className="text-[10px] text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1 font-medium">
+                <AlertCircle className="w-2.5 h-2.5" />{errors.fullName}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -107,33 +161,52 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
               <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Phone Number *</label>
               <input
                 type="text"
-                required
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded p-2 focus:outline-none focus:border-amber-600"
+                onChange={e => { setPhone(e.target.value); if (touched.phone) validate({ ... { fullName, phone: e.target.value, targetRole, experienceYears } }); }}
+                onBlur={() => handleBlur('phone')}
+                placeholder="+251 9..."
+                className={inputClass('phone')}
               />
+              {touched.phone && errors.phone && (
+                <p className="text-[10px] text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1 font-medium">
+                  <AlertCircle className="w-2.5 h-2.5" />{errors.phone}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Target Role</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Target Role *</label>
               <input
                 type="text"
                 value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded p-2 focus:outline-none focus:border-amber-600"
+                onChange={e => { setTargetRole(e.target.value); if (touched.targetRole) validate({ ... { fullName, phone, targetRole: e.target.value, experienceYears } }); }}
+                onBlur={() => handleBlur('targetRole')}
+                className={inputClass('targetRole')}
               />
+              {touched.targetRole && errors.targetRole && (
+                <p className="text-[10px] text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1 font-medium">
+                  <AlertCircle className="w-2.5 h-2.5" />{errors.targetRole}
+                </p>
+              )}
             </div>
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Experience (Years)</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Experience (Years) *</label>
               <input
                 type="number"
                 min={0}
+                max={45}
                 value={experienceYears}
-                onChange={(e) => setExperienceYears(Number(e.target.value))}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded p-2 focus:outline-none focus:border-amber-600"
+                onChange={e => { const v = Number(e.target.value); setExperienceYears(v); if (touched.experienceYears) validate({ ... { fullName, phone, targetRole, experienceYears: v } }); }}
+                onBlur={() => handleBlur('experienceYears')}
+                className={inputClass('experienceYears')}
               />
+              {touched.experienceYears && errors.experienceYears && (
+                <p className="text-[10px] text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1 font-medium">
+                  <AlertCircle className="w-2.5 h-2.5" />{errors.experienceYears}
+                </p>
+              )}
             </div>
           </div>
 

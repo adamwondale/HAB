@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Plus, UserPlus } from 'lucide-react';
 import { getModuleModel } from './getModuleModel';
 import { SimpleModulePage } from './SimpleModulePage';
 import { WorkSitesView } from './WorkSitesView';
@@ -6,8 +7,11 @@ import { StoreManagementView } from '../StoreManagementView';
 import { DivisionManagementView } from '../divisions/DivisionManagementView';
 import { PayrollView } from '../PayrollView';
 import { AuditTrailView } from '../rbac/AuditTrailView';
+import { OnboardingView } from '../OnboardingView';
+import { AddEmployeeModal } from '../hr/AddEmployeeModal';
+import { NewApplicantModal } from '../recruitment/NewApplicantModal';
 import { ModuleId, WorkspaceData } from './types';
-import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord } from '../../types/hrm';
+import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord, Employee, Candidate, OnboardingChecklist } from '../../types/hrm';
 
 interface SimpleWorkspaceProps {
   activeTab: string;
@@ -24,6 +28,11 @@ interface SimpleWorkspaceProps {
   onAddPayrollRecord?: (record: PayrollRecord) => void;
   onApprovePayrollBatch?: () => void;
   onDisbursePayrollBatch?: () => void;
+  onAddEmployee?: (newEmp: Employee) => void;
+  onAddCandidate?: (newCand: Candidate) => void;
+  onToggleOnboardingTask?: (checklistId: string, taskId: string) => void;
+  onCompleteOnboarding?: (checklistId: string) => void;
+  onEnrollOnboardingChecklist?: (newOnb: OnboardingChecklist) => void;
 }
 
 function isModuleId(value: string): value is ModuleId {
@@ -60,8 +69,16 @@ export function SimpleWorkspace({
   onUpdatePayrollRecord,
   onAddPayrollRecord,
   onApprovePayrollBatch,
-  onDisbursePayrollBatch
+  onDisbursePayrollBatch,
+  onAddEmployee,
+  onAddCandidate,
+  onToggleOnboardingTask,
+  onCompleteOnboarding,
+  onEnrollOnboardingChecklist
 }: SimpleWorkspaceProps) {
+  const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
+  const [isAddCandidateOpen, setIsAddCandidateOpen] = useState(false);
+
   if (!isModuleId(activeTab)) {
     return null;
   }
@@ -120,9 +137,64 @@ export function SimpleWorkspace({
     );
   }
 
+  if (activeTab === 'onboarding') {
+    return (
+      <OnboardingView
+        onboardingList={data.onboardingList}
+        sites={data.sites}
+        activeUser={data.managementPersons?.find(p => p.id === 'mgmt-hr-head')}
+        candidates={data.candidates}
+        onToggleTask={onToggleOnboardingTask || (() => {})}
+        onCompleteOnboarding={onCompleteOnboarding || (() => {})}
+        onEnrollChecklist={onEnrollOnboardingChecklist}
+      />
+    );
+  }
+
   if (activeTab === 'audit') {
     return <AuditTrailView />;
   }
 
-  return <SimpleModulePage model={getModuleModel(activeTab, data)} />;
+  const mainAction =
+    activeTab === 'management' && onAddEmployee
+      ? {
+          label: 'Add Employee',
+          onClick: () => setIsAddEmployeeOpen(true),
+          icon: <Plus className="h-4 w-4" />
+        }
+      : activeTab === 'recruitment' && onAddCandidate
+      ? {
+          label: 'New Applicant',
+          onClick: () => setIsAddCandidateOpen(true),
+          icon: <UserPlus className="h-4 w-4" />
+        }
+      : undefined;
+
+  return (
+    <>
+      <SimpleModulePage
+        model={getModuleModel(activeTab, data)}
+        mainAction={mainAction}
+      />
+
+      {isAddEmployeeOpen && onAddEmployee && (
+        <AddEmployeeModal
+          isOpen={isAddEmployeeOpen}
+          onClose={() => setIsAddEmployeeOpen(false)}
+          onAddEmployee={onAddEmployee}
+          existingCount={data.employees.length}
+          masterConfig={data.masterConfig}
+        />
+      )}
+
+      {isAddCandidateOpen && onAddCandidate && (
+        <NewApplicantModal
+          isOpen={isAddCandidateOpen}
+          onClose={() => setIsAddCandidateOpen(false)}
+          onAddCandidate={onAddCandidate}
+          existingCount={data.candidates.length}
+        />
+      )}
+    </>
+  );
 }

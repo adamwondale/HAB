@@ -434,6 +434,32 @@ export default function App() {
   // Handlers
   const handleAddEmployee = (newEmp: Employee) => {
     setEmployees(prev => [newEmp, ...prev]);
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'HR',
+      actorRole: activeUser.role || 'hr',
+      action: 'CREATE_EMPLOYEE',
+      targetModule: 'Employees',
+      targetId: newEmp.employeeCode,
+      newValue: `${newEmp.firstName} ${newEmp.lastName} (${newEmp.serviceType})`,
+      details: `Registered new employee ${newEmp.firstName} ${newEmp.lastName} in ${newEmp.serviceType} division with basic salary ETB ${newEmp.salary.baseSalary}`,
+      status: 'SUCCESS'
+    });
+  };
+
+  const handleAddCandidate = (newCand: Candidate) => {
+    setCandidates(prev => [newCand, ...prev]);
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'HR',
+      actorRole: activeUser.role || 'hr',
+      action: 'CREATE_APPLICANT',
+      targetModule: 'Employees',
+      targetId: newCand.candidateCode,
+      newValue: `${newCand.fullName} (${newCand.targetService})`,
+      details: `Registered job applicant ${newCand.fullName} for role ${newCand.targetRole}`,
+      status: 'SUCCESS'
+    });
   };
 
   const handleDeployEmployee = (newDep: Deployment) => {
@@ -635,7 +661,34 @@ export default function App() {
 
     setEmployees(prev => [newEmp, ...prev]);
     setOnboardingList(prev => prev.filter(o => o.id !== checklistId));
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'HR',
+      actorRole: activeUser.role || 'hr',
+      action: 'INDUCT_EMPLOYEE',
+      targetModule: 'Employees',
+      targetId: newEmp.employeeCode,
+      newValue: `${newEmp.firstName} ${newEmp.lastName} (${newEmp.serviceType})`,
+      details: `Graduated and inducted employee ${newEmp.firstName} ${newEmp.lastName} (${newEmp.employeeCode}) from onboarding into active directory.`,
+      status: 'SUCCESS'
+    });
     setActiveTab('management');
+  };
+
+  const handleEnrollOnboarding = (newOnb: OnboardingChecklist) => {
+    setOnboardingList(prev => [newOnb, ...prev]);
+    setCandidates(prev => prev.map(c => c.id === newOnb.candidateId ? { ...c, stage: 'Onboarded' } : c));
+    logAuditEvent({
+      actorId: activeUser.id,
+      actorName: activeUser.name || activeUser.fullName || 'HR',
+      actorRole: activeUser.role || 'hr',
+      action: 'ENROLL_ONBOARDING',
+      targetModule: 'Employees',
+      targetId: newOnb.employeeCode,
+      newValue: `${newOnb.fullName} (${newOnb.serviceType})`,
+      details: `Enrolled new hire ${newOnb.fullName} (${newOnb.employeeCode}) in ${newOnb.serviceType} onboarding checklist.`,
+      status: 'SUCCESS'
+    });
   };
 
   const handleUpdateClearance = (updated: ClearanceRecord) => {
@@ -788,6 +841,11 @@ export default function App() {
               onAddPayrollRecord={handleAddPayrollRecord}
               onApprovePayrollBatch={handleApprovePayrollBatch}
               onDisbursePayrollBatch={handleDisbursePayrollBatch}
+              onAddEmployee={handleAddEmployee}
+              onAddCandidate={handleAddCandidate}
+              onToggleOnboardingTask={handleToggleOnboardingTask}
+              onCompleteOnboarding={handleCompleteOnboarding}
+              onEnrollOnboardingChecklist={handleEnrollOnboarding}
             />
           )
         )}

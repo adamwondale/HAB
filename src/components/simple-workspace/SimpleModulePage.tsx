@@ -5,9 +5,11 @@ import { StandardPageLayout } from './StandardPageLayout';
 
 interface SimpleModulePageProps {
   model: ModuleModel;
+  mainAction?: { label: string; onClick: () => void; isOpen?: boolean; icon?: React.ReactNode };
+  extraWidget?: React.ReactNode;
 }
 
-export function SimpleModulePage({ model }: SimpleModulePageProps) {
+export function SimpleModulePage({ model, mainAction, extraWidget }: SimpleModulePageProps) {
   const [query, setQuery] = useState('');
   const normalizedQuery = query.trim().toLowerCase();
   const rows = normalizedQuery
@@ -29,6 +31,8 @@ export function SimpleModulePage({ model }: SimpleModulePageProps) {
       description={model.description}
       metrics={model.metrics}
       guideKey={model.reportName}
+      mainAction={mainAction}
+      extraWidget={extraWidget}
       search={{
         query,
         onChange: setQuery,

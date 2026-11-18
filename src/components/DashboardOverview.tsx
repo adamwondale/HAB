@@ -46,6 +46,7 @@ interface DashboardOverviewProps {
   workExperiences?: WorkExperienceRecord[];
   stockItems?: StockItem[];
   stockTransactions?: StockTransaction[];
+  divisions?: import('../types/division').Division[];
   activeUser?: ManagementPerson;
   managementPersons?: ManagementPerson[];
   onSelectActiveUser?: (user: ManagementPerson) => void;
@@ -63,6 +64,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   payroll = [],
   candidates = [],
   stockItems = [],
+  divisions,
   activeUser,
   onNavigateTab
 }) => {
@@ -168,7 +170,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
       {/* Analytics Charts: Workforce Distribution alongside Attrition Analytics */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <WorkforceDistributionChart employees={activeEmployees} />
+        <WorkforceDistributionChart employees={activeEmployees} divisions={divisions} />
         <AttritionPieChart clearances={clearances} />
       </section>
 

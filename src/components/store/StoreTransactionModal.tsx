@@ -39,6 +39,12 @@ export const StoreTransactionModal: React.FC<StoreTransactionModalProps> = ({
     e.preventDefault();
     if (qty <= 0 || isOverStock) return;
 
+    if (isWriteOff) {
+      if (!window.confirm(`Warning: Writing off ${qty} ${item.unit} of "${item.name}" will permanently deduct from stock as damaged/lost. Confirm write-off?`)) {
+        return;
+      }
+    }
+
     onRecord({
       id: `tx-${Date.now()}`,
       itemId: item.id,

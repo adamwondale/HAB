@@ -99,3 +99,45 @@ All application views and components shall implement the design-craft principles
    - Text contrast on `#F2C46A` and `#FCF0DA` shall strictly use `#4C4541` (Deep Espresso) meeting WCAG AAA.
 4. **Motion & Feedback**:
    - State transitions and modal animations shall use responsive durations (100–250ms) with physics-based springs, avoiding jarring cuts or sluggish floats.
+
+---
+
+## Role-Based Landing Dashboards
+
+### REQ-DASH-001: Dedicated Role-Based Landing Dashboards & Admin Perspective Switcher
+The application shall implement purpose-built landing cockpits tailored per RBAC role, eliminating information leaks and highlighting domain-specific action queues:
+1. **Dashboard Router & Role Scoping**:
+   - The root overview (`activeTab === 'overview'`) shall route to dedicated role dashboard components based on `activeUser.role`: `HrDashboard`, `FinanceDashboard`, `StoreDashboard`, `OperationsDashboard`, and `AdminMasterDashboard`.
+   - Departmental staff (`hr`, `finance`, `store`, `operations`) shall be strictly locked into their role cockpit with no option to switch perspectives.
+2. **Admin & Executive Perspective Switcher**:
+   - Users with `super_admin` or `executive` roles shall have a perspective switcher banner at the top of the dashboard, allowing them to preview the exact dashboard of any department or return to the comprehensive Admin Master view.
+3. **Domain Integrity & Zero Data Leaks**:
+   - Store and Operations dashboards shall strictly omit payroll, compensation, and confidential salary figures to maintain RBAC boundaries.
+   - HR dashboard shall focus on headcount, pending leave requests, probation deadlines, and attendance flags.
+   - Finance dashboard shall focus on payroll approval lifecycle, statutory tax/pension liabilities, cheque/cash registers, and asset valuation.
+   - Store dashboard shall highlight low stock alerts, quarantined damaged items, pending equipment allocations, and stock movement shortcuts.
+   - Operations dashboard shall highlight client site guard/cleaner deployment coverage, shift rotations, and site equipment requests.
+4. **Ergonomic Layout**:
+   - Each dashboard shall feature a top KPI row with high-contrast metric tiles (`tabular-nums`) and a prioritized "Needs Attention" Action Queue with one-click deep-links to destination workflow tabs.
+   - Every dashboard component shall adhere to the strict 250-line limit and Warm Earth design tokens (`#F2C46A`, `#4C4541`, `#FCF0DA`, `#AEAC78`).
+
+---
+
+## Internationalization & Localization (i18n)
+
+### REQ-I18N-001: Zero Hardcoded UI Text & Modular Dual-Language (EN/AM) System
+The application interface shall eliminate all hardcoded UI copy and deliver complete bilingual (English and Amharic) parity powered by a modular `i18next` architecture:
+1. **Zero Hardcoded Text In UI**:
+   - All user-facing strings across all views, modals, forms, tables, buttons, tooltips, toasts, and alerts shall be queried through `useTranslation` (`t('namespace.key')`).
+   - Hardcoded string literals in JSX and inline ternary language switches (e.g., `i18n.language === 'am' ? ... : ...`) are strictly prohibited.
+2. **Modular Architecture & File Budget**:
+   - Translation dictionaries shall be organized by domain under `src/i18n/modules/` (`common`, `nav`, `dashboard`, `deployment`, `attendance`, `clearance`, `payroll`, `store`, `recruitment`, `masterSetup`).
+   - `src/i18n/index.ts` shall act as the single consolidated entrypoint and registry, maintaining compliance with the <= 250 lines file budget.
+3. **Strict TypeScript Type Safety**:
+   - Global typing for `i18next` via `CustomTypeOptions` shall be enforced in `src/i18n/types.ts` so that invalid or missing translation keys trigger TypeScript compilation errors.
+4. **Data vs. UI Boundary**:
+   - Dynamic user-generated data, employee names, national IDs, and mock backend records shall remain typed data entities; all static field labels, table headers, and status badges shall be internationalized.
+5. **Amharic Typography & Ge'ez Support**:
+   - All Amharic translations shall use authentic, professional Ethiopian HR/legal terminology (aligned with Labor Proclamation No. 1156/2019) and appropriate Ethiopic typography rendering.
+
+

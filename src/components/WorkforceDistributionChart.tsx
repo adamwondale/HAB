@@ -1,20 +1,24 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Employee, ServiceType } from '../types/hrm';
+import { Division } from '../types/division';
 
 interface WorkforceDistributionChartProps {
   employees: Employee[];
+  divisions?: Division[];
 }
 
 interface DivisionSlice {
-  name: ServiceType;
+  name: string;
   displayName: string;
   count: number;
   percentage: number;
   color: string;
 }
 
-const DIVISION_CONFIG: Array<{ key: ServiceType; label: string; color: string }> = [
+const COLOR_PALETTE = ['#1E293B', '#059669', '#D97706', '#64748B', '#F2C46A', '#AEAC78', '#8B5CF6', '#0284C7'];
+
+const DIVISION_CONFIG: Array<{ key: string; label: string; color: string }> = [
   { key: 'Security', label: 'Security', color: '#1E293B' },
   { key: 'Cleaning', label: 'Cleaning', color: '#059669' },
   { key: 'Property Management', label: 'Property Mgmt', color: '#D97706' },
@@ -48,10 +52,18 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
   return null;
 };
 
-export const WorkforceDistributionChart: React.FC<WorkforceDistributionChartProps> = ({ employees }) => {
+export const WorkforceDistributionChart: React.FC<WorkforceDistributionChartProps> = ({ employees, divisions }) => {
   const total = employees.length;
 
-  const distribution: DivisionSlice[] = DIVISION_CONFIG.map(({ key, label, color }) => {
+  const activeConfigs = divisions && divisions.length > 0
+    ? divisions.map((d, idx) => ({
+        key: d.name,
+        label: d.name,
+        color: COLOR_PALETTE[idx % COLOR_PALETTE.length]
+      }))
+    : DIVISION_CONFIG;
+
+  const distribution: DivisionSlice[] = activeConfigs.map(({ key, label, color }) => {
     const count = employees.filter((e) => e.serviceType === key).length;
     const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
     return {

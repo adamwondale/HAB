@@ -14,9 +14,69 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 6: Payroll Management Enhancement** - Strict 30-day basis, 16-column calculation sheet, separate 11% non-deductible employer pension, allowance/deduction breakdowns, and totals.
 - [x] **Phase 7: Store and Inventory Management** - 7 item categories, Stock In, Stock Out with positive stock enforcement, Employee Equipment Allocation register, and Damaged/Lost item tracking.
 - [x] **Phase 8: Role-Based Access Control (RBAC)** - Role boundaries for Admin, HR, Finance, Store, and Operations, with navigation protection and audit logging.
-- [ ] **Phase 9: Integration and Final Polish** - Full cross-module sync, responsive checks, empty/error states, and end-to-end verification.
+- [x] **Phase 9: Integration and Final Polish** - Full cross-module sync, responsive checks, empty/error states, and end-to-end verification.
+- [ ] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** - Dedicated landing cockpits for HR, Finance, Store, Operations, and Admin/CEO, with live KPI metrics, actionable deep-link queues, zero payroll leakage, and administrative perspective switching.
+- [ ] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
 
 ## Phase Details
+
+### Phase 9: Integration and Final Polish
+
+**Goal:** Deliver full cross-module division synchronization, destructive action confirmation flows, empty/loading states, and responsive design verification.
+**Depends on:** Phase 8
+**Requirements:** REQ-INT-001
+**Success Criteria** (what must be TRUE):
+  1. Division Management, Payroll, Store, Employees, and Overview are fully integrated with dynamic divisions.
+  2. Destructive actions (division deactivation, write-offs, payroll disbursement) have confirmation feedback.
+  3. All tables display clean empty states when filters produce no matches.
+  4. All modified/created components stay strictly under the 250-line budget.
+  5. TypeScript compiles with zero errors and production build succeeds.
+
+**Plans:** 1 plan
+
+Plans:
+- [x] 09-01: Cross-module division synchronization, confirmation dialogs, table empty states, and responsive layout polish.
+
+
+### Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings
+
+**Goal:** Transform HAB Business PLC ERP into a fully localized, bilingual application (English and Amharic) by extracting every hardcoded UI text string into modular domain namespaces under `src/i18n/modules/` re-exported by `src/i18n/index.ts`, enforcing strict TypeScript compile-time key validation.
+**Depends on:** Phase 8, Phase 10
+**Requirements:** REQ-I18N-001
+**Success Criteria** (what must be TRUE):
+  1. `src/i18n/modules/` contains decoupled domain translation files (`common.ts`, `nav.ts`, `dashboard.ts`, `deployment.ts`, `attendance.ts`, `clearance.ts`, `payroll.ts`, `store.ts`, `recruitment.ts`, `masterSetup.ts`), each strictly under 250 lines.
+  2. `src/i18n/index.ts` re-exports and initializes the resources, maintaining total file size <= 250 lines.
+  3. `src/i18n/types.ts` enforces `CustomTypeOptions` for `i18next`, ensuring compile-time safety and autocomplete on all `t('namespace.key')` queries.
+  4. Zero hardcoded UI string literals or inline language ternary checks (`i18n.language === 'am' ? ... : ...`) remain in application views and modals across all 4 execution waves.
+  5. Amharic translations use authentic Ethiopian HR/legal terminology conforming to Ethiopian Labor Proclamation No. 1156/2019 and proper Ge'ez typography formatting.
+  6. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+
+**Plans:** 4 plans
+
+Plans:
+- [ ] 11-01: Modular namespace architecture (`src/i18n/modules/*`, `types.ts`, `index.ts`), strict `CustomTypeOptions`, and Wave 1: App shell, TopBar, Sidebar, and DashboardOverview.
+- [ ] 11-02: Wave 2: Field Operations, Site Deployments, Rotation Engine, AttendanceView, and SimpleWorkspace.
+- [ ] 11-03: Wave 3: HR Workflows, ClearanceView, OnboardingView, RecruitmentView, LeaveManagementView, and ManagementOrgView.
+- [ ] 11-04: Wave 4: Finance & Payroll, StoreManagementView, Warehouse3DView, SystemMasterSetupView, and LoginView.
+
+### Phase 10: Role-Specific Dashboards & Admin Perspective Switcher
+
+**Goal:** Implement purpose-built, domain-specific landing dashboards for the 5 RBAC personas (HR, Finance, Store, Operations, Admin/CEO), eliminate sensitive data leakage across departments, integrate action queues with deep-links, and enable an administrative perspective switcher for leadership.
+**Depends on:** Phase 8
+**Requirements:** REQ-DASH-001
+**Success Criteria** (what must be TRUE):
+  1. Root overview (`activeTab === 'overview'`) dynamically renders dedicated dashboards: `HrDashboard`, `FinanceDashboard`, `StoreDashboard`, `OperationsDashboard`, and `AdminMasterDashboard`.
+  2. Store and Operations staff dashboards have zero exposure to payroll or salary metrics.
+  3. Staff roles are locked into their respective dashboard; Admin and CEO accounts can preview any department dashboard via a top perspective switcher.
+  4. Each dashboard features live KPI metrics with `tabular-nums` and an actionable "Needs Attention" queue deep-linking to destination tabs.
+  5. All components adhere strictly to <= 250 lines and Warm Earth design tokens (`#F2C46A`, `#4C4541`, `#FCF0DA`, `#AEAC78`).
+  6. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+
+**Plans:** 1 plan
+
+Plans:
+- [ ] 10-01: DashboardRouter, role cockpits (HR, Finance, Store, Operations, Admin), KPI metrics, action queues, and Admin perspective switcher.
+
 
 ### Phase 8: Role-Based Access Control (RBAC)
 

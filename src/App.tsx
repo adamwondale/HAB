@@ -792,6 +792,7 @@ export default function App() {
             workExperiences={workExperiences}
             stockItems={stockItems}
             stockTransactions={stockTransactions}
+            divisions={divisions}
             activeUser={activeUser}
             managementPersons={managementPersons}
             onSelectActiveUser={handleSelectActiveUser}

@@ -46,7 +46,7 @@ export interface NavCategory {
 }
 
 interface NavCategoryParams {
-  t: (key: string) => string;
+  t: (key: any) => string;
   isAmharic: boolean;
   pendingLeaveCount: number;
   lowStockCount: number;

@@ -178,7 +178,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className={`flex items-center ${isCollapsed ? 'lg:justify-center' : 'gap-2.5'} min-w-0`}>
                 <LayoutDashboard className={`w-4 h-4 shrink-0 ${isOverviewActive ? 'text-[#4C4541]' : 'text-[#4C4541]/75 dark:text-slate-400'}`} />
                 <span className={`truncate ${isCollapsed ? 'lg:hidden' : ''}`}>
-                  {isAmharic ? t('nav.dashboard') : 'Overview'}
+                  {t('nav.dashboard')}
                 </span>
               </div>
             </button>

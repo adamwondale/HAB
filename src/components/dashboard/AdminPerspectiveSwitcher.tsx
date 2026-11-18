@@ -1,5 +1,6 @@
 import React from 'react';
-import { Eye, RotateCcw, ShieldAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Eye, RotateCcw } from 'lucide-react';
 
 export type DashboardPerspective = 'master' | 'hr' | 'finance' | 'store' | 'operations';
 
@@ -9,12 +10,12 @@ interface AdminPerspectiveSwitcherProps {
   roleTitle?: string;
 }
 
-const PERSPECTIVES: Array<{ id: DashboardPerspective; label: string; badge: string }> = [
-  { id: 'master', label: 'Master Overview', badge: 'Admin' },
-  { id: 'hr', label: 'HR Cockpit', badge: 'Staff' },
-  { id: 'finance', label: 'Finance Cockpit', badge: 'Ledger' },
-  { id: 'store', label: 'Store Cockpit', badge: 'Inventory' },
-  { id: 'operations', label: 'Operations Cockpit', badge: 'Sites' }
+const PERSPECTIVES: Array<{ id: DashboardPerspective; badge: string }> = [
+  { id: 'master', badge: 'Admin' },
+  { id: 'hr', badge: 'Staff' },
+  { id: 'finance', badge: 'Ledger' },
+  { id: 'store', badge: 'Inventory' },
+  { id: 'operations', badge: 'Sites' }
 ];
 
 export const AdminPerspectiveSwitcher: React.FC<AdminPerspectiveSwitcherProps> = ({
@@ -22,6 +23,8 @@ export const AdminPerspectiveSwitcher: React.FC<AdminPerspectiveSwitcherProps> =
   onSelectPerspective,
   roleTitle = 'Executive Admin'
 }) => {
+  const { t } = useTranslation();
+
   return (
     <section
       aria-label="Admin Perspective Preview Controls"
@@ -35,14 +38,14 @@ export const AdminPerspectiveSwitcher: React.FC<AdminPerspectiveSwitcherProps> =
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-[#4C4541] dark:text-[#F2C46A]">
-                Perspective Switcher
+                {t('dashboard.perspectiveSwitcher')}
               </span>
               <span className="rounded-sm bg-white/80 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                 {roleTitle}
               </span>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-400">
-              Preview role-locked landing screens as seen by departmental staff.
+              {t('dashboard.previewNotice')}
             </p>
           </div>
         </div>
@@ -54,7 +57,7 @@ export const AdminPerspectiveSwitcher: React.FC<AdminPerspectiveSwitcherProps> =
             className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-lg border border-amber-300 bg-white px-2.5 py-1 text-[11px] font-bold text-amber-900 hover:bg-amber-50 dark:border-amber-800 dark:bg-slate-900 dark:text-amber-300 cursor-pointer"
           >
             <RotateCcw className="h-3 w-3" />
-            <span>Reset to Master</span>
+            <span>{t('dashboard.resetToMaster')}</span>
           </button>
         )}
       </div>
@@ -73,7 +76,7 @@ export const AdminPerspectiveSwitcher: React.FC<AdminPerspectiveSwitcherProps> =
                   : 'bg-white/80 text-slate-700 hover:bg-white hover:text-slate-900 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
               }`}
             >
-              <span>{p.label}</span>
+              <span>{t(`dashboard.perspectives.${p.id}` as any)}</span>
               <span
                 className={`rounded px-1 py-0.2 text-[9.5px] uppercase font-mono ${
                   isSelected

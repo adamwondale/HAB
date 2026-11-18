@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileDown, LayoutDashboard } from 'lucide-react';
 import {
   AttendanceRecord,
@@ -60,6 +61,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   activeUser,
   onNavigateTab
 }) => {
+  const { t } = useTranslation();
   const activeEmployees = employees.filter((e) => e.status !== 'Exited');
   const monthlyPay = payroll.reduce((total, r) => total + r.netPay, 0);
   const propertyValue = stockItems.reduce((total, i) => total + i.quantityInStock * i.unitCostETB, 0);
@@ -82,11 +84,11 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           <div className="flex items-center gap-2">
             <LayoutDashboard className="h-6 w-6 text-[#4C4541] dark:text-[#F2C46A]" />
             <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-3xl">
-              Operational Overview
+              {t('dashboard.headerTitle')}
             </h1>
           </div>
           <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-            Role-tailored command center, real-time KPI metrics, and prioritized action queues.
+            {t('dashboard.headerSubtitle')}
           </p>
         </div>
         <button
@@ -94,7 +96,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           onClick={downloadSummary}
           className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#F2C46A] px-4 text-xs font-bold text-[#4C4541] hover:bg-[#E5B558] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C46A]"
         >
-          <FileDown className="h-4 w-4" /> Export Report
+          <FileDown className="h-4 w-4" /> {t('common.exportReport')}
         </button>
       </section>
 
@@ -119,7 +121,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       />
 
       <p className="text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-100 pt-3 dark:border-slate-800">
-        Signed in as <span className="font-semibold text-slate-700 dark:text-slate-300">{activeUser?.name || 'HAB Staff'}</span> ({activeUser?.role || 'staff'}).
+        {t('common.signedInAs')} <span className="font-semibold text-slate-700 dark:text-slate-300">{activeUser?.name || 'HAB Staff'}</span> ({activeUser?.role || 'staff'}).
       </p>
     </div>
   );

@@ -55,7 +55,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   pendingLeaveCount = 0,
   activeClearanceCount = 0
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -105,7 +105,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 180)}
-                placeholder={i18n.language === 'am' ? 'ፈልግ...' : 'Find a page...'}
+                placeholder={t('common.findPage')}
                 className="w-full bg-transparent text-xs font-medium text-[#4C4541] dark:text-[#F7F4EE] placeholder-[#4C4541]/50 dark:placeholder-slate-400 focus:outline-none"
               />
             </div>
@@ -138,7 +138,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             type="button"
             onClick={toggleLanguage}
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-[#3D3633] text-xs font-semibold text-[#4C4541] dark:text-slate-200 transition-colors cursor-pointer"
-            title={i18n.language === 'am' ? 'Switch to English' : 'ወደ አማርኛ ቀይር'}
+            title={i18n.language === 'am' ? t('common.switchToEnglish') : t('common.switchToAmharic')}
           >
             <Languages className="w-3.5 h-3.5" />
             <span>{i18n.language === 'am' ? 'አማ' : 'EN'}</span>
@@ -148,7 +148,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             <button
               type="button"
               onClick={onToggleDarkMode}
-              title={darkMode ? 'Switch to Day Mode' : 'Switch to Low-Light Mode'}
+              title={darkMode ? t('common.switchToDayMode') : t('common.switchToLowLightMode')}
               className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-[#3D3633] text-[#4C4541] dark:text-[#F2C46A] transition-colors cursor-pointer"
               aria-label="Toggle theme"
             >
@@ -175,14 +175,14 @@ export const TopBar: React.FC<TopBarProps> = ({
                 <div className="fixed inset-0 z-40" onClick={() => setIsNotifOpen(false)} />
                 <div className="absolute right-0 mt-1.5 w-64 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 p-3 z-50 text-xs space-y-2">
                   <div className="font-semibold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">
-                    Needs attention ({totalNotifications})
+                    {t('common.needsAttention')} ({totalNotifications})
                   </div>
                   <button
                     type="button"
                     onClick={() => { if (onNavigateTab) onNavigateTab('leave'); setIsNotifOpen(false); }}
                     className="w-full text-left p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between"
                   >
-                    <span className="text-slate-700 dark:text-slate-300">Leave Requests</span>
+                    <span className="text-slate-700 dark:text-slate-300">{t('common.leaveRequests')}</span>
                     <span className="font-mono font-bold tabular-nums text-[#4C4541] dark:text-white">{pendingLeaveCount}</span>
                   </button>
                   <button
@@ -190,7 +190,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     onClick={() => { if (onNavigateTab) onNavigateTab('clearance'); setIsNotifOpen(false); }}
                     className="w-full text-left p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between"
                   >
-                    <span className="text-slate-700 dark:text-slate-300">Exit Clearances</span>
+                    <span className="text-slate-700 dark:text-slate-300">{t('common.exitClearances')}</span>
                     <span className="font-mono font-bold tabular-nums text-[#4C4541] dark:text-white">{activeClearanceCount}</span>
                   </button>
                 </div>
@@ -224,10 +224,10 @@ export const TopBar: React.FC<TopBarProps> = ({
                 type="button"
                 onClick={handleSignOut}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
-                title="Sign Out of active session"
+                title={t('common.signOutTooltip')}
               >
                 <LogOut className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
-                <span className="font-bold">Sign Out</span>
+                <span className="font-bold">{t('common.signOut')}</span>
               </button>
             </div>
           )}

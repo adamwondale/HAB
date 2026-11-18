@@ -16,7 +16,7 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 8: Role-Based Access Control (RBAC)** - Role boundaries for Admin, HR, Finance, Store, and Operations, with navigation protection and audit logging.
 - [x] **Phase 9: Integration and Final Polish** - Full cross-module sync, responsive checks, empty/error states, and end-to-end verification.
 - [x] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** - Dedicated landing cockpits for HR, Finance, Store, Operations, and Admin/CEO, with live KPI metrics, actionable deep-link queues, zero payroll leakage, and administrative perspective switching.
-- [ ] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
+- [x] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
 
 ## Phase Details
 
@@ -54,10 +54,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 11-01: Modular namespace architecture (`src/i18n/modules/*`, `types.ts`, `index.ts`), strict `CustomTypeOptions`, and Wave 1: App shell, TopBar, Sidebar, and DashboardOverview.
-- [ ] 11-02: Wave 2: Field Operations, Site Deployments, Rotation Engine, AttendanceView, and SimpleWorkspace.
-- [ ] 11-03: Wave 3: HR Workflows, ClearanceView, OnboardingView, RecruitmentView, LeaveManagementView, and ManagementOrgView.
-- [ ] 11-04: Wave 4: Finance & Payroll, StoreManagementView, Warehouse3DView, SystemMasterSetupView, and LoginView.
+- [x] 11-01: Modular namespace architecture (`src/i18n/modules/*`, `types.ts`, `index.ts`), strict `CustomTypeOptions`, and Wave 1: App shell, TopBar, Sidebar, and DashboardOverview.
+- [x] 11-02: Wave 2: Field Operations, Site Deployments, Rotation Engine, AttendanceView, and SimpleWorkspace.
+- [x] 11-03: Wave 3: HR Workflows, ClearanceView, OnboardingView, RecruitmentView, LeaveManagementView, and ManagementOrgView.
+- [x] 11-04: Wave 4: Finance & Payroll, StoreManagementView, Warehouse3DView, SystemMasterSetupView, and LoginView.
 
 ### Phase 10: Role-Specific Dashboards & Admin Perspective Switcher
 

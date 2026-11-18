@@ -11,7 +11,25 @@ export const storeEn = {
   storageLocation: 'Warehouse Bay / Shelf',
   equipmentAllocation: 'Employee Equipment Allocation',
   assetRegister: 'Capital Asset Register',
-  spatialWarehouse: '3D Spatial Warehouse'
+  spatialWarehouse: '3D Spatial Warehouse',
+  inventoryHub: 'Central Store & Property Management',
+  inventorySubtitle: 'Physical inventory tracking, 7 supply categories, site allocations, and item movements.',
+  totalValuation: 'Total Valuation',
+  totalItems: 'Catalog SKUs',
+  lowStockAlerts: 'Low Stock Alerts',
+  outOfStock: 'Out of Stock',
+  recordTransaction: 'Record Movement',
+  addItem: 'New Catalog Item',
+  allCategories: 'All Categories',
+  searchItems: 'Search inventory items...',
+  itemCode: 'SKU Code',
+  itemName: 'Item Description',
+  category: 'Category',
+  stockBalance: 'Physical Stock',
+  reorderLevel: 'Min Threshold',
+  unitCost: 'Unit Cost (ETB)',
+  location: 'Bin / Shelf',
+  actions: 'Actions'
 };
 
 export const storeAm = {
@@ -27,5 +45,23 @@ export const storeAm = {
   storageLocation: 'የማስቀመጫ መደርደሪያ / ክፍል',
   equipmentAllocation: 'ለሠራተኛ የተሰጡ የሥራ ቁሳቁሶች',
   assetRegister: 'የቋሚ ንብረት መዝገብ',
-  spatialWarehouse: '3D የቦታ አቀማመጥ እይታ'
+  spatialWarehouse: '3D የቦታ አቀማመጥ እይታ',
+  inventoryHub: 'ማዕከላዊ የግምጃ ቤትና ንብረት አስተዳደር',
+  inventorySubtitle: 'የዕቃዎች ክምችት ቁጥጥር፣ የ7 ምድብ ዕቃዎች፣ የሳይት ድልድልና የዕቃ እንቅስቃሴዎች።',
+  totalValuation: 'ጠቅላላ የዕቃ ዋጋ',
+  totalItems: 'የዕቃዎች ዝርዝር (SKUs)',
+  lowStockAlerts: 'አነስተኛ ክምችት ማስጠንቀቂያ',
+  outOfStock: 'ያለቁ ዕቃዎች',
+  recordTransaction: 'የዕቃ እንቅስቃሴ መዝግብ',
+  addItem: 'አዲስ ዕቃ መዝግብ',
+  allCategories: 'ሁሉም ምድቦች',
+  searchItems: 'ዕቃዎችን በስም ወይም መለያ ኮድ ይፈልጉ...',
+  itemCode: 'የዕቃ መለያ ቁጥር',
+  itemName: 'የዕቃው ዝርዝር መግለጫ',
+  category: 'ምድብ',
+  stockBalance: 'የክምችት መጠን',
+  reorderLevel: 'አነስተኛ ወለል',
+  unitCost: 'የአንዱ ዋጋ (ብር)',
+  location: 'መደርደሪያ',
+  actions: 'ተግባራት'
 };

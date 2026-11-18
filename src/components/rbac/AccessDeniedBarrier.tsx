@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ShieldAlert, ArrowLeft, LogOut, CheckCircle2 } from 'lucide-react';
 import { ManagementPerson } from '../../types/hrm';
 import { getRoleAllowedTabs } from '../../utils/roleConfig';
@@ -17,6 +18,7 @@ export const AccessDeniedBarrier: React.FC<AccessDeniedBarrierProps> = ({
   onReturnToOverview,
   onSignOut
 }) => {
+  const { t } = useTranslation();
   const allowed = getRoleAllowedTabs(activeUser);
   const roleName = activeUser?.roleTitle || activeUser?.role || 'Departmental User';
 
@@ -46,17 +48,17 @@ export const AccessDeniedBarrier: React.FC<AccessDeniedBarrierProps> = ({
             HTTP 403 Forbidden
           </span>
           <h2 className="text-xl font-black text-[#4C4541] dark:text-slate-100">
-            Access Restricted by Policy
+            {t('masterSetup.accessDenied')}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-sm mx-auto leading-relaxed">
-            Your departmental role (<strong className="text-slate-700 dark:text-slate-200">{roleName}</strong>) does not have authorization to view or modify the <strong className="text-rose-600 capitalize">"{attemptedTab}"</strong> module.
+            {t('masterSetup.accessDeniedDesc')} ({roleName})
           </p>
         </div>
 
         {/* Authorized Modules for this user */}
         <div className="bg-[#FCF0DA]/60 dark:bg-slate-800/60 border border-[#EFE7D8] dark:border-slate-700 rounded-xl p-4 text-left">
           <span className="text-[11px] font-bold text-[#4C4541] dark:text-slate-200 block mb-2">
-            Authorized Modules for Your Role:
+            Authorized Modules:
           </span>
           <div className="flex flex-wrap gap-1.5">
             {allowed === 'ALL' ? (
@@ -82,7 +84,7 @@ export const AccessDeniedBarrier: React.FC<AccessDeniedBarrierProps> = ({
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] font-bold text-xs shadow-xs cursor-pointer transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Return to Workspace</span>
+            <span>{t('masterSetup.returnToDashboard')}</span>
           </button>
           <button
             type="button"
@@ -90,7 +92,7 @@ export const AccessDeniedBarrier: React.FC<AccessDeniedBarrierProps> = ({
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span>Switch Role</span>
+            <span>{t('common.signOut')}</span>
           </button>
         </div>
       </div>

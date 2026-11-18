@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Package, ArrowUpRight, ShieldCheck, Layers, Box, UserCheck, Plus } from 'lucide-react';
 import { StockItem, StockTransaction, Employee, ClientSite, ManagementPerson } from '../types/hrm';
 import { InventoryDashboardKpis } from './store/InventoryDashboardKpis';
@@ -33,25 +34,18 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
   onAddStockItem,
   onRecordTransaction
 }) => {
+  const { t } = useTranslation();
   const canManage = activeUser
-    ? activeUser.id === 'mgmt-storekeeper' ||
-      activeUser.role === 'store' ||
-      activeUser.role === 'super_admin' ||
-      activeUser.role === 'tech'
+    ? activeUser.id === 'mgmt-storekeeper' || activeUser.role === 'store' || activeUser.role === 'super_admin' || activeUser.role === 'tech'
     : true;
 
   const [activeTab, setActiveTab] = useState<'movements' | 'allocations' | 'catalog' | 'assets' | 'warehouse3d'>('movements');
-
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [txModalState, setTxModalState] = useState<{
     isOpen: boolean;
     item: StockItem | null;
     type: 'Issued (Out)' | 'Received (Restock)' | 'Returned (In)' | 'Damaged / Lost (Write-off)';
-  }>({
-    isOpen: false,
-    item: null,
-    type: 'Issued (Out)'
-  });
+  }>({ isOpen: false, item: null, type: 'Issued (Out)' });
 
   const handleOpenQuickTx = (item: StockItem, type: 'Issued (Out)' | 'Received (Restock)') => {
     setTxModalState({ isOpen: true, item, type });
@@ -69,11 +63,11 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
           <div className="flex items-center gap-2">
             <Package className="w-5 h-5 text-[#F2C46A]" />
             <h1 className="text-lg sm:text-xl font-bold text-[#4C4541] dark:text-slate-100">
-              Store & Inventory Management
+              {t('store.inventoryHub')}
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Material movements, employee equipment allocations, catalog items, and capital asset controls
+            {t('store.inventorySubtitle')}
           </p>
         </div>
         {canManage && (
@@ -84,7 +78,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 text-[#F2C46A]" />
-              <span>New Item</span>
+              <span>{t('store.addItem')}</span>
             </button>
             <button
               type="button"
@@ -92,7 +86,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold shadow-xs cursor-pointer"
             >
               <ArrowUpRight className="w-3.5 h-3.5" />
-              <span>Record Movement</span>
+              <span>{t('store.recordTransaction')}</span>
             </button>
           </div>
         )}
@@ -122,7 +116,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
           }`}
         >
           <ArrowUpRight className="w-3.5 h-3.5" />
-          <span>Movements Log</span>
+          <span>{t('store.recordTransaction')}</span>
         </button>
 
         <button
@@ -135,7 +129,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
           }`}
         >
           <UserCheck className="w-3.5 h-3.5" />
-          <span>Equipment Allocations</span>
+          <span>{t('store.equipmentAllocation')}</span>
         </button>
 
         <button
@@ -148,7 +142,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
           }`}
         >
           <Layers className="w-3.5 h-3.5" />
-          <span>Catalog & Stock Levels</span>
+          <span>{t('store.title')}</span>
         </button>
 
         <button
@@ -161,7 +155,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
           }`}
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Asset Register</span>
+          <span>{t('store.assetRegister')}</span>
         </button>
 
         <button
@@ -174,7 +168,7 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
           }`}
         >
           <Box className="w-3.5 h-3.5" />
-          <span>3D Spatial Warehouse</span>
+          <span>{t('store.spatialWarehouse')}</span>
         </button>
       </div>
 

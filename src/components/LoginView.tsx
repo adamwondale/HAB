@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ManagementPerson } from '../types/hrm';
 import { HabMonogramIcon } from './HabLogo';
 import { authenticate, accountToManagementPerson, setActiveSession } from '../utils/authStorage';
@@ -27,6 +28,7 @@ const QUICK_FILL_ROLES: QuickFillRole[] = [
 ];
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
+  const { t } = useTranslation();
   const [identifier, setIdentifier] = useState<string>('admin');
   const [password, setPassword] = useState<string>('hab2026');
   const [error, setError] = useState<string | null>(null);
@@ -64,10 +66,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         <div className="w-full max-w-[380px]">
           <div className="text-center mb-8">
             <h1 className="text-2xl sm:text-[26px] font-bold text-[#4C4541] tracking-tight">
-              Sign in to HAB records
+              {t('masterSetup.loginTitle')}
             </h1>
             <p className="text-xs text-[#4C4541]/70 mt-1.5">
-              Enter your credentials to access company records
+              {t('masterSetup.loginSubtitle')}
             </p>
           </div>
 
@@ -77,7 +79,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 htmlFor="workspace-identifier"
                 className="block text-xs font-bold text-[#4C4541] uppercase tracking-wider mb-1.5"
               >
-                Username or Corporate Email
+                {t('masterSetup.username')}
               </label>
               <input
                 id="workspace-identifier"
@@ -95,7 +97,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 htmlFor="workspace-password"
                 className="block text-xs font-bold text-[#4C4541] uppercase tracking-wider mb-1.5"
               >
-                Password
+                {t('masterSetup.password')}
               </label>
               <input
                 id="workspace-password"
@@ -119,7 +121,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               type="submit"
               className="w-full bg-[#F2C46A] hover:bg-[#E5B558] active:scale-[0.99] text-[#4C4541] font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer border border-[#E5B558]"
             >
-              Sign In
+              {t('masterSetup.signIn')}
             </button>
           </form>
 
@@ -127,7 +129,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           <div className="mt-8 pt-6 border-t border-[#EAE0CD]">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#4C4541]/75">
-                Quick-fill helper chips
+                {t('masterSetup.quickRoleFill')}
               </span>
               <span className="text-[10px] text-[#4C4541]/60 font-mono">
                 default: hab2026

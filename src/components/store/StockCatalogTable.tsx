@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Search, Download, Plus, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { StockItem, ServiceType } from '../../types/hrm';
 import { Division } from '../../types/division';
@@ -19,6 +20,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
   onOpenAddItem,
   onOpenQuickTx
 }) => {
+  const { t } = useTranslation();
   const [selectedDivision, setSelectedDivision] = useState<string>('All');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,10 +69,10 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div>
           <h2 className="text-sm font-bold text-[#4C4541] dark:text-slate-100">
-            Store Inventory Catalog & Quantities
+            {t('store.inventoryHub')}
           </h2>
           <p className="text-xs text-slate-500">
-            All stored equipment, consumables, and operational uniforms across divisions
+            {t('store.inventorySubtitle')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -80,7 +82,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
+            <span>{t('common.exportCsv')}</span>
           </button>
           {canManage && (
             <button
@@ -89,7 +91,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold shadow-xs cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Add Catalog Item</span>
+              <span>{t('store.addItem')}</span>
             </button>
           )}
         </div>
@@ -109,7 +111,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
                   : 'text-slate-500 hover:bg-slate-100'
               }`}
             >
-              {div}
+              {div === 'All' ? t('common.all') : div}
             </button>
           ))}
         </div>
@@ -119,7 +121,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium"
           >
-            <option value="All">All Categories</option>
+            <option value="All">{t('store.allCategories')}</option>
             {categories.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -130,7 +132,7 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search catalog..."
+              placeholder={t('store.searchItems')}
               className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs"
             />
           </div>
@@ -142,14 +144,14 @@ export const StockCatalogTable: React.FC<StockCatalogTableProps> = ({
         <table className="w-full text-left text-xs min-w-[820px]">
           <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] font-bold uppercase tracking-wider text-[11px]">
             <tr>
-              <th className="py-2.5 px-3">Item Details</th>
-              <th className="py-2.5 px-3">Category</th>
-              <th className="py-2.5 px-3">Division</th>
-              <th className="py-2.5 px-3 text-right">In Stock</th>
-              <th className="py-2.5 px-3 text-right">Min Level</th>
-              <th className="py-2.5 px-3 text-right">Unit Cost</th>
-              <th className="py-2.5 px-3">Location</th>
-              <th className="py-2.5 px-3 text-center">Quick Move</th>
+              <th className="py-2.5 px-3">{t('store.itemName')}</th>
+              <th className="py-2.5 px-3">{t('store.category')}</th>
+              <th className="py-2.5 px-3">{t('recruitment.division')}</th>
+              <th className="py-2.5 px-3 text-right">{t('store.stockBalance')}</th>
+              <th className="py-2.5 px-3 text-right">{t('store.reorderLevel')}</th>
+              <th className="py-2.5 px-3 text-right">{t('store.unitCost')}</th>
+              <th className="py-2.5 px-3">{t('store.location')}</th>
+              <th className="py-2.5 px-3 text-center">{t('store.actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800">

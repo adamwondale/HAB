@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Search, Download, AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react';
 import { getStoredAuditLogs } from '../../utils/auditLogger';
 import { downloadCsv } from '../../utils/csvExport';
 
 export const AuditTrailView: React.FC = () => {
+  const { t } = useTranslation();
   const [logs] = useState(() => getStoredAuditLogs());
   const [searchQuery, setSearchQuery] = useState('');
   const [moduleFilter, setModuleFilter] = useState('All');
@@ -49,10 +51,10 @@ export const AuditTrailView: React.FC = () => {
         <div>
           <h2 className="text-sm font-bold text-[#4C4541] dark:text-slate-100 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[#F2C46A]" />
-            <span>Administrative Activity Audit Trail</span>
+            <span>{t('masterSetup.auditLogs')}</span>
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Immutable log of sensitive operations: divisions, payroll approvals, inventory mutations, and security alerts
+            {t('masterSetup.auditLogsSubtitle')}
           </p>
         </div>
         <button
@@ -61,7 +63,7 @@ export const AuditTrailView: React.FC = () => {
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer self-start sm:self-auto"
         >
           <Download className="w-3.5 h-3.5" />
-          <span>Export Audit Log</span>
+          <span>{t('common.exportCsv')}</span>
         </button>
       </div>
 
@@ -89,7 +91,7 @@ export const AuditTrailView: React.FC = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900"
           >
-            <option value="All">All Statuses</option>
+            <option value="All">{t('masterSetup.allActions')}</option>
             <option value="SUCCESS">Success Only</option>
             <option value="WARNING">Warnings</option>
             <option value="SECURITY_ALERT">Security Alerts</option>
@@ -100,7 +102,7 @@ export const AuditTrailView: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search actor, action, details..."
+              placeholder={t('masterSetup.searchLogs')}
               className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs"
             />
           </div>
@@ -112,13 +114,13 @@ export const AuditTrailView: React.FC = () => {
         <table className="w-full text-left text-xs min-w-[850px]">
           <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] font-bold uppercase tracking-wider text-[11px]">
             <tr>
-              <th className="py-2.5 px-3">Timestamp</th>
-              <th className="py-2.5 px-3">Actor</th>
-              <th className="py-2.5 px-3">Action</th>
-              <th className="py-2.5 px-3">Module</th>
+              <th className="py-2.5 px-3">{t('masterSetup.timestamp')}</th>
+              <th className="py-2.5 px-3">{t('masterSetup.actor')}</th>
+              <th className="py-2.5 px-3">{t('masterSetup.action')}</th>
+              <th className="py-2.5 px-3">{t('recruitment.division')}</th>
               <th className="py-2.5 px-3">Previous → New Value</th>
-              <th className="py-2.5 px-3">Details</th>
-              <th className="py-2.5 px-3 text-center">Status</th>
+              <th className="py-2.5 px-3">{t('common.details')}</th>
+              <th className="py-2.5 px-3 text-center">{t('masterSetup.status')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800">

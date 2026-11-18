@@ -13,7 +13,26 @@ export const payrollEn = {
   approveBatch: 'Approve Monthly Batch',
   disburseBank: 'Disburse to Bank Accounts',
   chequeCashControl: 'Cheque & Cash Control',
-  materialDepreciation: 'Material Depreciation'
+  materialDepreciation: 'Material Depreciation',
+  sheetTitle: '16-Column Payroll & Statutory Remittance',
+  sheetSubtitle: 'Statutory income tax, pension remittances, and monthly payroll batches.',
+  payrollPeriod: 'Payroll Month',
+  batchStatus: 'Batch Status',
+  netDisbursement: 'Net Disbursement',
+  totalGross: 'Total Gross Pay',
+  totalTax: 'Total Tax Withheld',
+  totalPension: 'Total Pension (7% + 11%)',
+  disbursePayroll: 'Disburse Batch',
+  approved: 'Approved',
+  draft: 'Draft',
+  disbursed: 'Disbursed',
+  employee: 'Employee',
+  basicSalary: 'Basic Salary',
+  taxableGross: 'Taxable Gross',
+  totalDeductions: 'Total Deductions',
+  netPay: 'Net Pay',
+  confirmApproval: 'Are you sure you want to approve this payroll batch?',
+  confirmDisbursement: 'Are you sure you want to disburse this payroll batch?'
 };
 
 export const payrollAm = {
@@ -31,5 +50,24 @@ export const payrollAm = {
   approveBatch: 'የወሩን ደመወዝ አጽድቅ',
   disburseBank: 'ወደ ባንክ ሂሳብ ላክ (Disburse)',
   chequeCashControl: 'የቼክና የጥሬ ገንዘብ ቁጥጥር',
-  materialDepreciation: 'የዕቃዎች እርጅና ቅነሳ'
+  materialDepreciation: 'የዕቃዎች እርጅና ቅነሳ',
+  sheetTitle: 'የ16-ዓምድ የደመወዝ ክፍያና የመንግስት ግብር',
+  sheetSubtitle: 'የመንግስት የሥራ ግብር፣ የጡረታ መዋጮና የወርሃዊ ደመወዝ ክፍያዎች።',
+  payrollPeriod: 'የደመወዝ ወር',
+  batchStatus: 'የክፍያው ሁኔታ',
+  netDisbursement: 'የተጣራ ክፍያ',
+  totalGross: 'ጠቅላላ የተጠራቀመ ደመወዝ',
+  totalTax: 'የተቀነሰ ጠቅላላ ግብር',
+  totalPension: 'ጠቅላላ የጡረታ መዋጮ (7% + 11%)',
+  disbursePayroll: 'ክፍያ ፈጽም',
+  approved: 'የጸደቀ',
+  draft: 'ረቂቅ',
+  disbursed: 'የተከፈለ',
+  employee: 'ሠራተኛ',
+  basicSalary: 'መሠረታዊ ደመወዝ',
+  taxableGross: 'ግብር የሚከፈልበት ገቢ',
+  totalDeductions: 'ጠቅላላ ተቀናሽ',
+  netPay: 'የተጣራ ክፍያ',
+  confirmApproval: 'ይህን የደመወዝ ክፍያ ማጽደቅ ይፈልጋሉ?',
+  confirmDisbursement: 'ይህን የደመወዝ ክፍያ መፈጸም ይፈልጋሉ?'
 };

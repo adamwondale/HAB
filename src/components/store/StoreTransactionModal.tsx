@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowUpRight, ArrowDownLeft, RotateCcw, AlertTriangle, X } from 'lucide-react';
 import { StockItem, StockTransaction, Employee, ClientSite, ServiceType } from '../../types/hrm';
 
@@ -15,6 +16,7 @@ interface StoreTransactionModalProps {
 export const StoreTransactionModal: React.FC<StoreTransactionModalProps> = ({
   isOpen, item, initialType = 'Issued (Out)', employees, sites, onClose, onRecord
 }) => {
+  const { t } = useTranslation();
   if (!isOpen || !item) return null;
 
   const [type, setType] = useState<StockTransaction['transactionType']>(initialType);
@@ -171,8 +173,8 @@ export const StoreTransactionModal: React.FC<StoreTransactionModalProps> = ({
           </div>
 
           <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <button type="button" onClick={onClose} className="px-3 py-1.5 rounded-lg border border-slate-300 font-semibold cursor-pointer">Cancel</button>
-            <button type="submit" disabled={isOverStock} className="px-4 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] disabled:opacity-50 text-[#4C4541] font-bold shadow-xs cursor-pointer">Commit Movement</button>
+            <button type="button" onClick={onClose} className="px-3 py-1.5 rounded-lg border border-slate-300 font-semibold cursor-pointer">{t('common.cancel')}</button>
+            <button type="submit" disabled={isOverStock} className="px-4 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] disabled:opacity-50 text-[#4C4541] font-bold shadow-xs cursor-pointer">{t('store.recordTransaction')}</button>
           </div>
         </form>
       </div>

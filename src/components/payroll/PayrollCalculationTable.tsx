@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, Edit3 } from 'lucide-react';
 import { PayrollRecord } from '../../types/hrm';
 import { getDivisionBadgeStyle } from './payrollHelpers';
@@ -16,6 +17,7 @@ export const PayrollCalculationTable: React.FC<PayrollCalculationTableProps> = (
   onOpenPayslip,
   onOpenEdit
 }) => {
+  const { t } = useTranslation();
   const totals = records.reduce(
     (acc, r) => ({
       basic: acc.basic + r.baseSalary,
@@ -37,25 +39,25 @@ export const PayrollCalculationTable: React.FC<PayrollCalculationTableProps> = (
           <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 sticky top-0 z-20 font-bold uppercase tracking-wider text-[10.5px]">
             <tr>
               <th className="py-3 px-2.5 sticky left-0 bg-[#FCF0DA] dark:bg-[#2C2724] z-20 shadow-xs">ID</th>
-              <th className="py-3 px-3 sticky left-14 bg-[#FCF0DA] dark:bg-[#2C2724] z-20 shadow-xs">Employee Name</th>
-              <th className="py-3 px-2.5">Division</th>
-              <th className="py-3 px-2.5 text-right">Basic Salary</th>
-              <th className="py-3 px-2 text-center" title="Standard monthly basis: 30 days">Standard Days</th>
-              <th className="py-3 px-2 text-center">Payable Days</th>
+              <th className="py-3 px-3 sticky left-14 bg-[#FCF0DA] dark:bg-[#2C2724] z-20 shadow-xs">{t('payroll.employee')}</th>
+              <th className="py-3 px-2.5">{t('recruitment.division')}</th>
+              <th className="py-3 px-2.5 text-right">{t('payroll.basicSalary')}</th>
+              <th className="py-3 px-2 text-center" title="Standard monthly basis: 30 days">{t('payroll.standardDays')}</th>
+              <th className="py-3 px-2 text-center">{t('payroll.payableDays')}</th>
               <th className="py-3 px-2.5 text-right">Transport</th>
-              <th className="py-3 px-2.5 text-right">Mobile Card</th>
-              <th className="py-3 px-2.5 text-right">House Allow.</th>
-              <th className="py-3 px-2.5 text-right">Overtime</th>
-              <th className="py-3 px-3 text-right font-black bg-amber-500/10 text-slate-900 dark:text-slate-100">Gross Earnings</th>
-              <th className="py-3 px-2.5 text-right text-rose-700 dark:text-rose-400">Income Tax</th>
-              <th className="py-3 px-2.5 text-right text-indigo-700 dark:text-indigo-300">Pension (7%)</th>
-              <th className="py-3 px-2.5 text-right text-rose-600">Penalties</th>
-              <th className="py-3 px-2.5 text-right text-amber-700">Food Cost</th>
+              <th className="py-3 px-2.5 text-right">Mobile</th>
+              <th className="py-3 px-2.5 text-right">Housing</th>
+              <th className="py-3 px-2.5 text-right">{t('attendance.overtime')}</th>
+              <th className="py-3 px-3 text-right font-black bg-amber-500/10 text-slate-900 dark:text-slate-100">{t('payroll.grossEarnings')}</th>
+              <th className="py-3 px-2.5 text-right text-rose-700 dark:text-rose-400">{t('payroll.incomeTax')}</th>
+              <th className="py-3 px-2.5 text-right text-indigo-700 dark:text-indigo-300">{t('payroll.pensionEmployee')}</th>
+              <th className="py-3 px-2.5 text-right text-rose-600">{t('payroll.penalties')}</th>
+              <th className="py-3 px-2.5 text-right text-amber-700">{t('payroll.foodCost')}</th>
               <th className="py-3 px-3 text-right bg-indigo-50 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 font-black" title="Non-deductible employer contribution">
-                Employer 11%
+                {t('payroll.pensionEmployer')}
               </th>
-              <th className="py-3 px-3 text-right font-black bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">Net Salary</th>
-              <th className="py-3 px-2.5 text-center">Actions</th>
+              <th className="py-3 px-3 text-right font-black bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">{t('payroll.netSalary')}</th>
+              <th className="py-3 px-2.5 text-center">{t('common.actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">

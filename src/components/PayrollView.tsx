@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CreditCard, Download, Plus, Paperclip, Sliders, DollarSign, TrendingDown, Calendar } from 'lucide-react';
 import { PayrollRecord, ServiceType, Employee, ManagementPerson } from '../types/hrm';
 import { Division } from '../types/division';
@@ -39,6 +40,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
   onUpdatePayrollRecord,
   onAddPayrollRecord
 }) => {
+  const { t } = useTranslation();
   const canApprove = activeUser ? activeUser.permissions.canApprovePayroll : true;
   const [activeFinanceTab, setActiveFinanceTab] = useState<'payroll' | 'cheque_cash' | 'depreciation'>('payroll');
   const [filterService, setFilterService] = useState<string>('All');
@@ -50,7 +52,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
     : ['All', 'Security', 'Cleaning', 'Property Management', 'Head Office Staff'];
 
   const handleConfirmDisburse = () => {
-    if (!window.confirm(`Confirm payroll disbursement: Disburse approved salaries to bank accounts for ${selectedMonth}?`)) {
+    if (!window.confirm(t('payroll.confirmDisbursement'))) {
       return;
     }
     if (onDisburseBatch) onDisburseBatch();
@@ -78,11 +80,11 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           <div className="flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-[#F2C46A]" />
             <h1 className="text-lg sm:text-xl font-bold text-[#4C4541] dark:text-slate-100">
-              Finance & 30-Day Payroll Sheet
+              {t('payroll.title')}
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Standard 30-day payroll calculations, 11% non-deductible employer pension, tax compliance, and allowances
+            {t('payroll.subtitle')}
           </p>
         </div>
 
@@ -90,21 +92,21 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           {onOpenMasterSetup && (
             <button type="button" onClick={onOpenMasterSetup} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 cursor-pointer">
               <Sliders className="w-3.5 h-3.5 text-amber-600" />
-              <span>Master Setup</span>
+              <span>{t('nav.settings')}</span>
             </button>
           )}
           <button type="button" onClick={() => setIsAttendanceModalOpen(true)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 cursor-pointer">
             <Paperclip className="w-3.5 h-3.5 text-[#F2C46A]" />
-            <span>Attendance Check</span>
+            <span>{t('attendance.title')}</span>
           </button>
           <button type="button" onClick={() => exportPayrollToCsv(filteredRecords)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 cursor-pointer">
             <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
+            <span>{t('common.exportCsv')}</span>
           </button>
           {canApprove && onAddPayrollRecord && (
             <button type="button" onClick={() => setIsAddModalOpen(true)} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold shadow-xs cursor-pointer">
               <Plus className="w-3.5 h-3.5" />
-              <span>Add to Sheet</span>
+              <span>{t('common.save')}</span>
             </button>
           )}
         </div>
@@ -122,7 +124,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           }`}
         >
           <CreditCard className="w-3.5 h-3.5" />
-          <span>16-Column Payroll Sheet</span>
+          <span>{t('payroll.sheetTitle')}</span>
         </button>
         <button
           type="button"
@@ -134,7 +136,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           }`}
         >
           <DollarSign className="w-3.5 h-3.5" />
-          <span>Cheque & Cash Control</span>
+          <span>{t('payroll.chequeCashControl')}</span>
         </button>
         <button
           type="button"
@@ -146,7 +148,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           }`}
         >
           <TrendingDown className="w-3.5 h-3.5" />
-          <span>Material Depreciation</span>
+          <span>{t('payroll.materialDepreciation')}</span>
         </button>
       </div>
 
@@ -210,14 +212,14 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
                 onClick={onApproveBatch}
                 className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs cursor-pointer"
               >
-                Approve Monthly Batch
+                {t('payroll.approveBatch')}
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDisburse}
                 className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs cursor-pointer"
               >
-                Disburse to Bank Accounts
+                {t('payroll.disburseBank')}
               </button>
             </div>
           ) : (

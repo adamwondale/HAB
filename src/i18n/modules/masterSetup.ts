@@ -11,7 +11,25 @@ export const masterSetupEn = {
   password: 'Password',
   signIn: 'Sign In',
   accessDenied: 'Access Restricted (HTTP 403)',
-  accessDeniedDesc: 'Your departmental role does not authorize access to this module.'
+  accessDeniedDesc: 'Your departmental role does not authorize access to this module.',
+  quickRoleFill: 'Quick-Fill Role Credentials',
+  superAdmin: 'Super Admin',
+  hrOfficer: 'HR Officer',
+  financeOfficer: 'Finance Officer',
+  storekeeper: 'Storekeeper',
+  operationsOfficer: 'Operations Officer',
+  returnToDashboard: 'Return to Dashboard',
+  contactAdmin: 'Contact Administrator',
+  auditLogs: 'Audit Trail & Compliance Ledger',
+  auditLogsSubtitle: 'Real-time record of security events, administrative logins, and data mutations.',
+  allActions: 'All Event Types',
+  searchLogs: 'Search logs by actor, IP, or event...',
+  timestamp: 'Timestamp',
+  actor: 'Actor',
+  action: 'Action',
+  target: 'Resource Target',
+  ipAddress: 'IP Address',
+  status: 'Status'
 };
 
 export const masterSetupAm = {
@@ -27,5 +45,23 @@ export const masterSetupAm = {
   password: 'የይለፍ ቃል',
   signIn: 'ግባ',
   accessDenied: 'ፍቃድ አልተሰጠም (HTTP 403)',
-  accessDeniedDesc: 'የእርስዎ የሥራ ድርሻ ወደዚህ ገጽ ለመግባት ፍቃድ የለውም።'
+  accessDeniedDesc: 'የእርስዎ የሥራ ድርሻ ወደዚህ ገጽ ለመግባት ፍቃድ የለውም።',
+  quickRoleFill: 'ፈጣን የሙከራ መለያዎች',
+  superAdmin: 'ዋና አስተዳዳሪ',
+  hrOfficer: 'የሰው ኃይል ኃላፊ',
+  financeOfficer: 'የፋይናንስ ኃላፊ',
+  storekeeper: 'የንብረት ክፍል',
+  operationsOfficer: 'የመስክ ሥራዎች ኃላፊ',
+  returnToDashboard: 'ወደ ዋናው ገጽ ተመለስ',
+  contactAdmin: 'አስተዳዳሪውን ያነጋግሩ',
+  auditLogs: 'የሥርዓቱ ኦዲትና ቁጥጥር መዝገብ',
+  auditLogsSubtitle: 'የደህንነት ክስተቶች፣ የመግቢያ ሙከራዎችና የመረጃ ለውጦች የቀጥታ መዝገብ።',
+  allActions: 'ሁሉም የክስተት ዓይነቶች',
+  searchLogs: 'መዝገቦችን በተጠቃሚ፣ አይፒ ወይም ክስተት ይፈልጉ...',
+  timestamp: 'የተከናወነበት ሰዓት',
+  actor: 'ፈጻሚ',
+  action: 'ተግባር',
+  target: 'ዒላማ የተደረገ',
+  ipAddress: 'አይፒ አድራሻ (IP)',
+  status: 'ሁኔታ'
 };

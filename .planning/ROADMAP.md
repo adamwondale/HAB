@@ -15,7 +15,7 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 7: Store and Inventory Management** - 7 item categories, Stock In, Stock Out with positive stock enforcement, Employee Equipment Allocation register, and Damaged/Lost item tracking.
 - [x] **Phase 8: Role-Based Access Control (RBAC)** - Role boundaries for Admin, HR, Finance, Store, and Operations, with navigation protection and audit logging.
 - [x] **Phase 9: Integration and Final Polish** - Full cross-module sync, responsive checks, empty/error states, and end-to-end verification.
-- [ ] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** - Dedicated landing cockpits for HR, Finance, Store, Operations, and Admin/CEO, with live KPI metrics, actionable deep-link queues, zero payroll leakage, and administrative perspective switching.
+- [x] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** - Dedicated landing cockpits for HR, Finance, Store, Operations, and Admin/CEO, with live KPI metrics, actionable deep-link queues, zero payroll leakage, and administrative perspective switching.
 - [ ] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
 
 ## Phase Details
@@ -75,8 +75,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 10-01: DashboardRouter, Admin Perspective Switcher, Reusable Metric Tiles, and Admin Master Dashboard.
-- [ ] 10-02: Dedicated Departmental Cockpits (HR, Finance, Store, Operations) with KPIs, Action Queues, and Zero Data Leaks.
+- [x] 10-01: DashboardRouter, Admin Perspective Switcher, Reusable Metric Tiles, and Admin Master Dashboard.
+- [x] 10-02: Dedicated Departmental Cockpits (HR, Finance, Store, Operations) with KPIs, Action Queues, and Zero Data Leaks.
 
 
 ### Phase 8: Role-Based Access Control (RBAC)

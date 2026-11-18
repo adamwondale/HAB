@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Building2, Save } from 'lucide-react';
 import { Division } from '../../types/division';
 
@@ -17,6 +18,7 @@ export const AddEditDivisionModal: React.FC<AddEditDivisionModalProps> = ({
   editingDivision,
   existingCodes
 }) => {
+  const { t } = useTranslation();
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [amharicName, setAmharicName] = useState('');
@@ -93,7 +95,7 @@ export const AddEditDivisionModal: React.FC<AddEditDivisionModalProps> = ({
           <div className="flex items-center gap-2">
             <Building2 className="w-5 h-5 text-[#4C4541] dark:text-[#F2C46A]" />
             <h3 className="font-bold text-sm text-[#4C4541] dark:text-slate-100">
-              {editingDivision ? 'Edit Operational Division' : 'Register New Division'}
+              {editingDivision ? t('hr.editDivision') : t('hr.addDivision')}
             </h3>
           </div>
           <button type="button" onClick={onClose} className="p-1 rounded-md text-slate-500 hover:bg-black/5">
@@ -123,14 +125,14 @@ export const AddEditDivisionModal: React.FC<AddEditDivisionModalProps> = ({
                 onChange={(e) => setStatus(e.target.value as any)}
                 className="w-full px-3 py-2 border rounded-lg font-semibold dark:bg-slate-800 border-slate-300 dark:border-slate-700"
               >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="Active">{t('common.active')}</option>
+                <option value="Inactive">{t('common.inactive')}</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Division Name *</label>
+            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">{t('hr.divisionName')} *</label>
             <input
               type="text"
               required
@@ -165,7 +167,7 @@ export const AddEditDivisionModal: React.FC<AddEditDivisionModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Head of Division</label>
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">{t('hr.headOfDivision')}</label>
               <input
                 type="text"
                 placeholder="Manager name"
@@ -175,7 +177,7 @@ export const AddEditDivisionModal: React.FC<AddEditDivisionModalProps> = ({
               />
             </div>
             <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Target Headcount</label>
+              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">{t('hr.targetHeadcount')}</label>
               <input
                 type="number"
                 value={targetHeadcount}
@@ -189,16 +191,16 @@ export const AddEditDivisionModal: React.FC<AddEditDivisionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50"
+              className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 cursor-pointer"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg bg-[#F2C46A] text-[#4C4541] hover:bg-[#e4b55b]"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg bg-[#F2C46A] text-[#4C4541] hover:bg-[#e4b55b] cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
-              Save Division
+              {t('common.save')}
             </button>
           </div>
         </form>

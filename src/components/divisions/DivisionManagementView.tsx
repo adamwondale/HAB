@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Building2, Plus, Search, Download } from 'lucide-react';
 import { Division } from '../../types/division';
 import { Employee, ServiceType } from '../../types/hrm';
@@ -25,6 +26,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
   onToggleStatus,
   onReassignEmployee
 }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -64,7 +66,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
   const handleConfirmToggleStatus = (div: Division) => {
     const staffCount = employees.filter((e) => e.serviceType === div.name).length;
     if (div.status === 'Active' && staffCount > 0) {
-      if (!window.confirm(`Warning: ${div.name} currently has ${staffCount} assigned employee(s). Are you sure you want to deactivate it?`)) {
+      if (!window.confirm(t('hr.warningDeactivateDivision'))) {
         return;
       }
     }
@@ -78,10 +80,10 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
             <Building2 className="w-6 h-6 text-[#4C4541] dark:text-[#F2C46A]" />
-            Division Management
+            {t('hr.divisionManagement')}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Configure operational divisions, monitor workforce distribution, and reassign personnel across service units.
+            {t('hr.divisionManagementDesc')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -90,14 +92,14 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
             onClick={handleExport}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" /> Export CSV
+            <Download className="w-3.5 h-3.5" /> {t('common.exportCsv')}
           </button>
           <button
             type="button"
             onClick={() => { setEditingDivision(null); setIsAddModalOpen(true); }}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-[#F2C46A] text-[#4C4541] hover:bg-[#e4b55b] shadow-xs cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> Add Division
+            <Plus className="w-4 h-4" /> {t('hr.addDivision')}
           </button>
         </div>
       </div>
@@ -115,7 +117,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search division or head..."
+            placeholder={t('hr.searchDivisionOrHead')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 text-xs border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700"
@@ -133,7 +135,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
                   : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100'
               }`}
             >
-              {tab}
+              {tab === 'All' ? t('common.all') : tab === 'Active' ? t('common.active') : t('common.inactive')}
             </button>
           ))}
         </div>
@@ -143,7 +145,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
       {filteredDivisions.length === 0 ? (
         <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
           <Building2 className="w-8 h-8 mx-auto text-slate-400 mb-2" />
-          <p className="text-xs text-slate-500 font-medium">No divisions found matching filter.</p>
+          <p className="text-xs text-slate-500 font-medium">{t('hr.noDivisionsFound')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

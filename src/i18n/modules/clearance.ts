@@ -8,7 +8,18 @@ export const clearanceEn = {
   settleDeductions: 'Settle Outstanding Debts',
   issueCertificate: 'Issue Service Certificate',
   clearanceStatus: 'Clearance Status',
-  handoverCompleted: 'Handover Completed'
+  handoverCompleted: 'Handover Completed',
+  exitDate: 'Exit Date',
+  exitReason: 'Reason for Departure',
+  severancePay: 'Severance Pay',
+  providentFund: 'Provident Fund Payout',
+  resignation: 'Resignation',
+  contractTermination: 'Contract Termination',
+  retirement: 'Retirement',
+  disciplinary: 'Disciplinary Exit',
+  pendingSignoff: 'Pending Sign-off',
+  approvedSignoff: 'Approved',
+  rejectedSignoff: 'Rejected'
 };
 
 export const clearanceAm = {
@@ -21,5 +32,16 @@ export const clearanceAm = {
   settleDeductions: 'ቀሪ ዕዳዎችን ማወራረድ',
   issueCertificate: 'የሥራ ልምድ ምስክር ወረቀት መስጠት',
   clearanceStatus: 'የስንብት ሁኔታ',
-  handoverCompleted: 'ርክክብ ተጠናቋል'
+  handoverCompleted: 'ርክክብ ተጠናቋል',
+  exitDate: 'የመልቀቂያ ቀን',
+  exitReason: 'የመልቀቂያ ምክንያት',
+  severancePay: 'የስንብት ክፍያ (ካሳ)',
+  providentFund: 'የፕሮቪደንት ፈንድ ክፍያ',
+  resignation: 'ፈቃደኛ መልቀቂያ',
+  contractTermination: 'የውል ማቋረጥ',
+  retirement: 'ጡረታ',
+  disciplinary: 'በዲሲፕሊን ምክንያት',
+  pendingSignoff: 'ፊርማ በመጠባበቅ ላይ',
+  approvedSignoff: 'የጸደቀ',
+  rejectedSignoff: 'ውድቅ የተደረገ'
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CheckCircle2, UserCheck, Lock, Plus } from 'lucide-react';
 import { OnboardingChecklist, ClientSite, ManagementPerson, Candidate } from '../types/hrm';
 import { EnrollOnboardingModal } from './onboarding/EnrollOnboardingModal';
@@ -22,6 +23,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
   onCompleteOnboarding,
   onEnrollChecklist
 }) => {
+  const { t } = useTranslation();
   const [selectedChecklistId, setSelectedChecklistId] = useState<string>(onboardingList[0]?.id || '');
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
   const selectedChecklist = onboardingList.find(o => o.id === selectedChecklistId) || onboardingList[0];
@@ -30,28 +32,30 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
   const isLegal = activeUser?.id === 'mgmt-legal';
   const canActivateEmployee = activeUser ? activeUser.permissions.canEditEmployees : true;
 
-  const isTaskAuthorizedForRole = (category: string) => {
-    if (!activeUser) return true;
-    if (isStorekeeper) return category === 'Uniform & Equipment';
-    if (isLegal) return category === 'Police & Guarantor';
-    return true;
-  };
+  const isTaskAuthorizedForRole = (cat: string) =>
+    !activeUser || (isStorekeeper ? cat === 'Uniform & Equipment' : isLegal ? cat === 'Police & Guarantor' : true);
 
   return (
     <div className="space-y-6">
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 dark:bg-slate-900 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-amber-700 dark:text-[#F2C46A] uppercase tracking-wide">New Hire Induction</span>
-            {isStorekeeper && <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold">Storekeeper Mode</span>}
-            {isLegal && <span className="px-2 py-0.5 rounded bg-rose-50 border border-rose-200 text-rose-800 text-[10px] font-bold">Legal Mode</span>}
+            <span className="text-xs font-bold text-amber-700 dark:text-[#F2C46A] uppercase tracking-wide">
+              {t('recruitment.newHireInduction')}
+            </span>
+            {isStorekeeper && <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold">{t('recruitment.storekeeperMode')}</span>}
+            {isLegal && <span className="px-2 py-0.5 rounded bg-rose-50 border border-rose-200 text-rose-800 text-[10px] font-bold">{t('recruitment.legalMode')}</span>}
           </div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Employee Onboarding & Gear Issuance</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Verify Kebele ID, police clearance, notarized guarantor, and issue company uniforms and boots prior to deployment.</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">
+            {t('recruitment.onboardingTitle')}
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {t('recruitment.onboardingSubtitle')}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700">
-            <span>In Induction: </span><strong className="text-slate-900 dark:text-white font-bold">{onboardingList.length} New Hires</strong>
+            <span>{t('recruitment.inInduction')}: </span><strong className="text-slate-900 dark:text-white font-bold">{onboardingList.length} {t('recruitment.newHires')}</strong>
           </div>
           {onEnrollChecklist && (
             <button
@@ -60,7 +64,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F2C46A] hover:bg-[#e2b356] text-[#4C4541] font-bold text-xs rounded-lg shadow-xs cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Enroll New Hire</span>
+              <span>{t('recruitment.enrollNewHire')}</span>
             </button>
           )}
         </div>
@@ -68,7 +72,9 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-4 space-y-2.5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Pending Inductions ({onboardingList.length})</h2>
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            {t('recruitment.pendingInductions')} ({onboardingList.length})
+          </h2>
           <div className="space-y-2">
             {onboardingList.map((item) => {
               const isSelected = selectedChecklist?.id === item.id;
@@ -102,8 +108,8 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                     <div className="bg-amber-600 dark:bg-[#F2C46A] h-full rounded-full transition-all duration-300" style={{ width: `${percent}%` }} />
                   </div>
                   <div className="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Target Start: <strong className="text-slate-800 dark:text-slate-300">{item.targetStartDate}</strong></span>
-                    <span>{completedTasks}/{totalTasks} Done</span>
+                    <span>{t('recruitment.targetStart')}: <strong className="text-slate-800 dark:text-slate-300">{item.targetStartDate}</strong></span>
+                    <span>{completedTasks}/{totalTasks} {t('recruitment.done')}</span>
                   </div>
                 </div>
               );
@@ -124,7 +130,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                     <span className="text-xs text-slate-500">· {selectedChecklist.role}</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Designated client deployment: <strong className="text-slate-800 dark:text-slate-200">{selectedChecklist.initialSiteAssigned || 'TBD'}</strong>
+                    {t('recruitment.designatedDeployment')}: <strong className="text-slate-800 dark:text-slate-200">{selectedChecklist.initialSiteAssigned || 'TBD'}</strong>
                   </p>
                 </div>
 
@@ -136,12 +142,12 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                       className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors shadow-xs cursor-pointer"
                     >
                       <UserCheck className="w-4 h-4" />
-                      <span>Activate & Induct Employee</span>
+                      <span>{t('recruitment.activateInduct')}</span>
                     </button>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-semibold text-xs rounded-lg">
                       <Lock className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Ready for HR Activation</span>
+                      <span>{t('recruitment.readyForHrActivation')}</span>
                     </span>
                   )
                 ) : (
@@ -153,18 +159,18 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                       });
                     }}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                    title="Complete all remaining onboarding checks"
+                    title={t('recruitment.completeAllChecks')}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 text-amber-700" />
-                    <span>Complete All Checks</span>
+                    <span>{t('recruitment.completeAllChecks')}</span>
                   </button>
                 )}
               </div>
 
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
-                  <span className="font-semibold uppercase tracking-wider text-[11px]">Required Onboarding Milestones</span>
-                  <span>Click item to toggle completion</span>
+                  <span className="font-semibold uppercase tracking-wider text-[11px]">{t('recruitment.requiredMilestones')}</span>
+                  <span>{t('recruitment.clickToToggle')}</span>
                 </div>
                 <div className="space-y-2">
                   {selectedChecklist.tasks.map((task) => {
@@ -204,9 +210,9 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                         {task.completed ? (
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                         ) : !canToggle ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded"><Lock className="w-2.5 h-2.5" />Other Dept</span>
+                          <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded"><Lock className="w-2.5 h-2.5" />{t('recruitment.otherDept')}</span>
                         ) : (
-                          <span className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono">Pending</span>
+                          <span className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono">{t('common.pending')}</span>
                         )}
                       </div>
                     );
@@ -216,7 +222,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
             </div>
           ) : (
             <div className="p-8 text-center bg-white border border-slate-200 rounded-xl text-slate-500 text-xs shadow-xs dark:bg-slate-900 dark:border-slate-800">
-              Select an onboarding candidate from the left list or enroll a new hire.
+              {t('recruitment.selectCandidate')}
             </div>
           )}
         </div>

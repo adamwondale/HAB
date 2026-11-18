@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UserPlus } from 'lucide-react';
 import { Candidate, Employee } from '../types/hrm';
 import { INITIAL_EMPLOYEES } from '../data/mockData';
@@ -24,6 +25,7 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
   onSendToOnboarding,
   onAddCandidate
 }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'intake' | 'probation' | 'finished'>('intake');
 
   // Modals state
@@ -42,15 +44,15 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#FCF0DA] text-[#4C4541] border border-[#F2C46A]/50 dark:bg-slate-800 dark:text-[#F2C46A]">
-              Centralized Talent Acquisition
+              {t('recruitment.talentAcquisition')}
             </span>
-            <span className="text-xs text-slate-500">Universal Intake · No Requisition Gate</span>
+            <span className="text-xs text-slate-500">{t('recruitment.universalIntake')}</span>
           </div>
           <h1 className="text-xl font-bold text-slate-950 dark:text-white mt-1">
-            Recruitment, Onboarding & Probation Hub
+            {t('recruitment.hubTitle')}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Applicant vetting, 2-stage probation management, assignment inspection, and official document generation.
+            {t('recruitment.hubSubtitle')}
           </p>
         </div>
 
@@ -60,7 +62,7 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
           className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] font-bold text-xs rounded-lg transition-colors shadow-xs cursor-pointer"
         >
           <UserPlus className="w-4 h-4" />
-          <span>New Applicant</span>
+          <span>{t('recruitment.newApplicant')}</span>
         </button>
       </div>
 
@@ -73,7 +75,7 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
             activeTab === 'intake' ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-950'
           }`}
         >
-          Applicant Intake ({candidates.length})
+          {t('recruitment.applicantIntake')} ({candidates.length})
         </button>
         <button
           type="button"
@@ -82,7 +84,7 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
             activeTab === 'probation' ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-950'
           }`}
         >
-          Probation Stage ({probationCount})
+          {t('recruitment.probationStage')} ({probationCount})
         </button>
         <button
           type="button"
@@ -91,7 +93,7 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
             activeTab === 'finished' ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-950'
           }`}
         >
-          Finished Probation ({finishedCount} Confirmed)
+          {t('recruitment.finishedProbation')} ({finishedCount} {t('recruitment.confirmed')})
         </button>
       </div>
 

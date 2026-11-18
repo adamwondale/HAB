@@ -10,7 +10,22 @@ export const hrEn = {
   workLetter: 'Work Experience Letter',
   divisionName: 'Division Name',
   headOfDivision: 'Head of Division',
-  targetHeadcount: 'Target Headcount'
+  targetHeadcount: 'Target Headcount',
+  divisionManagement: 'Division Management',
+  divisionManagementDesc: 'Configure operational divisions, monitor workforce distribution, and reassign personnel across service units.',
+  addDivision: 'Add Division',
+  editDivision: 'Edit Division',
+  noDivisionsFound: 'No divisions found matching filter.',
+  searchDivisionOrHead: 'Search division or head...',
+  warningDeactivateDivision: 'Warning: division currently has assigned employees. Are you sure you want to deactivate it?',
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  roleTitle: 'Role Title',
+  subcity: 'Subcity',
+  registerEmployee: 'Register Employee',
+  addNewStaffRecord: 'Add New Staff Record',
+  employeeDetails: 'Employee Details',
+  compensation: 'Compensation & Grade'
 };
 
 export const hrAm = {
@@ -25,5 +40,20 @@ export const hrAm = {
   workLetter: 'የሥራ ልምድ ደብዳቤ',
   divisionName: 'የክፍሉ መጠሪያ',
   headOfDivision: 'የክፍሉ ኃላፊ',
-  targetHeadcount: 'የታለመ የሰው ኃይል ብዛት'
+  targetHeadcount: 'የታለመ የሰው ኃይል ብዛት',
+  divisionManagement: 'የሥራ ዘርፎች አስተዳደር',
+  divisionManagementDesc: 'የሥራ ዘርፎችን ያደራጁ፣ የሰው ኃይል ክፍፍልን ይከታተሉና ሠራተኞችን ያዛውሩ።',
+  addDivision: 'አዲስ ዘርፍ ጨምር',
+  editDivision: 'ዘርፍ አስተካክል',
+  noDivisionsFound: 'በተመረጠው ማጣሪያ ምንም ዘርፍ አልተገኘም።',
+  searchDivisionOrHead: 'ዘርፍ ወይም ኃላፊ ይፈልጉ...',
+  warningDeactivateDivision: 'ማስጠንቀቂያ፡ ይህ ዘርፍ የተመደቡ ሠራተኞች አሉት። ማሰናከል ይፈልጋሉ?',
+  firstName: 'ስም',
+  lastName: 'የአባት ስም',
+  roleTitle: 'የሥራ መደብ',
+  subcity: 'ክፍለ ከተማ',
+  registerEmployee: 'ሠራተኛ መዝግብ',
+  addNewStaffRecord: 'አዲስ ሠራተኛ መዝግብ',
+  employeeDetails: 'የሠራተኛው ዝርዝር መረጃ',
+  compensation: 'ደመወዝና ደረጃ'
 };

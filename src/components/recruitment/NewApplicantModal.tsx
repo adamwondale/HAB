@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, UserPlus, AlertCircle } from 'lucide-react';
 import { Candidate, ServiceType } from '../../types/hrm';
 
@@ -15,6 +16,7 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
   onAddCandidate,
   existingCount
 }) => {
+  const { t } = useTranslation();
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('+251 9');
   const [targetService, setTargetService] = useState<ServiceType>('Security');
@@ -109,8 +111,8 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
           <div className="flex items-center gap-2">
             <UserPlus className="w-4 h-4 text-amber-600" />
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-white">Central Intake Registration</h2>
-              <p className="text-[11px] text-slate-500">Add applicant to talent pool</p>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white">{t('recruitment.centralIntakeReg')}</h2>
+              <p className="text-[11px] text-slate-500">{t('recruitment.addApplicantToPool')}</p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-white">
@@ -120,7 +122,7 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
 
         <div className="space-y-3 text-xs">
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Full Applicant Name *</label>
+            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">{t('recruitment.fullName')} *</label>
             <input
               type="text"
               value={fullName}
@@ -138,7 +140,7 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Division *</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">{t('recruitment.division')} *</label>
               <select
                 value={targetService}
                 onChange={(e) => {
@@ -151,14 +153,14 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
                 }}
                 className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded p-2 focus:outline-none focus:border-amber-600"
               >
-                <option value="Security">Security Division</option>
-                <option value="Cleaning">Cleaning Division</option>
-                <option value="Property Management">Property Management</option>
-                <option value="Head Office Staff">Head Office Staff</option>
+                <option value="Security">{t('common.security')}</option>
+                <option value="Cleaning">{t('common.cleaning')}</option>
+                <option value="Property Management">{t('common.propertyManagement')}</option>
+                <option value="Head Office Staff">{t('common.headOfficeStaff')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Phone Number *</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">{t('common.phone')} *</label>
               <input
                 type="text"
                 value={phone}
@@ -177,7 +179,7 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Target Role *</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">{t('recruitment.targetRole')} *</label>
               <input
                 type="text"
                 value={targetRole}
@@ -192,7 +194,7 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
               )}
             </div>
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Experience (Years) *</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">{t('recruitment.experienceYears')} *</label>
               <input
                 type="number"
                 min={0}
@@ -211,7 +213,7 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Screening Notes</label>
+            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">{t('recruitment.screeningNotes')}</label>
             <textarea
               rows={2}
               value={notes}
@@ -228,13 +230,13 @@ export const NewApplicantModal: React.FC<NewApplicantModalProps> = ({
             onClick={onClose}
             className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
             className="px-4 py-1.5 bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] text-xs font-bold rounded-lg shadow-xs"
           >
-            Register Applicant
+            {t('recruitment.registerApplicant')}
           </button>
         </div>
       </form>

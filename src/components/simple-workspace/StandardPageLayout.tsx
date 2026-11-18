@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileDown, Search, X } from 'lucide-react';
 import { CellTone, ModuleColumn, ModuleMetric, ModuleRow } from './types';
 import { OPERATIONS_GUIDES } from './operationsGuideData';
 import { PageOperationsGuide } from './PageOperationsGuide';
 
-export interface StandardFilterOption {
-  value: string;
-  label: string;
-}
-
-export interface StandardPillItem {
-  key: string;
-  label: string;
-  count?: number;
-}
+export interface StandardFilterOption { value: string; label: string; }
+export interface StandardPillItem { key: string; label: string; count?: number; }
 
 export interface StandardPageLayoutProps {
   title: string;
@@ -54,13 +47,15 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
   pillToggle,
   columns,
   rows,
-  emptyMessage = 'No records found.',
+  emptyMessage,
   note,
   onDownloadReport,
   children
 }) => {
+  const { t } = useTranslation();
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const guide = guideKey ? OPERATIONS_GUIDES[guideKey] : undefined;
+  const resolvedEmpty = emptyMessage || t('common.noRecordsFound');
 
   return (
     <div className="space-y-6 pb-10">
@@ -76,7 +71,7 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
           className="inline-flex min-h-10 items-center justify-center gap-2 self-start rounded-lg border border-slate-300 bg-white px-3.5 text-xs font-semibold text-slate-800 shadow-xs hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           <FileDown className="h-4 w-4 text-slate-500" aria-hidden="true" />
-          Download report
+          {t('common.exportReport')}
         </button>
       </header>
 
@@ -109,7 +104,7 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
               className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#0E1525] px-4 text-xs font-semibold text-[#FFF9DB] shadow-xs transition-colors hover:bg-[#19233C] dark:bg-[#EBE834] dark:text-[#0E1525] dark:hover:bg-[#FFF500]"
             >
               {mainAction.icon}
-              {mainAction.isOpen ? 'Cancel' : mainAction.label}
+              {mainAction.isOpen ? t('common.cancel') : mainAction.label}
             </button>
           )}
 
@@ -164,7 +159,7 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
               type="search"
               value={search.query}
               onChange={(e) => search.onChange(e.target.value)}
-              placeholder={search.placeholder || 'Search records...'}
+              placeholder={search.placeholder || t('common.searchPlaceholder')}
               className="min-h-10 w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-8 text-xs text-slate-950 outline-none placeholder:text-slate-400 focus:border-[#0E1525] dark:border-slate-700 dark:bg-slate-900 dark:text-white"
             />
             {search.query && (
@@ -197,7 +192,7 @@ export const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           {rows.length === 0 ? (
             <div className="px-6 py-12 text-center">
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{emptyMessage}</p>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{resolvedEmpty}</p>
             </div>
           ) : (
             <div className="overflow-x-auto">

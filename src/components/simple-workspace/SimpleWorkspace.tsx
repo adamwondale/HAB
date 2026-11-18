@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, UserPlus } from 'lucide-react';
 import { getModuleModel } from './getModuleModel';
 import { SimpleModulePage } from './SimpleModulePage';
@@ -76,6 +77,7 @@ export function SimpleWorkspace({
   onCompleteOnboarding,
   onEnrollOnboardingChecklist
 }: SimpleWorkspaceProps) {
+  const { t } = useTranslation();
   const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
   const [isAddCandidateOpen, setIsAddCandidateOpen] = useState(false);
 
@@ -158,13 +160,13 @@ export function SimpleWorkspace({
   const mainAction =
     activeTab === 'management' && onAddEmployee
       ? {
-          label: 'Add Employee',
+          label: t('hr.addEmployee'),
           onClick: () => setIsAddEmployeeOpen(true),
           icon: <Plus className="h-4 w-4" />
         }
       : activeTab === 'recruitment' && onAddCandidate
       ? {
-          label: 'New Applicant',
+          label: t('recruitment.newApplicant'),
           onClick: () => setIsAddCandidateOpen(true),
           icon: <UserPlus className="h-4 w-4" />
         }

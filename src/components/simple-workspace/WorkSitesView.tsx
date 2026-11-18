@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UserPlus } from 'lucide-react';
 import { ClientSite, Deployment, Employee } from '../../types/hrm';
 import { downloadCsv } from '../../utils/csvExport';
@@ -20,6 +21,7 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
   employees,
   onDeployEmployee
 }) => {
+  const { t } = useTranslation();
   const [districtFilter, setDistrictFilter] = useState<string>('All');
   const [statusTab, setStatusTab] = useState<'Active' | 'Inactive'>('Active');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -87,11 +89,19 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
     const date = new Date().toISOString().slice(0, 10);
     downloadCsv(
       `HAB_Work_Sites_${date}.csv`,
-      ['Site Code', 'Site Name', 'District', 'Client', 'Required Staff', 'Deployed Staff', 'Status'],
+      [
+        t('deployment.siteCode'),
+        t('deployment.siteName'),
+        t('deployment.district'),
+        t('deployment.client'),
+        t('deployment.requiredStaff'),
+        t('deployment.deployedStaff'),
+        t('deployment.status')
+      ],
       filteredSites.map((s) => [
         s.siteCode,
         s.name,
-        s.district || 'Unassigned',
+        s.district || t('deployment.unassigned'),
         s.clientOrganization,
         s.securityStaffRequired + s.cleaningStaffRequired,
         s.securityStaffDeployed + s.cleaningStaffDeployed,
@@ -102,16 +112,16 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
 
   return (
     <StandardPageLayout
-      title="Work sites"
-      description="See where employees work and assign staff to open posts across the 4 districts."
+      title={t('deployment.workSites')}
+      description={t('deployment.workSitesDesc')}
       guideKey="work_sites"
       metrics={[
-        { label: 'Active sites', value: String(activeSites.length) },
-        { label: 'Total deployed', value: String(totalDeployed) },
-        { label: 'Open posts', value: String(Math.max(0, totalRequired - totalDeployed)) }
+        { label: t('deployment.activeSites'), value: String(activeSites.length) },
+        { label: t('deployment.totalDeployed'), value: String(totalDeployed) },
+        { label: t('deployment.openPosts'), value: String(Math.max(0, totalRequired - totalDeployed)) }
       ]}
       mainAction={{
-        label: 'Assign employee',
+        label: t('deployment.assignEmployee'),
         isOpen: isInlineFormOpen,
         onClick: () => setIsInlineFormOpen((prev) => !prev),
         icon: <UserPlus className="h-3.5 w-3.5" />
@@ -119,26 +129,26 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
       search={{
         query: searchQuery,
         onChange: setSearchQuery,
-        placeholder: 'Search sites by name, code, or client...'
+        placeholder: t('deployment.searchPlaceholder')
       }}
       filter={{
-        label: 'District Filter',
+        label: t('deployment.districtFilter'),
         value: districtFilter,
         onChange: setDistrictFilter,
         options: [
-          { value: 'All', label: 'All Districts' },
-          { value: 'District 1 (South)', label: 'District 1 (South)' },
-          { value: 'District 2 (Central)', label: 'District 2 (Central)' },
-          { value: 'District 3 (North)', label: 'District 3 (North)' },
-          { value: 'District 4 (East)', label: 'District 4 (East)' }
+          { value: 'All', label: t('deployment.allDistricts') },
+          { value: 'District 1 (South)', label: t('deployment.district1South') },
+          { value: 'District 2 (Central)', label: t('deployment.district2Central') },
+          { value: 'District 3 (North)', label: t('deployment.district3North') },
+          { value: 'District 4 (East)', label: t('deployment.district4East') }
         ]
       }}
       pillToggle={{
         activeKey: statusTab,
         onChange: (key) => setStatusTab(key as 'Active' | 'Inactive'),
         items: [
-          { key: 'Active', label: 'Active', count: activeSites.length },
-          { key: 'Inactive', label: 'Inactive', count: inactiveSites.length }
+          { key: 'Active', label: t('common.active'), count: activeSites.length },
+          { key: 'Inactive', label: t('common.inactive'), count: inactiveSites.length }
         ]
       }}
       inlineForm={

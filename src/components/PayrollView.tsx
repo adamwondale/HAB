@@ -92,7 +92,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           {onOpenMasterSetup && (
             <button type="button" onClick={onOpenMasterSetup} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 cursor-pointer">
               <Sliders className="w-3.5 h-3.5 text-amber-600" />
-              <span>{t('nav.settings')}</span>
+              <span>{t('nav.masterSetup')}</span>
             </button>
           )}
           <button type="button" onClick={() => setIsAttendanceModalOpen(true)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 cursor-pointer">

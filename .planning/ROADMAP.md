@@ -72,10 +72,11 @@ Plans:
   5. All components adhere strictly to <= 250 lines and Warm Earth design tokens (`#F2C46A`, `#4C4541`, `#FCF0DA`, `#AEAC78`).
   6. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
 
-**Plans:** 1 plan
+**Plans:** 2 plans
 
 Plans:
-- [ ] 10-01: DashboardRouter, role cockpits (HR, Finance, Store, Operations, Admin), KPI metrics, action queues, and Admin perspective switcher.
+- [ ] 10-01: DashboardRouter, Admin Perspective Switcher, Reusable Metric Tiles, and Admin Master Dashboard.
+- [ ] 10-02: Dedicated Departmental Cockpits (HR, Finance, Store, Operations) with KPIs, Action Queues, and Zero Data Leaks.
 
 
 ### Phase 8: Role-Based Access Control (RBAC)

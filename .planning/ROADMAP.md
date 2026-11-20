@@ -18,7 +18,7 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** - Dedicated landing cockpits for HR, Finance, Store, Operations, and Admin/CEO, with live KPI metrics, actionable deep-link queues, zero payroll leakage, and administrative perspective switching.
 - [x] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
 - [x] **Phase 12: Super Admin Executive Observatory & Cross-Department In-Place Cockpits** - Incorporate team wireframes (CEO 36-KPI health matrix, management notification triage rail, integrated in-place editing across all roles, sequential 3-stage exit clearance, field technical dispatch, biometric attendance dropzone, and finance/store wireframe parity).
-- [ ] **Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync** - Implement the team's two-tier 16-column payroll sheet, automated statutory allowance splitting (non-taxable vs taxable based on ETB 1,600 transport / ETB 2,000 mobile thresholds), and 1-click HR attendance import / Excel reconciliation.
+- [x] **Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync** - Implement the team's two-tier 16-column payroll sheet, automated statutory allowance splitting (non-taxable vs taxable based on ETB 1,600 transport / ETB 2,000 mobile thresholds), and 1-click HR attendance import / Excel reconciliation.
 
 ## Phase Details
 
@@ -246,7 +246,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 13-01: Grouped 16-Column Two-Tier Payroll Table & Dynamic Allowance Exemption Engine (REQ-PAY-002).
-- [ ] 13-02: HR Attendance Import Modal (Sync from HR + Excel Reconciliation) & Paid Leave Proration (REQ-PAY-002).
+- [x] 13-01: Grouped 16-Column Two-Tier Payroll Table & Dynamic Allowance Exemption Engine (REQ-PAY-002).
+- [x] 13-02: HR Attendance Import Modal (Sync from HR + Excel Reconciliation) & Paid Leave Proration (REQ-PAY-002).
 
 

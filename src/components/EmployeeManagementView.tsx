@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Download, Table, ShieldCheck, Lock } from 'lucide-react';
 import { Employee, ClientSite, ManagementPerson, LeaveRequest, AttendanceRecord } from '../types/hrm';
 import { SystemMasterConfig } from '../types/masterConfig';
@@ -30,11 +31,11 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
   onAddEmployee,
   onInitiateClearanceFromEmployee
 }) => {
+  const { t } = useTranslation();
   const isStorekeeperMode = activeUser?.id === 'mgmt-storekeeper';
   const isLegalMode = activeUser?.id === 'mgmt-legal';
   const canEditEmployees = activeUser ? activeUser.permissions.canEditEmployees : true;
 
-  // Primary landing view is Slide One Master Ledger
   const [viewMode, setViewMode] = useState<'slideOne' | 'compliance'>(
     isStorekeeperMode || isLegalMode ? 'compliance' : 'slideOne'
   );
@@ -51,70 +52,69 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 dark:bg-slate-900 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-[#FCF0DA] px-2 py-0.5 text-[11px] font-bold text-[#4C4541] border border-[#F2C46A]/50 dark:bg-slate-800 dark:text-[#F2C46A]">
-              Human Resources · Slide One
+            <span className="text-xs text-slate-500 font-mono">
+              {employees.length} {t('hr.registeredStaff')}
             </span>
-            <span className="text-xs text-slate-500 font-mono">{employees.length} Personnel Registered</span>
           </div>
           <h1 className="text-xl font-bold text-slate-950 mt-1 dark:text-white">
-            Slide One — Employee Master Record Ledger
+            {t('hr.masterRecordLedger')}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            7-pillar interactive ledger: Profile, Pay Record, Leave Days, Overtime Record, Site & Performance.
+            {t('hr.ledgerSubtitle')}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           {/* View Mode Toggle */}
-          <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
+          <div className="inline-flex rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-slate-800 dark:bg-slate-900">
             <button
               type="button"
               onClick={() => setViewMode('slideOne')}
               className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                 viewMode === 'slideOne'
-                  ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
+                  ? 'bg-white text-slate-950 shadow-xs dark:bg-slate-800 dark:text-white'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               <Table className="h-3.5 w-3.5" />
-              <span>Slide One Ledger</span>
+              <span>{t('hr.slideOneLedger')}</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode('compliance')}
               className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                 viewMode === 'compliance'
-                  ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
+                  ? 'bg-white text-slate-950 shadow-xs dark:bg-slate-800 dark:text-white'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Compliance & Sizing</span>
+              <span>{t('hr.complianceAndSizing')}</span>
             </button>
           </div>
 
           <button
             type="button"
             onClick={handleExportCsv}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-lg transition-colors border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-lg transition-colors border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
+            <span>{t('hr.exportCsv')}</span>
           </button>
 
           {canEditEmployees ? (
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] font-bold text-xs rounded-lg transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-colors shadow-xs dark:bg-slate-100 dark:text-slate-900"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Employee</span>
+              <span>{t('hr.addEmployee')}</span>
             </button>
           ) : (
             <span className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 text-slate-600 text-xs font-medium rounded-lg border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
-              <Lock className="w-3.5 h-3.5 text-amber-600" />
-              <span>Read-Only Scope</span>
+              <Lock className="w-3.5 h-3.5 text-slate-500" />
+              <span>{t('hr.readOnlyScope')}</span>
             </span>
           )}
         </div>

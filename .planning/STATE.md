@@ -1,11 +1,11 @@
 # Project State: HAB Business PLC ERP
 
 ## Current Status
-- **Current Phase:** All 12 Phases Completed (100%)
-- **Total Phases:** 12
-- **Completed Phases:** 12 (100%)
-- **Total Plans:** 26
-- **Completed Plans:** 26 (100% of planned)
+- **Current Phase:** All 13 Phases Completed (100%)
+- **Total Phases:** 13
+- **Completed Phases:** 13 (100%)
+- **Total Plans:** 28
+- **Completed Plans:** 28 (100% of planned)
 - **Status:** completed
 
 ## Phase Progress
@@ -21,6 +21,17 @@
 - [x] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** (2/2 plans complete)
 - [x] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** (4/4 plans complete)
 - [x] **Phase 12: Super Admin Executive Observatory & Cross-Department In-Place Cockpits** (3/3 plans complete)
+- [x] **Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync** (2/2 plans complete)
+
+## Recent Activity
+- **Phase 13 Completed: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync**:
+  - Implemented the team's two-tier grouped 16-column layout in `PayrollCalculationTable.tsx` (`Allowance: [Non-taxable | Taxable]`, `Deductions: [Income Tax | Pension 7% | Other]`).
+  - Added interactive `AllowanceBreakdownPopover.tsx` detailing itemized transport, mobile, and housing with statutory exempt/taxable tagging.
+  - Implemented automated statutory allowance splitting engine in `payrollHelpers.ts` (ETB 1,600 transport / ETB 2,000 mobile limits; excess added to taxable earnings).
+  - Built `ImportAttendanceModal.tsx` providing both **"Sync from HR" (1-Click Live Import)** and **"Upload Attendance Excel"** with template download.
+  - Enforced Automatic Paid Leave Recognition ($30 - \text{unexcused absences}$ honoring Annual, Sick, and Bereavement leave as fully paid days).
+  - Updated `PayrollView.tsx` with dynamic payroll proration and `PayslipModal.tsx` with itemized non-taxable vs taxable allowance audit trail.
+  - Verified 100% file budget compliance ($\le$ 250 lines per file), clean `tsc --noEmit` exit 0, and clean production build.
 
 ## Recent Activity
 - **Phase 12 Completed: Super Admin Executive Observatory & Cross-Department In-Place Cockpits**:

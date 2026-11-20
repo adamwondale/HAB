@@ -19,7 +19,32 @@ export const clearanceEn = {
   disciplinary: 'Disciplinary Exit',
   pendingSignoff: 'Pending Sign-off',
   approvedSignoff: 'Approved',
-  rejectedSignoff: 'Rejected'
+  rejectedSignoff: 'Rejected',
+
+  // Unslop & Simple Workspace keys
+  exitTitle: 'Employee exit',
+  exitDesc: 'Check final pay, store items, and approvals before an employee leaves.',
+  searchExit: 'Search employee exit records',
+  storeDue: 'Store items due',
+  lastDay: 'Last day',
+  storeItems: 'Store items',
+  finalPay: 'Final pay',
+  finishedCheck: 'Finished',
+  needsCheck: 'Needs check',
+  noExitFound: 'No employee exit records found.',
+  cockpitTitle: 'Exit Clearance',
+  cockpitSubtitle: 'Track handovers across HR, store equipment return, and final pay liquidation.',
+  initiateClearance: 'Initiate Exit Clearance',
+  stage1Hr: 'HR Exit Operations',
+  stage2Store: 'Store Asset Return',
+  stage3Finance: 'Finance Liquidation',
+  searchEmployeePlaceholder: 'Search employee by name or ID...',
+  allDivisions: 'All Divisions',
+  allStatus: 'All Status',
+  inProgress: 'In Progress',
+  cleared: 'Cleared',
+  items: 'Items',
+  selectClearancePrompt: 'Select an employee exit record from the list to review.'
 };
 
 export const clearanceAm = {
@@ -43,5 +68,30 @@ export const clearanceAm = {
   disciplinary: 'በዲሲፕሊን ምክንያት',
   pendingSignoff: 'ፊርማ በመጠባበቅ ላይ',
   approvedSignoff: 'የጸደቀ',
-  rejectedSignoff: 'ውድቅ የተደረገ'
+  rejectedSignoff: 'ውድቅ የተደረገ',
+
+  // Unslop & Simple Workspace keys
+  exitTitle: 'የሠራተኛ ስንብት',
+  exitDesc: 'ሠራተኛው ከመልቀቁ በፊት የመጨረሻ ክፍያ፣ የዕቃዎች ተመላሽና ማረጋገጫዎችን ያረጋግጡ።',
+  searchExit: 'የስንብት መዝገቦችን ይፈልጉ',
+  storeDue: 'ያልተመለሱ ዕቃዎች',
+  lastDay: 'የመጨረሻ የሥራ ቀን',
+  storeItems: 'የተሰጡ ዕቃዎች',
+  finalPay: 'የመጨረሻ ክፍያ',
+  finishedCheck: 'ተጠናቋል',
+  needsCheck: 'ምርመራ ያስፈልገዋል',
+  noExitFound: 'ምንም የስንብት መዝገብ አልተገኘም።',
+  cockpitTitle: 'የስንብት ማጣሪያ',
+  cockpitSubtitle: 'የሰው ኃይል፣ የግምጃ ቤት ዕቃዎች ተመላሽና የመጨረሻ ክፍያ ማወራረድ ሂደትን ይከታተሉ።',
+  initiateClearance: 'አዲስ የስንብት ማጣሪያ ጀምር',
+  stage1Hr: 'የሰው ኃይል ማጣሪያ',
+  stage2Store: 'የዕቃ ተመላሽ ማጣሪያ',
+  stage3Finance: 'የፋይናንስ ማወራረድ',
+  searchEmployeePlaceholder: 'ሠራተኛውን በስም ወይም በመለያ ይፈልጉ...',
+  allDivisions: 'ሁሉም ዘርፎች',
+  allStatus: 'ሁሉም ሁኔታ',
+  inProgress: 'በሂደት ላይ',
+  cleared: 'የተጠናቀቀ',
+  items: 'ዕቃዎች',
+  selectClearancePrompt: 'ዝርዝሩን ለማየት ከግራ በኩል ሠራተኛ ይምረጡ።'
 };

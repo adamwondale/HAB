@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Package, ArrowUpRight, ShieldCheck, Layers, Box, UserCheck, Plus } from 'lucide-react';
+import { Plus, ArrowUpRight } from 'lucide-react';
 import { StockItem, StockTransaction, Employee, ClientSite, ManagementPerson } from '../types/hrm';
 import { InventoryDashboardKpis } from './store/InventoryDashboardKpis';
 import { MinStockAlertBanner } from './store/MinStockAlertBanner';
@@ -60,13 +60,10 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
       {/* Top Header Card */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <Package className="w-5 h-5 text-[#F2C46A]" />
-            <h1 className="text-lg sm:text-xl font-bold text-[#4C4541] dark:text-slate-100">
-              {t('store.inventoryHub')}
-            </h1>
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <h1 className="text-lg sm:text-xl font-bold text-slate-950 dark:text-slate-100">
+            {t('store.inventoryHub')}
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
             {t('store.inventorySubtitle')}
           </p>
         </div>
@@ -75,15 +72,15 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5 text-[#F2C46A]" />
+              <Plus className="w-3.5 h-3.5 text-slate-500" />
               <span>{t('store.addItem')}</span>
             </button>
             <button
               type="button"
               onClick={() => handleOpenGenericTx('Issued (Out)')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 text-xs font-semibold shadow-xs cursor-pointer"
             >
               <ArrowUpRight className="w-3.5 h-3.5" />
               <span>{t('store.recordTransaction')}</span>
@@ -105,70 +102,65 @@ export const StoreManagementView: React.FC<StoreManagementViewProps> = ({
       />
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold overflow-x-auto">
         <button
           type="button"
           onClick={() => setActiveTab('movements')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer text-center ${
             activeTab === 'movements'
-              ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <ArrowUpRight className="w-3.5 h-3.5" />
-          <span>{t('store.recordTransaction')}</span>
+          {t('store.recordTransaction')}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('allocations')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer text-center ${
             activeTab === 'allocations'
-              ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <UserCheck className="w-3.5 h-3.5" />
-          <span>{t('store.equipmentAllocation')}</span>
+          {t('store.equipmentAllocation')}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('catalog')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer text-center ${
             activeTab === 'catalog'
-              ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <Layers className="w-3.5 h-3.5" />
-          <span>{t('store.title')}</span>
+          {t('store.title')}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('assets')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer text-center ${
             activeTab === 'assets'
-              ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span>{t('store.assetRegister')}</span>
+          {t('store.assetRegister')}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('warehouse3d')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer text-center ${
             activeTab === 'warehouse3d'
-              ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <Box className="w-3.5 h-3.5" />
-          <span>{t('store.spatialWarehouse')}</span>
+          {t('store.spatialWarehouse')}
         </button>
       </div>
 

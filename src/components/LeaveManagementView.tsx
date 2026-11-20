@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, AlertCircle, Calendar, Users, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Plus, AlertCircle } from 'lucide-react';
 import { LeaveRequest, Employee, ClientSite, ManagementPerson, EmployeeLeaveBalance } from '../types/hrm';
 import { SystemMasterConfig } from '../types/masterConfig';
 import { DEFAULT_SYSTEM_MASTER_CONFIG } from '../utils/masterConfigEngine';
@@ -23,11 +24,11 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
   leaveRequests = INITIAL_LEAVE_REQUESTS,
   employees = INITIAL_EMPLOYEES,
   activeUser,
-  masterConfig = DEFAULT_SYSTEM_MASTER_CONFIG,
   onApproveLeave,
   onRejectLeave,
   onAddLeaveRequest
 }) => {
+  const { t } = useTranslation();
   const canApprove = activeUser
     ? activeUser.permissions.canManageShiftsAndDeployments || activeUser.permissions.canEditEmployees
     : true;
@@ -43,7 +44,6 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
   const [preselectedEmpId, setPreselectedEmpId] = useState('');
   const [warningToast, setWarningToast] = useState<string | null>(null);
 
-  // Automated deduction logic upon leave request approval
   const handleApprove = (leaveId: string, replacementId: string, replacementName: string) => {
     const targetReq = requests.find(r => r.id === leaveId);
     if (!targetReq) return;
@@ -65,14 +65,12 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
     if (targetReq.leaveType === 'Sick Leave') field = 'sick';
     else if (targetReq.leaveType === 'Compassionate') field = 'compassionate';
 
-    // Show warning if requested days exceed remaining balance
     if (daysToDeduct > currentBal[field]) {
-      setWarningToast(`Automated deduction warning: ${targetReq.employeeName} requested ${daysToDeduct} days of ${targetReq.leaveType}, exceeding available balance of ${currentBal[field]} days.`);
+      setWarningToast(`Warning: ${targetReq.employeeName} requested ${daysToDeduct} days (${targetReq.leaveType}), exceeding remaining balance of ${currentBal[field]} days.`);
     } else {
       setWarningToast(null);
     }
 
-    // Immediately deduct approved days from employee's available leave balance in state
     const updatedField = Math.max(0, currentBal[field] - daysToDeduct);
     const updatedAnnual = field === 'annual' ? updatedField : currentBal.annual;
     const updatedSick = field === 'sick' ? updatedField : currentBal.sick;
@@ -94,7 +92,7 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
       status: 'Approved',
       replacementEmployeeId: replacementId,
       replacementEmployeeName: replacementName,
-      reviewedBy: activeUser ? `${activeUser.name} (HR)` : 'Solomon Teshome (HR Director)'
+      reviewedBy: activeUser ? `${activeUser.name}` : 'HR'
     } : r));
 
     onApproveLeave?.(leaveId, replacementId, replacementName);
@@ -104,7 +102,7 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
     setRequests(prev => prev.map(r => r.id === leaveId ? {
       ...r,
       status: 'Rejected',
-      reviewedBy: activeUser ? `Rejected by ${activeUser.name}` : 'Rejected by HR Operations'
+      reviewedBy: activeUser ? `Rejected by ${activeUser.name}` : 'Rejected by HR'
     } : r));
     onRejectLeave?.(leaveId);
   };
@@ -119,24 +117,23 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700">Workforce Attendance</div>
-          <h1 className="text-xl font-bold text-slate-900 mt-0.5">Leave Management & Relief Coverage</h1>
-          <p className="text-xs text-slate-500 mt-1">Review leave applications and inspect employee available leave day balances.</p>
+          <h1 className="text-xl font-bold text-slate-950 dark:text-white">{t('hr.leaveRequestsTitle')}</h1>
+          <p className="text-xs text-slate-500 mt-0.5">{t('hr.leaveRequestsDesc')}</p>
         </div>
         <button
           type="button"
           onClick={() => { setPreselectedEmpId(''); setIsApplyModalOpen(true); }}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F2C46A] hover:bg-amber-400 text-[#4C4541] font-bold text-xs rounded-xl transition-colors shadow-xs shrink-0"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-colors shadow-xs shrink-0 dark:bg-slate-100 dark:text-slate-900"
         >
           <Plus className="w-4 h-4" />
-          <span>Submit Leave</span>
+          <span>{t('hr.leaveRequest')}</span>
         </button>
       </div>
 
       {warningToast && (
-        <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between text-xs text-amber-900">
+        <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-xl flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
             <span>{warningToast}</span>
@@ -145,39 +142,40 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
         </div>
       )}
 
+      {/* 4 Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="text-[11px] font-medium text-slate-500 uppercase">Total Applications</div>
-          <div className="text-xl font-bold text-slate-900 mt-1">{requests.length}</div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
+          <div className="text-xs font-medium text-slate-500">{t('hr.allRecords')}</div>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{requests.length}</div>
         </div>
-        <div className="bg-white border border-amber-200 bg-amber-50/30 rounded-xl p-4 shadow-xs">
-          <div className="text-[11px] font-semibold text-amber-800 uppercase">Pending Requests</div>
-          <div className="text-xl font-bold text-amber-900 mt-1">{pendingCount}</div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
+          <div className="text-xs font-medium text-slate-500">{t('hr.waiting')}</div>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{pendingCount}</div>
         </div>
-        <div className="bg-white border border-emerald-200 bg-emerald-50/30 rounded-xl p-4 shadow-xs">
-          <div className="text-[11px] font-semibold text-emerald-800 uppercase">Approved Leaves</div>
-          <div className="text-xl font-bold text-emerald-900 mt-1">{approvedCount}</div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
+          <div className="text-xs font-medium text-slate-500">{t('hr.approved')}</div>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{approvedCount}</div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="text-[11px] font-medium text-slate-500 uppercase">Tracked Directory</div>
-          <div className="text-xl font-bold text-slate-900 mt-1">{employees.length} Staff</div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
+          <div className="text-xs font-medium text-slate-500">{t('hr.allEmployees')}</div>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{employees.length}</div>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
+        <div className="flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-3">
           <button
             type="button"
             onClick={() => setActiveTab('Request')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center gap-2 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 ${
               activeTab === 'Request'
-                ? 'bg-[#4C4541] text-[#FCF0DA]'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
             }`}
           >
-            <span>Request Queue</span>
+            <span>{t('hr.leaveRequestsTitle')}</span>
             {pendingCount > 0 && (
-              <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-500 text-white font-bold">
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500 text-white font-bold">
                 {pendingCount}
               </span>
             )}
@@ -185,13 +183,13 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('Available')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
               activeTab === 'Available'
-                ? 'bg-[#4C4541] text-[#FCF0DA]'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
             }`}
           >
-            Available Balances Directory
+            {t('hr.leaveBalance')}
           </button>
         </div>
 

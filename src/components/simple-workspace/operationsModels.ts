@@ -1,28 +1,30 @@
 import { ModuleId, ModuleModel, WorkspaceData } from './types';
 import { percent, toneForStatus } from './modelHelpers';
 
-export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData): ModuleModel | null {
+type TFn = (key: string, options?: any) => string;
+
+export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData, t: TFn): ModuleModel | null {
   if (moduleId === 'deployment') {
-    const active = data.deployments.filter(record => record.status === 'Active').length;
-    const required = data.sites.reduce((sum, site) => sum + site.securityStaffRequired + site.cleaningStaffRequired, 0);
-    const deployed = data.sites.reduce((sum, site) => sum + site.securityStaffDeployed + site.cleaningStaffDeployed, 0);
+    const active = data.deployments.filter(r => r.status === 'Active').length;
+    const required = data.sites.reduce((s, x) => s + x.securityStaffRequired + x.cleaningStaffRequired, 0);
+    const deployed = data.sites.reduce((s, x) => s + x.securityStaffDeployed + x.cleaningStaffDeployed, 0);
 
     return {
-      title: 'Work sites',
-      description: 'See who is working at each client site.',
+      title: t('deployment.workSitesTitle'),
+      description: t('deployment.workSitesDesc'),
       reportName: 'work_sites',
-      searchLabel: 'Search employees or sites',
+      searchLabel: t('deployment.searchAssignments'),
       metrics: [
-        { label: 'Active assignments', value: String(active) },
-        { label: 'Client sites', value: String(data.sites.length) },
-        { label: 'Positions filled', value: percent(required ? (deployed / required) * 100 : 0) }
+        { label: t('deployment.activeAssignments'), value: String(active) },
+        { label: t('deployment.clientSites'), value: String(data.sites.length) },
+        { label: t('deployment.positionsFilled'), value: percent(required ? (deployed / required) * 100 : 0) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'site', label: 'Work site' },
-        { key: 'post', label: 'Work area' },
-        { key: 'shift', label: 'Shift' },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('attendance.employee') },
+        { key: 'site', label: t('deployment.workSitesTitle') },
+        { key: 'post', label: t('deployment.workArea') },
+        { key: 'shift', label: t('deployment.shift') },
+        { key: 'status', label: t('deployment.status') }
       ],
       rows: data.deployments.map(record => ({
         id: record.id,
@@ -32,35 +34,35 @@ export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData): M
           site: record.siteName,
           post: record.post,
           shift: record.shift,
-          status: record.status
+          status: record.status === 'Active' ? t('deployment.active') : record.status
         },
         tones: { status: toneForStatus(record.status) }
       })),
-      emptyMessage: 'No work assignments found.'
+      emptyMessage: t('deployment.noAssignmentsFound')
     };
   }
 
   if (moduleId === 'attendance') {
-    const present = data.attendance.filter(record => record.status === 'Present' || record.status === 'Overtime').length;
-    const absent = data.attendance.filter(record => record.status === 'Absent').length;
-    const late = data.attendance.filter(record => record.status === 'Late').length;
+    const present = data.attendance.filter(r => r.status === 'Present' || r.status === 'Overtime').length;
+    const absent = data.attendance.filter(r => r.status === 'Absent').length;
+    const late = data.attendance.filter(r => r.status === 'Late').length;
 
     return {
-      title: 'Attendance',
-      description: 'See who came to work and who needs follow-up.',
+      title: t('attendance.attendanceTitle'),
+      description: t('attendance.attendanceDesc'),
       reportName: 'attendance',
-      searchLabel: 'Search attendance',
+      searchLabel: t('attendance.searchAttendance'),
       metrics: [
-        { label: 'Present', value: String(present) },
-        { label: 'Late', value: String(late) },
-        { label: 'Absent', value: String(absent) }
+        { label: t('attendance.present'), value: String(present) },
+        { label: t('attendance.late'), value: String(late) },
+        { label: t('attendance.absent'), value: String(absent) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'date', label: 'Date' },
-        { key: 'site', label: 'Work site' },
-        { key: 'time', label: 'Check-in' },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('attendance.employee') },
+        { key: 'date', label: t('attendance.date') },
+        { key: 'site', label: t('attendance.workSite') },
+        { key: 'time', label: t('attendance.checkIn') },
+        { key: 'status', label: t('attendance.status') }
       ],
       rows: data.attendance.map(record => ({
         id: record.id,
@@ -69,36 +71,36 @@ export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData): M
           employee: `${record.employeeName} · ${record.employeeCode}`,
           date: record.date,
           site: record.siteName,
-          time: record.checkInTime || 'Not recorded',
-          status: record.status
+          time: record.checkInTime || t('attendance.notRecorded'),
+          status: record.status === 'Present' ? t('attendance.present') : record.status === 'Late' ? t('attendance.late') : record.status === 'Absent' ? t('attendance.absent') : record.status
         },
         tones: { status: toneForStatus(record.status) }
       })),
-      emptyMessage: 'No attendance records found.'
+      emptyMessage: t('attendance.noAttendanceFound')
     };
   }
 
   if (moduleId === 'leave') {
-    const pending = data.leaveRequests.filter(record => record.status === 'Pending').length;
-    const approved = data.leaveRequests.filter(record => record.status === 'Approved').length;
-    const days = data.leaveRequests.reduce((sum, record) => sum + record.days, 0);
+    const pending = data.leaveRequests.filter(r => r.status === 'Pending').length;
+    const approved = data.leaveRequests.filter(r => r.status === 'Approved').length;
+    const days = data.leaveRequests.reduce((sum, r) => sum + r.days, 0);
 
     return {
-      title: 'Leave requests',
-      description: 'See leave dates, reasons, and approval status.',
+      title: t('hr.leaveRequestsTitle'),
+      description: t('hr.leaveRequestsDesc'),
       reportName: 'leave_requests',
-      searchLabel: 'Search leave requests',
+      searchLabel: t('hr.searchLeave'),
       metrics: [
-        { label: 'Waiting', value: String(pending) },
-        { label: 'Approved', value: String(approved) },
-        { label: 'Total days', value: String(days) }
+        { label: t('hr.waiting'), value: String(pending) },
+        { label: t('hr.approved'), value: String(approved) },
+        { label: t('hr.totalDays'), value: String(days) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'type', label: 'Leave type' },
-        { key: 'dates', label: 'Dates' },
-        { key: 'days', label: 'Days', numeric: true },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('hr.employee') },
+        { key: 'type', label: t('hr.leaveType') },
+        { key: 'dates', label: t('hr.dates') },
+        { key: 'days', label: t('hr.days'), numeric: true },
+        { key: 'status', label: t('hr.status') }
       ],
       rows: data.leaveRequests.map(record => ({
         id: record.id,
@@ -106,37 +108,37 @@ export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData): M
         values: {
           employee: `${record.employeeName} · ${record.employeeCode}`,
           type: record.leaveType,
-          dates: `${record.startDate} to ${record.endDate}`,
+          dates: `${record.startDate} - ${record.endDate}`,
           days: String(record.days),
-          status: record.status
+          status: record.status === 'Pending' ? t('hr.waiting') : record.status === 'Approved' ? t('hr.approved') : record.status
         },
         tones: { status: toneForStatus(record.status) }
       })),
-      emptyMessage: 'No leave requests found.'
+      emptyMessage: t('hr.noLeaveFound')
     };
   }
 
   if (moduleId === 'clearance') {
-    const open = data.clearances.filter(record => record.status === 'In Progress' || record.status === 'On Hold').length;
-    const cleared = data.clearances.filter(record => record.status === 'Cleared' || record.status === 'Completed').length;
-    const propertyDue = data.clearances.filter(record => !record.storeAssetSignoff.completed).length;
+    const open = data.clearances.filter(r => r.status === 'In Progress' || r.status === 'On Hold').length;
+    const cleared = data.clearances.filter(r => r.status === 'Cleared' || r.status === 'Completed').length;
+    const propertyDue = data.clearances.filter(r => !r.storeAssetSignoff.completed).length;
 
     return {
-      title: 'Employee exit',
-      description: 'Check final pay, store items, and approvals before an employee leaves.',
+      title: t('clearance.exitTitle'),
+      description: t('clearance.exitDesc'),
       reportName: 'employee_exit',
-      searchLabel: 'Search employee exit records',
+      searchLabel: t('clearance.searchExit'),
       metrics: [
-        { label: 'Waiting', value: String(open) },
-        { label: 'Finished', value: String(cleared) },
-        { label: 'Store due', value: String(propertyDue) }
+        { label: t('clearance.waiting'), value: String(open) },
+        { label: t('clearance.finishedCheck'), value: String(cleared) },
+        { label: t('clearance.storeDue'), value: String(propertyDue) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'lastDay', label: 'Last day' },
-        { key: 'property', label: 'Store items' },
-        { key: 'finance', label: 'Final pay' },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('clearance.employee', { defaultValue: 'Employee' }) },
+        { key: 'lastDay', label: t('clearance.lastDay') },
+        { key: 'property', label: t('clearance.storeItems') },
+        { key: 'finance', label: t('clearance.finalPay') },
+        { key: 'status', label: t('common.status', { defaultValue: 'Status' }) }
       ],
       rows: data.clearances.map(record => ({
         id: record.id,
@@ -144,9 +146,9 @@ export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData): M
         values: {
           employee: `${record.employeeName} · ${record.employeeCode}`,
           lastDay: record.targetExitDate,
-          property: record.storeAssetSignoff.completed ? 'Finished' : 'Needs check',
-          finance: record.financeSignoff.completed ? 'Finished' : 'Needs check',
-          status: record.status === 'Completed' ? 'Finished' : record.status
+          property: record.storeAssetSignoff.completed ? t('clearance.finishedCheck') : t('clearance.needsCheck'),
+          finance: record.financeSignoff.completed ? t('clearance.finishedCheck') : t('clearance.needsCheck'),
+          status: record.status === 'Completed' || record.status === 'Cleared' ? t('clearance.finishedCheck') : record.status === 'In Progress' ? t('clearance.inProgress') : record.status
         },
         tones: {
           property: record.storeAssetSignoff.completed ? 'good' : 'warn',
@@ -154,7 +156,7 @@ export function buildOperationsModel(moduleId: ModuleId, data: WorkspaceData): M
           status: toneForStatus(record.status)
         }
       })),
-      emptyMessage: 'No employee exit records found.'
+      emptyMessage: t('clearance.noExitFound')
     };
   }
 

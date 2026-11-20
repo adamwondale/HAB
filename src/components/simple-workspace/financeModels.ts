@@ -1,28 +1,30 @@
 import { ModuleId, ModuleModel, WorkspaceData } from './types';
 import { formatEtb, toneForStatus } from './modelHelpers';
 
-export function buildFinanceModel(moduleId: ModuleId, data: WorkspaceData): ModuleModel | null {
+type TFn = (key: string, options?: any) => string;
+
+export function buildFinanceModel(moduleId: ModuleId, data: WorkspaceData, t: TFn): ModuleModel | null {
   if (moduleId === 'payroll') {
-    const netPay = data.payroll.reduce((sum, record) => sum + record.netPay, 0);
-    const waiting = data.payroll.filter(record => record.paymentStatus !== 'Disbursed').length;
-    const paid = data.payroll.filter(record => record.paymentStatus === 'Disbursed').length;
+    const netPay = data.payroll.reduce((sum, r) => sum + r.netPay, 0);
+    const waiting = data.payroll.filter(r => r.paymentStatus !== 'Disbursed').length;
+    const paid = data.payroll.filter(r => r.paymentStatus === 'Disbursed').length;
 
     return {
-      title: 'Payroll',
-      description: 'Check employee pay and payment status for this month.',
+      title: t('payroll.title'),
+      description: t('payroll.subtitle'),
       reportName: 'payroll',
-      searchLabel: 'Search payroll',
+      searchLabel: t('payroll.searchPlaceholder'),
       metrics: [
-        { label: 'Net pay', value: formatEtb(netPay) },
-        { label: 'Paid', value: String(paid) },
-        { label: 'Waiting', value: String(waiting) }
+        { label: t('payroll.netPayable'), value: formatEtb(netPay) },
+        { label: t('payroll.paid'), value: String(paid) },
+        { label: t('payroll.unpaidDraft'), value: String(waiting) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'site', label: 'Work site' },
-        { key: 'days', label: 'Days worked', numeric: true },
-        { key: 'netPay', label: 'Net pay', numeric: true },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('payroll.employee') },
+        { key: 'site', label: t('payroll.site') },
+        { key: 'days', label: t('payroll.daysWorked'), numeric: true },
+        { key: 'netPay', label: t('payroll.netPay'), numeric: true },
+        { key: 'status', label: t('payroll.paymentStatus') }
       ],
       rows: data.payroll.map(record => ({
         id: record.id,
@@ -30,13 +32,13 @@ export function buildFinanceModel(moduleId: ModuleId, data: WorkspaceData): Modu
         values: {
           employee: `${record.employeeName} · ${record.employeeCode}`,
           site: record.siteName,
-          days: `${record.workingDays} of ${record.fullWorkingDays}`,
+          days: `${record.workingDays} / ${record.fullWorkingDays}`,
           netPay: formatEtb(record.netPay),
-          status: record.paymentStatus
+          status: record.paymentStatus === 'Disbursed' ? t('payroll.paid') : t('payroll.unpaidDraft')
         },
         tones: { status: toneForStatus(record.paymentStatus) }
       })),
-      emptyMessage: 'No payroll records found.'
+      emptyMessage: t('payroll.noRecordsFound')
     };
   }
 
@@ -46,21 +48,21 @@ export function buildFinanceModel(moduleId: ModuleId, data: WorkspaceData): Modu
     const returnable = data.stockItems.filter(item => item.isReturnable).length;
 
     return {
-      title: 'Store',
-      description: 'Track company items, uniforms, chemicals, and equipment.',
+      title: t('store.title'),
+      description: t('store.subtitle'),
       reportName: 'store_inventory',
-      searchLabel: 'Search store items',
+      searchLabel: t('store.searchItems'),
       metrics: [
-        { label: 'Stock value', value: formatEtb(value) },
-        { label: 'Low stock', value: String(low) },
-        { label: 'Returnable items', value: String(returnable) }
+        { label: t('store.totalValuation'), value: formatEtb(value) },
+        { label: t('store.lowStockAlerts'), value: String(low) },
+        { label: t('store.equipmentAllocation'), value: String(returnable) }
       ],
       columns: [
-        { key: 'item', label: 'Item' },
-        { key: 'category', label: 'Category' },
-        { key: 'location', label: 'Storage bay' },
-        { key: 'stock', label: 'In stock', numeric: true },
-        { key: 'status', label: 'Status' }
+        { key: 'item', label: t('store.itemName') },
+        { key: 'category', label: t('store.category') },
+        { key: 'location', label: t('store.storageLocation') },
+        { key: 'stock', label: t('store.stockBalance'), numeric: true },
+        { key: 'status', label: t('common.actions') }
       ],
       rows: data.stockItems.map(item => {
         const isLow = item.quantityInStock <= item.minReorderLevel;
@@ -72,12 +74,12 @@ export function buildFinanceModel(moduleId: ModuleId, data: WorkspaceData): Modu
             category: item.category,
             location: item.storageLocation,
             stock: `${item.quantityInStock} ${item.unit}`,
-            status: isLow ? 'Low stock' : 'Enough stock'
+            status: isLow ? t('store.lowStockAlerts') : t('common.active')
           },
           tones: { status: isLow ? 'warn' : 'good' }
         };
       }),
-      emptyMessage: 'No store items found.'
+      emptyMessage: t('common.noRecordsFound')
     };
   }
 
@@ -86,60 +88,60 @@ export function buildFinanceModel(moduleId: ModuleId, data: WorkspaceData): Modu
     const lastUpdated = rules.lastUpdatedAt.split('T')[0];
 
     return {
-      title: 'Settings',
-      description: 'See the main rules used for payroll, leave, shifts, and stock.',
+      title: t('masterSetup.title'),
+      description: t('masterSetup.subtitle'),
       reportName: 'system_settings',
-      searchLabel: 'Search settings',
+      searchLabel: t('common.findPage'),
       metrics: [
-        { label: 'Version', value: rules.version },
-        { label: 'Last updated', value: lastUpdated },
-        { label: 'Updated by', value: rules.lastUpdatedBy }
+        { label: t('masterSetup.systemVersion'), value: rules.version },
+        { label: t('masterSetup.lastUpdated'), value: lastUpdated },
+        { label: t('masterSetup.updatedBy'), value: rules.lastUpdatedBy }
       ],
       columns: [
-        { key: 'area', label: 'Area' },
-        { key: 'setting', label: 'Setting' },
-        { key: 'value', label: 'Value' },
-        { key: 'usedFor', label: 'Used for' }
+        { key: 'area', label: t('common.details') },
+        { key: 'setting', label: t('masterSetup.settings') },
+        { key: 'value', label: t('masterSetup.rateEtb') },
+        { key: 'usedFor', label: t('masterSetup.description') }
       ],
       rows: [
         {
           id: 'working-days',
           searchText: 'working days payroll',
-          values: { area: 'Payroll', setting: 'Working days', value: String(rules.pensionAndPayroll.standardWorkingDays), usedFor: 'Monthly pay' }
+          values: { area: t('payroll.title'), setting: t('masterSetup.standardDays'), value: String(rules.pensionAndPayroll.standardWorkingDays), usedFor: t('payroll.title') }
         },
         {
           id: 'employee-pension',
           searchText: 'employee pension payroll',
-          values: { area: 'Payroll', setting: 'Employee pension', value: `${rules.pensionAndPayroll.employeePensionPercent}%`, usedFor: 'Pay deductions' }
+          values: { area: t('payroll.title'), setting: t('masterSetup.employeePensionRate'), value: `${rules.pensionAndPayroll.employeePensionPercent}%`, usedFor: t('payroll.deductions') }
         },
         {
           id: 'employer-pension',
           searchText: 'employer pension payroll',
-          values: { area: 'Payroll', setting: 'Company pension', value: `${rules.pensionAndPayroll.employerPensionPercent}%`, usedFor: 'Company costs' }
+          values: { area: t('payroll.title'), setting: t('masterSetup.companyPensionRate'), value: `${rules.pensionAndPayroll.employerPensionPercent}%`, usedFor: t('masterSetup.statutoryRate') }
         },
         {
           id: 'daily-hours',
           searchText: 'daily hours shift',
-          values: { area: 'Work time', setting: 'Daily hours', value: String(rules.shiftsAndOvertime.standardDailyHours), usedFor: 'Attendance' }
+          values: { area: t('attendance.title'), setting: t('attendance.scheduledShift'), value: String(rules.shiftsAndOvertime.standardDailyHours), usedFor: t('attendance.title') }
         },
         {
           id: 'overtime',
           searchText: 'overtime multiplier pay',
-          values: { area: 'Work time', setting: 'Normal overtime rate', value: `${rules.shiftsAndOvertime.regularOtMultiplier}×`, usedFor: 'Overtime pay' }
+          values: { area: t('attendance.title'), setting: t('payroll.overtime'), value: `${rules.shiftsAndOvertime.regularOtMultiplier}×`, usedFor: t('payroll.title') }
         },
         {
           id: 'leave-rules',
           searchText: 'leave rules',
-          values: { area: 'Leave', setting: 'Leave types', value: String(rules.leaveQuotas.length), usedFor: 'Leave requests' }
+          values: { area: t('hr.leaveBalance'), setting: t('hr.leaveRequest'), value: String(rules.leaveQuotas.length), usedFor: t('hr.leaveRequest') }
         },
         {
           id: 'stock-rules',
           searchText: 'stock rules property',
-          values: { area: 'Property', setting: 'Stock rules', value: String(rules.inventoryThresholds.length), usedFor: 'Low stock warnings' }
+          values: { area: t('store.title'), setting: t('store.minReorderLevel'), value: String(rules.inventoryThresholds.length), usedFor: t('store.lowStockAlerts') }
         }
       ],
-      emptyMessage: 'No settings found.',
-      note: 'This prototype shows settings as read-only to keep the page simple.'
+      emptyMessage: t('common.noRecordsFound'),
+      note: t('masterSetup.statutoryPensionRule')
     };
   }
 

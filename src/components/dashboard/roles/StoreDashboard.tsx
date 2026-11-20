@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Package, AlertTriangle, ArrowDownLeft, Layers, ShieldCheck, ChevronRight, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { StockItem, StockTransaction, ClientSite, Employee } from '../../../types/hrm';
 
 interface StoreDashboardProps {
@@ -12,7 +12,7 @@ interface StoreDashboardProps {
 
 const ALLOCATION_BREAKDOWN = [
   { label: 'Central Store Available', percent: 65, value: 'ETB 2,275,000', color: 'bg-emerald-500' },
-  { label: 'Issued Site Equipment & Gear', percent: 25, value: 'ETB 875,000', color: 'bg-[#F2C46A]' },
+  { label: 'Issued Site Equipment & Gear', percent: 25, value: 'ETB 875,000', color: 'bg-slate-500' },
   { label: 'Fixed Capital Assets & Tools', percent: 10, value: 'ETB 350,000', color: 'bg-blue-500' }
 ];
 
@@ -25,7 +25,6 @@ const FAST_MOVING_BY_SITE = [
 
 export const StoreDashboard: React.FC<StoreDashboardProps> = ({
   stockItems = [],
-  stockTransactions = [],
   onNavigateTab
 }) => {
   const totalUnits = stockItems.reduce((sum, item) => sum + item.quantityInStock, 0) || 14850;
@@ -54,18 +53,16 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 gap-2">
         <div>
-          <h1 className="text-base font-bold text-[#4C4541] dark:text-slate-100 flex items-center gap-2">
-            <Package className="w-4 h-4 text-[#F2C46A]" />
-            <span>Store Inventory & Asset Operations Cockpit</span>
+          <h1 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            Store inventory & asset operations
           </h1>
-          <p className="text-xs text-slate-500">Central warehouse stock levels, field allocations, and automated minimum threshold alerts</p>
+          <p className="text-xs text-slate-500">Central warehouse stock levels, field allocations, and minimum threshold alerts</p>
         </div>
         <button
           type="button"
           onClick={() => onNavigateTab('store')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FCF0DA] hover:bg-[#F2C46A] text-[#4C4541] font-bold text-xs transition-colors cursor-pointer border border-[#EFE7D8]"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors cursor-pointer hover:bg-slate-50"
         >
-          <Layers className="w-3.5 h-3.5" />
           <span>Warehouse Catalog ({stockItems.length || 28} SKUs)</span>
         </button>
       </div>
@@ -79,28 +76,28 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
 
       {/* 4 Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total in stock</span>
           <div className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-1">
             {totalUnits.toLocaleString()} <span className="text-xs font-normal">units</span>
           </div>
           <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">Central warehouse</span>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Issued gear</span>
           <div className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-1">
             4,620 <span className="text-xs font-normal">units</span>
           </div>
           <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">Deployed at 18 client sites</span>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Supplies valuation</span>
           <div className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-1">
             ETB {totalValuation.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">Total inventory value</span>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Low stock alert</span>
           <div className="text-2xl font-bold font-mono tabular-nums text-rose-700 dark:text-rose-400 mt-1">
             {activeAlertList.length} <span className="text-xs font-normal">items</span>
@@ -110,9 +107,9 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
       </div>
 
       {/* Stock Status & Allocation Breakdown */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 text-xs">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 text-xs shadow-xs">
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-          <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide text-[11px]">Stock Status & Asset Allocation Breakdown</span>
+          <span className="font-semibold text-slate-900 dark:text-slate-100 text-xs">Stock status & asset allocation breakdown</span>
           <span className="text-[10px] text-slate-400">Total Asset Pool: ETB 3.50M</span>
         </div>
         <div className="flex h-3 rounded-full overflow-hidden gap-1 bg-slate-100">
@@ -122,7 +119,7 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
           {ALLOCATION_BREAKDOWN.map((b) => (
-            <div key={b.label} className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-150 flex items-center gap-2">
+            <div key={b.label} className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-2">
               <span className={`w-3 h-3 rounded-full ${b.color} shrink-0`} />
               <div>
                 <div className="text-[10.5px] font-semibold text-slate-700 dark:text-slate-300">{b.label}</div>
@@ -133,14 +130,14 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
         </div>
       </div>
 
-      {/* Minimum Stock Alert Table (Wireframe Images 12 & 13) */}
-      <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto text-xs bg-white dark:bg-slate-900">
-        <div className="bg-[#FCF0DA] text-[#4C4541] font-bold px-3 py-2 border-b border-[#EFE7D8] flex justify-between items-center text-[11px] uppercase tracking-wider">
-          <span className="flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5 text-rose-700" /> Minimum Stock Buffer Alerts</span>
-          <span className="text-[10px] text-slate-600 font-normal lowercase first-letter:uppercase">immediate restock recommended</span>
+      {/* Minimum Stock Alert Table: Neutral Slate Header */}
+      <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto text-xs bg-white dark:bg-slate-900 shadow-xs">
+        <div className="bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-semibold px-4 py-2.5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs">
+          <span className="flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> Minimum stock buffer alerts</span>
+          <span className="text-[11px] text-slate-500 font-normal">Immediate restock recommended</span>
         </div>
         <table className="w-full text-left min-w-[650px]">
-          <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 text-[10px] uppercase">
+          <thead className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700 text-xs font-semibold">
             <tr>
               <th className="py-2 px-3">Item Code</th>
               <th className="py-2 px-3">Description</th>
@@ -152,19 +149,19 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {activeAlertList.map((item) => (
-              <tr key={item.id} className="hover:bg-slate-50/70">
+              <tr key={item.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
                 <td className="py-2 px-3 font-mono text-slate-400 font-semibold">{item.code}</td>
                 <td className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100">{item.name}</td>
-                <td className="py-2 px-3 text-slate-600">{item.category}</td>
+                <td className="py-2 px-3 text-slate-600 dark:text-slate-400">{item.category}</td>
                 <td className="py-2 px-3 font-mono font-bold text-rose-700">{item.qty} {item.unit}</td>
                 <td className="py-2 px-3 font-mono text-slate-500">{item.min} {item.unit}</td>
                 <td className="py-2 px-3 text-right">
                   <button
                     type="button"
                     onClick={() => handleRestock(item.name)}
-                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10.5px] font-bold bg-[#FCF0DA] text-[#4C4541] hover:bg-[#F2C46A] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10.5px] font-semibold bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 transition-colors cursor-pointer"
                   >
-                    <ArrowDownLeft className="w-3 h-3" /> Restock
+                    Restock
                   </button>
                 </td>
               </tr>
@@ -174,15 +171,15 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
       </div>
 
       {/* Fast Moving Stock Items by Site */}
-      <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto text-xs bg-white dark:bg-slate-900">
-        <div className="bg-slate-100 text-slate-700 font-bold px-3 py-2 border-b border-slate-200 flex justify-between items-center text-[11px] uppercase tracking-wider">
-          <span>Fast-Moving Consumables & Stock Items by Site</span>
-          <button type="button" onClick={() => onNavigateTab('store')} className="text-amber-800 hover:underline flex items-center gap-0.5 font-bold lowercase first-letter:uppercase">
-            Stock Transfer History <ChevronRight className="w-3 h-3" />
+      <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto text-xs bg-white dark:bg-slate-900 shadow-xs">
+        <div className="bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-semibold px-4 py-2.5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs">
+          <span>Fast-moving consumables & stock items by site</span>
+          <button type="button" onClick={() => onNavigateTab('store')} className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center gap-0.5 font-medium text-xs">
+            Stock Transfer History <ChevronRight className="w-3 h-3 text-slate-400" />
           </button>
         </div>
         <table className="w-full text-left min-w-[650px]">
-          <thead className="bg-slate-50 text-slate-600 text-[10px] uppercase border-b border-slate-200">
+          <thead className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700 text-xs font-semibold">
             <tr>
               <th className="py-2 px-3">Work Site</th>
               <th className="py-2 px-3">Fast-Moving Item</th>
@@ -191,17 +188,17 @@ export const StoreDashboard: React.FC<StoreDashboardProps> = ({
               <th className="py-2 px-3 text-right">Restock Urgency</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {FAST_MOVING_BY_SITE.map((row) => (
-              <tr key={row.id} className="hover:bg-slate-50/60">
-                <td className="py-2 px-3 font-semibold text-slate-900">{row.site}</td>
-                <td className="py-2 px-3 text-slate-700">{row.item}</td>
-                <td className="py-2 px-3 font-mono font-bold text-slate-800">{row.monthlyQty}</td>
-                <td className="py-2 px-3 text-slate-600">{row.freq}</td>
+              <tr key={row.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                <td className="py-2 px-3 font-semibold text-slate-900 dark:text-white">{row.site}</td>
+                <td className="py-2 px-3 text-slate-700 dark:text-slate-300">{row.item}</td>
+                <td className="py-2 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">{row.monthlyQty}</td>
+                <td className="py-2 px-3 text-slate-600 dark:text-slate-400">{row.freq}</td>
                 <td className="py-2 px-3 text-right">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    row.urgency === 'Urgent' ? 'bg-rose-100 text-rose-800' :
-                    row.urgency === 'Normal' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
+                    row.urgency === 'Urgent' ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300' :
+                    row.urgency === 'Normal' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
                   }`}>
                     {row.urgency}
                   </span>

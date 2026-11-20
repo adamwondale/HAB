@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { GripVertical, UserCheck, Shield, Sparkles, MapPin, ChevronRight, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { GripVertical, Shield, Sparkles, ChevronRight, X } from 'lucide-react';
 import { ClientSite, Employee } from '../../types/hrm';
 
 interface UnassignedDispatchDockProps {
@@ -19,7 +20,7 @@ export const UnassignedDispatchDock: React.FC<UnassignedDispatchDockProps> = ({
   onDragEnd,
   onAssign
 }) => {
-  // Show strictly 4 unassigned employees
+  const { t } = useTranslation();
   const displayQueue = unassignedEmployees.slice(0, 4);
   const [mobileAssignEmpId, setMobileAssignEmpId] = useState<string | null>(null);
   const [selectedSiteId, setSelectedSiteId] = useState<string>('');
@@ -38,30 +39,25 @@ export const UnassignedDispatchDock: React.FC<UnassignedDispatchDockProps> = ({
   };
 
   return (
-    <section aria-labelledby="dispatch-dock-title" className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">
+    <section aria-labelledby="dispatch-dock-title" className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/50">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-500/20 text-amber-800 dark:text-amber-300">
-            <UserCheck className="h-3.5 w-3.5" />
-          </div>
-          <div>
-            <h2 id="dispatch-dock-title" className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200">
-              Unassigned Staff (Top 4 Waiting)
-            </h2>
-            <p className="text-[11px] text-amber-700 dark:text-amber-400">
-              Drag an employee card onto an active work site to assign them instantly.
-            </p>
-          </div>
+        <div>
+          <h2 id="dispatch-dock-title" className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+            {t('deployment.unassignedStaffTitle')}
+          </h2>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {t('deployment.unassignedStaffSubtitle')}
+          </p>
         </div>
-        <span className="text-[11px] font-semibold text-amber-800 dark:text-amber-300">
-          {unassignedEmployees.length} total unassigned
+        <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400">
+          {unassignedEmployees.length} {t('deployment.totalUnassigned')}
         </span>
       </div>
 
       {displayQueue.length === 0 ? (
-        <div className="mt-3 rounded-lg border border-dashed border-amber-300 bg-white/60 p-4 text-center dark:border-amber-800 dark:bg-slate-900/60">
-          <p className="text-xs font-medium text-amber-900 dark:text-amber-200">
-            All active employees are currently assigned to work sites!
+        <div className="mt-3 rounded-lg border border-dashed border-slate-300 bg-white/60 p-4 text-center dark:border-slate-700 dark:bg-slate-900/60">
+          <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+            {t('deployment.allAssigned')}
           </p>
         </div>
       ) : (
@@ -79,18 +75,18 @@ export const UnassignedDispatchDock: React.FC<UnassignedDispatchDockProps> = ({
                 onDragEnd={onDragEnd}
                 className={`relative flex flex-col justify-between rounded-lg border bg-white p-3 shadow-xs transition-all cursor-grab active:cursor-grabbing dark:bg-slate-900 ${
                   isBeingDragged
-                    ? 'border-amber-500 ring-2 ring-amber-400 opacity-60'
-                    : 'border-slate-200 hover:border-amber-400 hover:shadow-md dark:border-slate-800 dark:hover:border-amber-500'
+                    ? 'border-slate-500 ring-2 ring-slate-400 opacity-60 dark:ring-slate-500'
+                    : 'border-slate-200 hover:border-slate-400 hover:shadow-xs dark:border-slate-800 dark:hover:border-slate-600'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-1 text-[11px]">
-                    <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                    <span className="inline-flex items-center gap-1 font-mono text-[10px] text-slate-500 dark:text-slate-400">
                       <GripVertical className="h-3 w-3 text-slate-400" />
                       #{index + 1} · {emp.employeeCode}
                     </span>
                     <span
-                      className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                      className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${
                         isSecurity
                           ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'
                           : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
@@ -101,7 +97,7 @@ export const UnassignedDispatchDock: React.FC<UnassignedDispatchDockProps> = ({
                     </span>
                   </div>
 
-                  <p className="mt-1.5 truncate text-xs font-bold text-slate-950 dark:text-white">
+                  <p className="mt-1.5 truncate text-xs font-semibold text-slate-950 dark:text-white">
                     {emp.firstName} {emp.lastName}
                   </p>
                   <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">
@@ -110,23 +106,22 @@ export const UnassignedDispatchDock: React.FC<UnassignedDispatchDockProps> = ({
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between dark:border-slate-800">
-                  <span className="text-[10px] font-medium text-amber-700 dark:text-amber-400 flex items-center gap-0.5">
-                    Drag to deploy <ChevronRight className="h-3 w-3" />
+                  <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400 flex items-center gap-0.5">
+                    {t('deployment.dragToDeploy')} <ChevronRight className="h-3 w-3 text-slate-400" />
                   </span>
                   <button
                     type="button"
                     onClick={() => setMobileAssignEmpId(isMobileOpen ? null : emp.id)}
                     className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
                   >
-                    {isMobileOpen ? 'Close' : 'Assign'}
+                    {isMobileOpen ? t('common.close') : t('deployment.assign')}
                   </button>
                 </div>
 
-                {/* Mobile / Direct 1-tap assign popover */}
                 {isMobileOpen && (
                   <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-slate-300 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-900">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white">Choose site</span>
+                      <span className="text-xs font-semibold text-slate-900 dark:text-white">{t('deployment.chooseSite')}</span>
                       <button type="button" onClick={() => setMobileAssignEmpId(null)} className="text-slate-400 hover:text-slate-600">
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -161,9 +156,9 @@ export const UnassignedDispatchDock: React.FC<UnassignedDispatchDockProps> = ({
                     <button
                       type="button"
                       onClick={() => handleMobileSubmit(emp.id)}
-                      className="mt-2.5 w-full rounded bg-[#0E1525] py-1 text-xs font-semibold text-[#FFF9DB] hover:bg-[#19233C] dark:bg-[#EBE834] dark:text-[#0E1525]"
+                      className="mt-2.5 w-full rounded bg-slate-900 py-1 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900"
                     >
-                      Confirm assignment
+                      {t('deployment.confirmAssignment')}
                     </button>
                   </div>
                 )}

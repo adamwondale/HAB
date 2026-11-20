@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ShieldCheck, Search, Download, AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react';
+import { Search, Download, AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react';
 import { getStoredAuditLogs } from '../../utils/auditLogger';
 import { downloadCsv } from '../../utils/csvExport';
 
@@ -47,22 +47,21 @@ export const AuditTrailView: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
         <div>
-          <h2 className="text-sm font-bold text-[#4C4541] dark:text-slate-100 flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#F2C46A]" />
-            <span>{t('masterSetup.auditLogs')}</span>
+          <h2 className="text-base font-bold text-slate-950 dark:text-white">
+            {t('masterSetup.auditLogs')}
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-500 mt-0.5">
             {t('masterSetup.auditLogsSubtitle')}
           </p>
         </div>
         <button
           type="button"
           onClick={handleExportCsv}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer self-start sm:self-auto"
         >
-          <Download className="w-3.5 h-3.5" />
+          <Download className="w-3.5 h-3.5 text-slate-500" />
           <span>{t('common.exportCsv')}</span>
         </button>
       </div>
@@ -75,10 +74,10 @@ export const AuditTrailView: React.FC = () => {
               key={mod}
               type="button"
               onClick={() => setModuleFilter(mod)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
                 moduleFilter === mod
-                  ? 'bg-[#FCF0DA] text-[#4C4541] border border-[#EFE7D8]'
-                  : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
               }`}
             >
               {mod}
@@ -89,7 +88,7 @@ export const AuditTrailView: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900"
+            className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           >
             <option value="All">{t('masterSetup.allActions')}</option>
             <option value="SUCCESS">Success Only</option>
@@ -103,16 +102,16 @@ export const AuditTrailView: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('masterSetup.searchLogs')}
-              className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs"
+              className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
             />
           </div>
         </div>
       </div>
 
-      {/* Audit Log Table */}
+      {/* Audit Log Table: Calm Neutral Slate Header */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
         <table className="w-full text-left text-xs min-w-[850px]">
-          <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] font-bold uppercase tracking-wider text-[11px]">
+          <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 font-semibold">
             <tr>
               <th className="py-2.5 px-3">{t('masterSetup.timestamp')}</th>
               <th className="py-2.5 px-3">{t('masterSetup.actor')}</th>
@@ -123,11 +122,11 @@ export const AuditTrailView: React.FC = () => {
               <th className="py-2.5 px-3 text-center">{t('masterSetup.status')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {filtered.length === 0 ? (
               <tr>
                 <td colSpan={7} className="py-8 text-center text-slate-400 italic">
-                  No audit log entries matching current criteria.
+                  {t('common.noRecordsFound')}
                 </td>
               </tr>
             ) : (
@@ -138,9 +137,9 @@ export const AuditTrailView: React.FC = () => {
                     <td className="py-2 px-3 font-mono text-slate-500 text-[11px] whitespace-nowrap">{dateStr}</td>
                     <td className="py-2 px-3">
                       <div className="font-semibold text-slate-900 dark:text-slate-100">{log.actorName}</div>
-                      <div className="text-[10px] text-slate-400 uppercase font-mono">{log.actorRole}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">{log.actorRole}</div>
                     </td>
-                    <td className="py-2 px-3 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200">
+                    <td className="py-2 px-3 font-mono text-[11px] font-semibold text-slate-800 dark:text-slate-200">
                       {log.action}
                     </td>
                     <td className="py-2 px-3 text-slate-600 dark:text-slate-400">{log.targetModule}</td>
@@ -149,7 +148,7 @@ export const AuditTrailView: React.FC = () => {
                         <span className="line-through text-slate-400 mr-1">{log.previousValue}</span>
                       )}
                       {log.newValue ? (
-                        <span className="text-emerald-700 dark:text-emerald-400 font-bold">{log.newValue}</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-semibold">{log.newValue}</span>
                       ) : (
                         <span className="text-slate-400">—</span>
                       )}
@@ -159,12 +158,12 @@ export const AuditTrailView: React.FC = () => {
                     </td>
                     <td className="py-2 px-3 text-center">
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
                           log.status === 'SUCCESS'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300'
                             : log.status === 'WARNING'
-                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                            : 'bg-rose-50 text-rose-700 border border-rose-200 animate-pulse'
+                            ? 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
+                            : 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300'
                         }`}
                       >
                         {log.status === 'SUCCESS' && <CheckCircle className="w-3 h-3" />}

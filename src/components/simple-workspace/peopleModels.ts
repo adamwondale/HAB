@@ -1,28 +1,30 @@
 import { ModuleId, ModuleModel, WorkspaceData } from './types';
-import { formatEtb, percent, toneForStatus } from './modelHelpers';
+import { percent, toneForStatus } from './modelHelpers';
 
-export function buildPeopleModel(moduleId: ModuleId, data: WorkspaceData): ModuleModel | null {
+type TFn = (key: string, options?: any) => string;
+
+export function buildPeopleModel(moduleId: ModuleId, data: WorkspaceData, t: TFn): ModuleModel | null {
   if (moduleId === 'management') {
-    const active = data.employees.filter(employee => employee.status === 'Active').length;
-    const onLeave = data.employees.filter(employee => employee.status === 'On Leave').length;
-    const assigned = data.employees.filter(employee => employee.currentSiteName).length;
+    const active = data.employees.filter(e => e.status === 'Active').length;
+    const onLeave = data.employees.filter(e => e.status === 'On Leave').length;
+    const assigned = data.employees.filter(e => e.currentSiteName).length;
 
     return {
-      title: 'Employees',
-      description: 'Find employee contact, job, work site, and status information.',
+      title: t('hr.employeesTitle'),
+      description: t('hr.employeesDesc'),
       reportName: 'employees',
-      searchLabel: 'Search employees',
+      searchLabel: t('hr.searchEmployees'),
       metrics: [
-        { label: 'All employees', value: String(data.employees.length) },
-        { label: 'Active', value: String(active) },
-        { label: 'On leave', value: String(onLeave) }
+        { label: t('hr.allEmployees'), value: String(data.employees.length) },
+        { label: t('hr.active'), value: String(active) },
+        { label: t('hr.onLeave'), value: String(onLeave) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'job', label: 'Job' },
-        { key: 'site', label: 'Work site' },
-        { key: 'phone', label: 'Phone' },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('hr.employee') },
+        { key: 'job', label: t('hr.job') },
+        { key: 'site', label: t('hr.workSite') },
+        { key: 'phone', label: t('hr.phone') },
+        { key: 'status', label: t('hr.status') }
       ],
       rows: data.employees.map(employee => ({
         id: employee.id,
@@ -30,114 +32,120 @@ export function buildPeopleModel(moduleId: ModuleId, data: WorkspaceData): Modul
         values: {
           employee: `${employee.firstName} ${employee.lastName} · ${employee.employeeCode}`,
           job: employee.role,
-          site: employee.currentSiteName || 'Not assigned',
+          site: employee.currentSiteName || t('hr.notAssigned'),
           phone: employee.phone,
-          status: employee.status
+          status: employee.status === 'Active' ? t('common.active') : employee.status === 'On Leave' ? t('common.onLeave') : employee.status
         },
         tones: { status: toneForStatus(employee.status) }
       })),
-      emptyMessage: 'No employee records found.',
-      note: `${assigned} employees have a work site.`
+      emptyMessage: t('hr.noEmployeesFound'),
+      note: `${assigned} ${t('hr.assignedWorkSiteNote')}`
     };
   }
 
   if (moduleId === 'recruitment') {
-    const inReview = data.candidates.filter(candidate => !['Onboarded', 'Rejected'].includes(candidate.stage)).length;
-    const ready = data.candidates.filter(candidate => candidate.medicalFit && candidate.guarantorProvided).length;
+    const inReview = data.candidates.filter(c => !['Onboarded', 'Rejected'].includes(c.stage)).length;
+    const ready = data.candidates.filter(c => c.medicalFit && c.guarantorProvided).length;
 
     return {
-      title: 'Job applicants',
-      description: 'See each applicant and the next hiring step.',
+      title: t('recruitment.applicantsTitle', { defaultValue: 'Job applicants' }),
+      description: t('recruitment.applicantsDesc', { defaultValue: 'See each applicant and the next hiring step.' }),
       reportName: 'job_applicants',
-      searchLabel: 'Search applicants',
+      searchLabel: t('recruitment.searchApplicants', { defaultValue: 'Search applicants' }),
       metrics: [
-        { label: 'All applicants', value: String(data.candidates.length) },
-        { label: 'In review', value: String(inReview) },
-        { label: 'Ready', value: String(ready) }
+        { label: t('recruitment.allApplicants', { defaultValue: 'All applicants' }), value: String(data.candidates.length) },
+        { label: t('recruitment.inReview', { defaultValue: 'In review' }), value: String(inReview) },
+        { label: t('recruitment.ready', { defaultValue: 'Ready' }), value: String(ready) }
       ],
       columns: [
-        { key: 'name', label: 'Applicant' },
-        { key: 'job', label: 'Job wanted' },
-        { key: 'phone', label: 'Phone' },
-        { key: 'stage', label: 'Hiring step' },
-        { key: 'documents', label: 'Checks' }
+        { key: 'name', label: t('recruitment.fullName') },
+        { key: 'job', label: t('recruitment.targetRole') },
+        { key: 'phone', label: t('common.phone') },
+        { key: 'stage', label: t('recruitment.probationStage') },
+        { key: 'documents', label: t('common.verified') }
       ],
-      rows: data.candidates.map(candidate => ({
-        id: candidate.id,
-        searchText: `${candidate.fullName} ${candidate.candidateCode} ${candidate.targetRole} ${candidate.stage}`,
-        values: {
-          name: `${candidate.fullName} · ${candidate.candidateCode}`,
-          job: candidate.targetRole,
-          phone: candidate.phone,
-          stage: candidate.stage,
-          documents: candidate.guarantorProvided && candidate.medicalFit ? 'Ready' : 'Needs check'
-        },
-        tones: {
-          stage: toneForStatus(candidate.stage),
-          documents: candidate.guarantorProvided && candidate.medicalFit ? 'good' : 'warn'
-        }
-      })),
-      emptyMessage: 'No job applicants found.'
+      rows: data.candidates.map(candidate => {
+        const isReady = candidate.guarantorProvided && candidate.medicalFit;
+        return {
+          id: candidate.id,
+          searchText: `${candidate.fullName} ${candidate.candidateCode} ${candidate.targetRole} ${candidate.stage}`,
+          values: {
+            name: `${candidate.fullName} · ${candidate.candidateCode}`,
+            job: candidate.targetRole,
+            phone: candidate.phone,
+            stage: candidate.stage,
+            documents: isReady ? t('common.verified') : t('common.unverified')
+          },
+          tones: {
+            stage: toneForStatus(candidate.stage),
+            documents: isReady ? 'good' : 'warn'
+          }
+        };
+      }),
+      emptyMessage: t('common.noRecordsFound')
     };
   }
 
   if (moduleId === 'onboarding') {
-    const complete = data.onboardingList.filter(person => person.progressPercent === 100).length;
-    const startingSoon = data.onboardingList.filter(person => person.progressPercent < 100).length;
+    const complete = data.onboardingList.filter(p => p.progressPercent === 100).length;
+    const startingSoon = data.onboardingList.filter(p => p.progressPercent < 100).length;
 
     return {
-      title: 'New employees',
-      description: 'Check what each new employee still needs before starting work.',
+      title: t('hr.newEmployeesTitle'),
+      description: t('hr.newEmployeesDesc'),
       reportName: 'new_employees',
-      searchLabel: 'Search new employees',
+      searchLabel: t('hr.searchNewEmployees'),
       metrics: [
-        { label: 'All records', value: String(data.onboardingList.length) },
-        { label: 'Ready', value: String(complete) },
-        { label: 'Still working', value: String(startingSoon) }
+        { label: t('hr.allRecords'), value: String(data.onboardingList.length) },
+        { label: t('hr.ready'), value: String(complete) },
+        { label: t('hr.stillWorking'), value: String(startingSoon) }
       ],
       columns: [
-        { key: 'name', label: 'Employee' },
-        { key: 'job', label: 'Job' },
-        { key: 'start', label: 'Start date' },
-        { key: 'progress', label: 'Progress', numeric: true },
-        { key: 'status', label: 'Status' }
+        { key: 'name', label: t('hr.employee') },
+        { key: 'job', label: t('hr.job') },
+        { key: 'start', label: t('hr.startDate') },
+        { key: 'progress', label: t('hr.progress'), numeric: true },
+        { key: 'status', label: t('hr.status') }
       ],
-      rows: data.onboardingList.map(person => ({
-        id: person.id,
-        searchText: `${person.fullName} ${person.employeeCode} ${person.role}`,
-        values: {
-          name: `${person.fullName} · ${person.employeeCode}`,
-          job: person.role,
-          start: person.targetStartDate,
-          progress: percent(person.progressPercent),
-          status: person.progressPercent === 100 ? 'Ready' : 'In progress'
-        },
-        tones: { status: person.progressPercent === 100 ? 'good' : 'warn' }
-      })),
-      emptyMessage: 'No new employee records found.'
+      rows: data.onboardingList.map(person => {
+        const isReady = person.progressPercent === 100;
+        return {
+          id: person.id,
+          searchText: `${person.fullName} ${person.employeeCode} ${person.role}`,
+          values: {
+            name: `${person.fullName} · ${person.employeeCode}`,
+            job: person.role,
+            start: person.targetStartDate,
+            progress: percent(person.progressPercent),
+            status: isReady ? t('hr.ready') : t('hr.inProgress')
+          },
+          tones: { status: isReady ? 'good' : 'warn' }
+        };
+      }),
+      emptyMessage: t('hr.noNewEmployeesFound')
     };
   }
 
   if (moduleId === 'org') {
-    const departments = new Set(data.managementPersons.map(person => person.department)).size;
-    const heads = data.managementPersons.filter(person => person.roleCategory === 'Department Head').length;
+    const departments = new Set(data.managementPersons.map(p => p.department)).size;
+    const heads = data.managementPersons.filter(p => p.roleCategory === 'Department Head').length;
 
     return {
-      title: 'Teams and roles',
-      description: 'See who works in each team and who they report to.',
+      title: t('hr.teamsAndRolesTitle'),
+      description: t('hr.teamsAndRolesDesc'),
       reportName: 'teams_and_roles',
-      searchLabel: 'Search people or teams',
+      searchLabel: t('hr.searchTeams'),
       metrics: [
-        { label: 'People', value: String(data.managementPersons.length) },
-        { label: 'Teams', value: String(departments) },
-        { label: 'Team heads', value: String(heads) }
+        { label: t('hr.people'), value: String(data.managementPersons.length) },
+        { label: t('hr.teams'), value: String(departments) },
+        { label: t('hr.teamHeads'), value: String(heads) }
       ],
       columns: [
-        { key: 'name', label: 'Name' },
-        { key: 'title', label: 'Job title' },
-        { key: 'team', label: 'Team' },
-        { key: 'reportsTo', label: 'Reports to' },
-        { key: 'phone', label: 'Phone' }
+        { key: 'name', label: t('hr.name') },
+        { key: 'title', label: t('hr.jobTitle') },
+        { key: 'team', label: t('hr.team') },
+        { key: 'reportsTo', label: t('hr.reportsTo') },
+        { key: 'phone', label: t('hr.phone') }
       ],
       rows: data.managementPersons.map(person => ({
         id: person.id,
@@ -146,34 +154,34 @@ export function buildPeopleModel(moduleId: ModuleId, data: WorkspaceData): Modul
           name: person.name,
           title: person.title,
           team: person.department,
-          reportsTo: person.reportsToTitle || 'Company leadership',
+          reportsTo: person.reportsToTitle || t('hr.companyLeadership'),
           phone: person.phone
         }
       })),
-      emptyMessage: 'No team records found.'
+      emptyMessage: t('hr.noTeamsFound')
     };
   }
 
   if (moduleId === 'transfers') {
-    const pending = data.transfers.filter(record => record.status !== 'Executed').length;
-    const payChanges = data.transfers.filter(record => record.salaryChangeETB !== 0).length;
+    const pending = data.transfers.filter(r => r.status !== 'Executed').length;
+    const payChanges = data.transfers.filter(r => r.salaryChangeETB !== 0).length;
 
     return {
-      title: 'Transfers',
-      description: 'See employee moves, job changes, and approval status.',
+      title: t('hr.transfersTitle'),
+      description: t('hr.transfersDesc'),
       reportName: 'employee_transfers',
-      searchLabel: 'Search transfers',
+      searchLabel: t('hr.searchTransfers'),
       metrics: [
-        { label: 'All transfers', value: String(data.transfers.length) },
-        { label: 'Waiting', value: String(pending) },
-        { label: 'Pay changes', value: String(payChanges) }
+        { label: t('hr.allTransfers'), value: String(data.transfers.length) },
+        { label: t('hr.waiting'), value: String(pending) },
+        { label: t('hr.payChanges'), value: String(payChanges) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'change', label: 'Change' },
-        { key: 'from', label: 'From' },
-        { key: 'to', label: 'To' },
-        { key: 'status', label: 'Status' }
+        { key: 'employee', label: t('hr.employee') },
+        { key: 'change', label: t('hr.change') },
+        { key: 'from', label: t('hr.from') },
+        { key: 'to', label: t('hr.to') },
+        { key: 'status', label: t('hr.status') }
       ],
       rows: data.transfers.map(record => ({
         id: record.id,
@@ -187,30 +195,30 @@ export function buildPeopleModel(moduleId: ModuleId, data: WorkspaceData): Modul
         },
         tones: { status: toneForStatus(record.status) }
       })),
-      emptyMessage: 'No transfer records found.'
+      emptyMessage: t('hr.noTransfersFound')
     };
   }
 
   if (moduleId === 'experience') {
     const thisYear = String(new Date().getFullYear());
-    const recent = data.workExperiences.filter(record => record.issuedDate.startsWith(thisYear)).length;
+    const recent = data.workExperiences.filter(r => r.issuedDate.startsWith(thisYear)).length;
 
     return {
-      title: 'Work letters',
-      description: 'Find work experience letters made for former employees.',
+      title: t('hr.workLettersTitle'),
+      description: t('hr.workLettersDesc'),
       reportName: 'work_letters',
-      searchLabel: 'Search work letters',
+      searchLabel: t('hr.searchWorkLetters'),
       metrics: [
-        { label: 'All letters', value: String(data.workExperiences.length) },
-        { label: 'This year', value: String(recent) },
-        { label: 'Employees', value: String(new Set(data.workExperiences.map(record => record.employeeId)).size) }
+        { label: t('hr.allLetters'), value: String(data.workExperiences.length) },
+        { label: t('hr.thisYear'), value: String(recent) },
+        { label: t('hr.allEmployees'), value: String(new Set(data.workExperiences.map(r => r.employeeId)).size) }
       ],
       columns: [
-        { key: 'employee', label: 'Employee' },
-        { key: 'job', label: 'Job' },
-        { key: 'period', label: 'Work period' },
-        { key: 'letter', label: 'Letter number' },
-        { key: 'date', label: 'Date made' }
+        { key: 'employee', label: t('hr.employee') },
+        { key: 'job', label: t('hr.job') },
+        { key: 'period', label: t('hr.workPeriod') },
+        { key: 'letter', label: t('hr.letterNumber') },
+        { key: 'date', label: t('hr.dateMade') }
       ],
       rows: data.workExperiences.map(record => ({
         id: record.id,
@@ -218,12 +226,12 @@ export function buildPeopleModel(moduleId: ModuleId, data: WorkspaceData): Modul
         values: {
           employee: `${record.employeeName} · ${record.employeeCode}`,
           job: record.role,
-          period: `${record.startDate} to ${record.endDate}`,
+          period: `${record.startDate} - ${record.endDate}`,
           letter: record.certificateNumber,
           date: record.issuedDate
         }
       })),
-      emptyMessage: 'No work letters found.'
+      emptyMessage: t('hr.noWorkLettersFound')
     };
   }
 

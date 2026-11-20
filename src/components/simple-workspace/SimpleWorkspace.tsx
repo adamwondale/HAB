@@ -97,6 +97,8 @@ export function SimpleWorkspace({
         employees={data.employees}
         divisions={data.divisions}
         masterConfig={data.masterConfig}
+        attendance={data.attendance}
+        leaveRequests={data.leaveRequests}
         onUpdatePayrollRecord={onUpdatePayrollRecord}
         onAddPayrollRecord={onAddPayrollRecord}
         onApproveBatch={onApprovePayrollBatch}
@@ -193,7 +195,7 @@ export function SimpleWorkspace({
   return (
     <>
       <SimpleModulePage
-        model={getModuleModel(activeTab, data)}
+        model={getModuleModel(activeTab, data, t as any)}
         mainAction={mainAction}
       />
 

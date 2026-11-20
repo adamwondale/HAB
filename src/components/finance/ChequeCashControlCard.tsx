@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { CreditCard, Wallet, ArrowDownRight, ArrowUpRight, Plus, CheckCircle2, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Plus } from 'lucide-react';
 
 export interface ChequeRecord {
   id: string;
@@ -22,6 +23,7 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
 ];
 
 export const ChequeCashControlCard: React.FC = () => {
+  const { t } = useTranslation();
   const [records, setRecords] = useState<ChequeRecord[]>(INITIAL_CHEQUES);
   const [filterAccount, setFilterAccount] = useState<'All' | 'Cheque' | 'Petty Cash'>('All');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -67,101 +69,99 @@ export const ChequeCashControlCard: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4">
-      {/* Header and Summary stats */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div>
-          <h2 className="text-sm font-bold text-[#4C4541] dark:text-slate-100 flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-[#F2C46A]" />
-            <span>Cheque Debited & Credit Control (Cash & Bank)</span>
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {t('payroll.chequeTitle')}
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Real-time balance controls across Cheque accounts and Petty Cash drawers
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            {t('payroll.chequeSubtitle')}
           </p>
         </div>
         <button
           type="button"
           onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] text-xs font-bold transition-colors cursor-pointer self-start sm:self-auto shadow-xs"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 text-xs font-semibold transition-colors cursor-pointer self-start sm:self-auto shadow-2xs"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Record Cheque / Movement</span>
+          <span>{t('payroll.recordCheque')}</span>
         </button>
       </div>
 
-      {/* Aggregate balance cards */}
+      {/* Aggregate balance cards - Eye friendly neutral surfaces */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-[#FCF0DA]/70 dark:bg-slate-800/60 p-3 rounded-lg border border-[#EFE7D8] dark:border-slate-700">
-          <div className="flex items-center justify-between text-xs text-[#4C4541]/70 dark:text-slate-400 font-bold">
-            <span>Cheque Accounts</span>
-            <CreditCard className="w-4 h-4 text-[#F2C46A]" />
-          </div>
-          <div className="text-base font-black font-mono tabular-nums text-[#4C4541] dark:text-slate-100 mt-1">
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.chequeBalance')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100 mt-1">
             ETB {totalChequeBalance.toLocaleString()}
           </div>
-          <span className="text-[10px] text-slate-500">CBE & Awash Operating</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">CBE & Awash</span>
         </div>
 
-        <div className="bg-amber-50/70 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-200/80 dark:border-amber-900/60">
-          <div className="flex items-center justify-between text-xs text-amber-900 dark:text-amber-300 font-bold">
-            <span>Petty Cash Box</span>
-            <Wallet className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-base font-black font-mono tabular-nums text-amber-900 dark:text-amber-200 mt-1">
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.pettyCashBalance')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100 mt-1">
             ETB {totalPettyCashBalance.toLocaleString()}
           </div>
-          <span className="text-[10px] text-amber-700">Daily float & cash on hand</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Cash on hand</span>
         </div>
 
-        <div className="bg-rose-50/70 dark:bg-rose-950/30 p-3 rounded-lg border border-rose-200/80 dark:border-rose-900/60">
-          <div className="flex items-center justify-between text-xs text-rose-800 dark:text-rose-300 font-bold">
-            <span>Cheques Debited (Out)</span>
-            <ArrowUpRight className="w-4 h-4 text-rose-600" />
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.totalDebited')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-700 dark:text-slate-300 mt-1">
+            ETB {totalDebited.toLocaleString()}
           </div>
-          <div className="text-base font-black font-mono tabular-nums text-rose-800 dark:text-rose-200 mt-1">
-            -ETB {totalDebited.toLocaleString()}
-          </div>
-          <span className="text-[10px] text-rose-600">Supplier & operational payments</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Supplier & expense</span>
         </div>
 
-        <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-3 rounded-lg border border-emerald-200/80 dark:border-emerald-900/60">
-          <div className="flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 font-bold">
-            <span>Cheques Credited (In)</span>
-            <ArrowDownRight className="w-4 h-4 text-emerald-600" />
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.totalCredited')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100 mt-1">
+            ETB {totalCredited.toLocaleString()}
           </div>
-          <div className="text-base font-black font-mono tabular-nums text-emerald-800 dark:text-emerald-200 mt-1">
-            +ETB {totalCredited.toLocaleString()}
-          </div>
-          <span className="text-[10px] text-emerald-600">Client contract receipts</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Receipts in</span>
         </div>
       </div>
 
-      {/* Ledger Table */}
+      {/* Ledger Table - Calm eye friendly header */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
-        <table className="w-full text-left text-xs min-w-[650px]">
-          <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] font-bold uppercase tracking-wider text-[11px]">
+        <table className="w-full text-left text-xs min-w-[650px] border-collapse">
+          <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 font-semibold text-xs">
             <tr>
-              <th className="py-2.5 px-3">Cheque / Ref #</th>
-              <th className="py-2.5 px-3">Payee / Issuer</th>
-              <th className="py-2.5 px-3">Account / Bank</th>
-              <th className="py-2.5 px-3 text-right">Amount (ETB)</th>
-              <th className="py-2.5 px-3">Date</th>
-              <th className="py-2.5 px-3 text-center">Status</th>
+              <th className="py-2.5 px-3">{t('payroll.chequeNumber')}</th>
+              <th className="py-2.5 px-3">{t('payroll.payee')}</th>
+              <th className="py-2.5 px-3">{t('payroll.account')}</th>
+              <th className="py-2.5 px-3 text-right">{t('payroll.amount')}</th>
+              <th className="py-2.5 px-3">{t('payroll.issueDate')}</th>
+              <th className="py-2.5 px-3 text-center">{t('payroll.status')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
             {filtered.map(r => (
               <tr key={r.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
-                <td className="py-2 px-3 font-mono font-bold text-slate-900 dark:text-slate-100">{r.chequeNumber}</td>
+                <td className="py-2 px-3 font-mono font-medium text-slate-900 dark:text-slate-100">{r.chequeNumber}</td>
                 <td className="py-2 px-3 font-medium text-slate-800 dark:text-slate-200">{r.payeeOrDrawer}</td>
                 <td className="py-2 px-3 text-slate-600 dark:text-slate-400">{r.accountType} · {r.bankName}</td>
-                <td className={`py-2 px-3 text-right font-mono tabular-nums font-bold ${r.type === 'credit' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
+                <td className="py-2 px-3 text-right font-mono tabular-nums font-semibold text-slate-900 dark:text-slate-100">
                   {r.type === 'credit' ? '+' : '-'}ETB {r.amount.toLocaleString()}
                 </td>
                 <td className="py-2 px-3 text-slate-500 font-mono text-[11px]">{r.issueDate}</td>
                 <td className="py-2 px-3 text-center">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${r.status === 'Cleared' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-amber-100 text-amber-800'}`}>
-                    {r.status === 'Cleared' ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                    <span>{r.status}</span>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${
+                    r.status === 'Cleared'
+                      ? 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                      : 'bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
+                  }`}>
+                    {r.status}
                   </span>
                 </td>
               </tr>
@@ -174,38 +174,38 @@ export const ChequeCashControlCard: React.FC = () => {
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
           <form onSubmit={handleAdd} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl max-w-md w-full p-5 space-y-3 shadow-2xl border border-slate-200 dark:border-slate-800 text-xs">
-            <h3 className="text-sm font-bold border-b border-slate-100 pb-2">Record Cheque or Cash Movement</h3>
+            <h3 className="text-sm font-semibold border-b border-slate-100 pb-2">{t('payroll.recordCheque')}</h3>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Cheque / Voucher Number</label>
+              <label className="font-medium text-slate-700 block mb-1">{t('payroll.chequeNumber')}</label>
               <input type="text" value={formNumber} onChange={e => setFormNumber(e.target.value)} placeholder="e.g. CBE-98240 or PC-2026-090" required className="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-mono" />
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Payee / Description</label>
+              <label className="font-medium text-slate-700 block mb-1">{t('payroll.payee')}</label>
               <input type="text" value={formPayee} onChange={e => setFormPayee(e.target.value)} placeholder="e.g. Fuel Purchase or Client Receipt" required className="w-full px-3 py-1.5 rounded-lg border border-slate-300" />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Movement Type</label>
+                <label className="font-medium text-slate-700 block mb-1">{t('common.actions')}</label>
                 <select value={formType} onChange={e => setFormType(e.target.value as any)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300">
-                  <option value="debit">Debit (Payment Out)</option>
-                  <option value="credit">Credit (Receipt In)</option>
+                  <option value="debit">Debit (Out)</option>
+                  <option value="credit">Credit (In)</option>
                 </select>
               </div>
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Account Category</label>
+                <label className="font-medium text-slate-700 block mb-1">{t('payroll.account')}</label>
                 <select value={formAccountType} onChange={e => setFormAccountType(e.target.value as any)} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300">
-                  <option value="Cheque">Cheque Account</option>
+                  <option value="Cheque">Cheque</option>
                   <option value="Petty Cash">Petty Cash</option>
                 </select>
               </div>
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Amount (ETB)</label>
+              <label className="font-medium text-slate-700 block mb-1">{t('payroll.amount')}</label>
               <input type="number" min={1} value={formAmount} onChange={e => setFormAmount(Number(e.target.value))} required className="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-mono font-bold" />
             </div>
             <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-              <button type="button" onClick={() => setShowAddModal(false)} className="px-3 py-1.5 rounded-lg border border-slate-300 cursor-pointer">Cancel</button>
-              <button type="submit" className="px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] font-bold cursor-pointer">Save Movement</button>
+              <button type="button" onClick={() => setShowAddModal(false)} className="px-3 py-1.5 rounded-lg border border-slate-300 cursor-pointer">{t('common.cancel')}</button>
+              <button type="submit" className="px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#E5B558] text-[#4C4541] font-bold cursor-pointer">{t('common.save')}</button>
             </div>
           </form>
         </div>

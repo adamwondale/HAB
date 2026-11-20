@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ClientSite, Employee } from '../../types/hrm';
 
 interface WorkSiteAssignFormProps {
@@ -16,6 +17,7 @@ export const WorkSiteAssignForm: React.FC<WorkSiteAssignFormProps> = ({
   onAssign,
   onCancel
 }) => {
+  const { t } = useTranslation();
   const [formEmpId, setFormEmpId] = useState<string>('');
   const [formSiteId, setFormSiteId] = useState<string>('');
   const [formPost, setFormPost] = useState<string>('');
@@ -36,14 +38,14 @@ export const WorkSiteAssignForm: React.FC<WorkSiteAssignFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-          Assign Employee to Work Site
+        <h3 className="text-xs font-semibold text-slate-900 dark:text-white">
+          {t('deployment.assignToSiteTitle')}
         </h3>
-        <span className="text-[11px] text-slate-500">Fast inline assignment</span>
+        <span className="text-[11px] text-slate-500">{t('deployment.fastAssignment')}</span>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div>
-          <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Employee</label>
+          <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">{t('common.employee', { defaultValue: 'Employee' })}</label>
           <select
             value={formEmpId || unassignedEmployees[0]?.id || ''}
             onChange={(e) => setFormEmpId(e.target.value)}
@@ -57,7 +59,7 @@ export const WorkSiteAssignForm: React.FC<WorkSiteAssignFormProps> = ({
           </select>
         </div>
         <div>
-          <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Work site</label>
+          <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">{t('deployment.workSitesTitle')}</label>
           <select
             value={formSiteId || activeFormSite?.id || ''}
             onChange={(e) => {
@@ -74,7 +76,7 @@ export const WorkSiteAssignForm: React.FC<WorkSiteAssignFormProps> = ({
           </select>
         </div>
         <div>
-          <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Post / Area</label>
+          <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">{t('deployment.postArea')}</label>
           <select
             value={formPost || activeFormSite?.posts[0] || ''}
             onChange={(e) => setFormPost(e.target.value)}
@@ -92,13 +94,13 @@ export const WorkSiteAssignForm: React.FC<WorkSiteAssignFormProps> = ({
           onClick={onCancel}
           className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
         >
-          Cancel
+          {t('common.cancel')}
         </button>
         <button
           type="submit"
-          className="rounded-lg bg-[#0E1525] px-4 py-1.5 text-xs font-semibold text-[#FFF9DB] hover:bg-[#19233C] dark:bg-[#EBE834] dark:text-[#0E1525]"
+          className="rounded-lg bg-slate-900 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900"
         >
-          Save assignment
+          {t('deployment.saveAssignment')}
         </button>
       </div>
     </form>

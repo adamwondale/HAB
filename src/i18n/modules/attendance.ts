@@ -36,7 +36,25 @@ export const attendanceEn = {
   securityDutyRule: '24h Duty · 48h Recovery Rest',
   cleaningDutyRule: 'Weekly Alternating Shift',
   seeAttendance: 'See who came to work and who needs follow-up.',
-  noAttendanceRecords: 'No attendance records found.'
+  noAttendanceRecords: 'No attendance records found.',
+
+  // New keys for attendance cockpit
+  attendanceTitle: 'Attendance',
+  attendanceDesc: 'See who came to work and who needs follow-up.',
+  searchAttendance: 'Search attendance',
+  date: 'Date',
+  workSite: 'Work site',
+  notRecorded: 'Not recorded',
+  noAttendanceFound: 'No attendance records found.',
+  dailyShiftTitle: 'Daily Shift Attendance',
+  fieldBiometricSub: 'Daily shift attendance and biometric check-in roster.',
+  downloadReport: 'Download report',
+  browseScan: 'Browse scan',
+  evidence: 'Evidence',
+  previewScan: 'Preview scan',
+  records: 'records',
+  dropScanNotice: 'Drop attendance roster scan or excel sheet (.csv, .xlsx, .pdf)',
+  biometricSupport: 'Supports biometric devices, supervisor sign sheets, and shift muster logs.'
 };
 
 export const attendanceAm = {
@@ -77,5 +95,23 @@ export const attendanceAm = {
   securityDutyRule: '24 ሰዓት ሥራ · 48 ሰዓት ዕረፍት',
   cleaningDutyRule: 'ሳምንታዊ ተለዋዋጭ ፈረቃ',
   seeAttendance: 'በሥራ ላይ የተገኙትንና ክትትል የሚሹትን ይመልከቱ።',
-  noAttendanceRecords: 'ምንም የሥራ መገኘት መረጃ አልተገኘም።'
+  noAttendanceRecords: 'ምንም የሥራ መገኘት መረጃ አልተገኘም።',
+
+  // New keys for attendance cockpit
+  attendanceTitle: 'የሥራ መገኘት',
+  attendanceDesc: 'በሥራ ላይ የተገኙትንና ክትትል የሚሹትን ይመልከቱ።',
+  searchAttendance: 'የሥራ መገኘት ይፈልጉ',
+  date: 'ቀን',
+  workSite: 'የሥራ ሳይት',
+  notRecorded: 'አልተመዘገበም',
+  noAttendanceFound: 'ምንም የሥራ መገኘት መረጃ አልተገኘም።',
+  dailyShiftTitle: 'የዕለት የፈረቃ መገኘት',
+  fieldBiometricSub: 'የዕለት ፈረቃ መገኘትና የባዮሜትሪክ መግቢያ መዝገብ።',
+  downloadReport: 'ሪፖርት አውርድ',
+  browseScan: 'ሰነድ ምረጥ',
+  evidence: 'ማስረጃ',
+  previewScan: 'ቅድመ ዕይታ',
+  records: 'መዝገቦች',
+  dropScanNotice: 'የመገኘት መዝገብ ስካን ወይም ኤክሴል ፋይል እዚህ ይጎትቱ (.csv, .xlsx, .pdf)',
+  biometricSupport: 'ባዮሜትሪክ መሣሪያዎችን፣ የተቆጣጣሪ ፊርማዎችንና የፈረቃ መዝገቦችን ይደግፋል።'
 };

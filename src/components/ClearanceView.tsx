@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Search, Package, Users, Landmark, PackageCheck, Lock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Plus, Search, Package, Lock } from 'lucide-react';
 import { ClearanceRecord, Employee, ServiceType, ManagementPerson } from '../types/hrm';
 import { SystemMasterConfig } from '../types/masterConfig';
 import { DEFAULT_SYSTEM_MASTER_CONFIG } from '../utils/masterConfigEngine';
@@ -26,6 +27,7 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
   onUpdateClearance,
   onInitiateClearance
 }) => {
+  const { t } = useTranslation();
   const isSuperAdmin = activeUser?.role === 'super_admin' || activeUser?.id === 'mgmt-super-admin';
   const canInitiate = activeUser ? activeUser.permissions.canApproveClearance || isSuperAdmin : true;
 
@@ -54,47 +56,47 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
       {/* Header Banner */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Exit Clearance Workflow</div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Sequential 3-Stage Exit Cockpit</h1>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('clearance.cockpitTitle')}</h1>
+          <p className="text-xs text-slate-500 mt-0.5">{t('clearance.cockpitSubtitle')}</p>
         </div>
         {canInitiate ? (
           <button
             type="button"
             onClick={() => setIsInitiatingModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#F2C46A] hover:bg-[#e0b459] text-[#4C4541] font-bold text-xs rounded-lg transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-colors shadow-xs dark:bg-slate-100 dark:text-slate-900"
           >
             <Plus className="w-4 h-4" />
-            <span>Initiate Exit Clearance</span>
+            <span>{t('clearance.initiateClearance')}</span>
           </button>
         ) : (
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg border border-slate-200">
-            <Lock className="w-3.5 h-3.5 text-amber-600" />
-            <span>Role: {activeUser?.title.split('(')[0]}</span>
+            <Lock className="w-3.5 h-3.5 text-slate-400" />
+            <span>{activeUser?.title.split('(')[0]}</span>
           </span>
         )}
       </div>
 
-      {/* Perspective Navigation Pills */}
+      {/* Perspective Navigation Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
         {[
-          { id: 'hr', label: 'Stage 1: HR Exit Operations', count: clearances.filter((c) => c.status === 'In Progress').length, icon: Users },
-          { id: 'store', label: 'Stage 2: Store Asset Return (Image 14)', count: storePendingCount, icon: PackageCheck },
-          { id: 'finance', label: 'Stage 3: Finance Liquidation (Image 15)', count: financePendingCount, icon: Landmark }
+          { id: 'hr', label: t('clearance.stage1Hr'), count: clearances.filter((c) => c.status === 'In Progress').length },
+          { id: 'store', label: t('clearance.stage2Store'), count: storePendingCount },
+          { id: 'finance', label: t('clearance.stage3Finance'), count: financePendingCount }
         ].map((tab) => {
-          const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
-                isActive ? 'bg-[#4C4541] text-[#FCF0DA] shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 hover:bg-slate-50'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 ${
+                isActive
+                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50'
               }`}
             >
-              <Icon className="w-4 h-4" />
               <span>{tab.label}</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-900 dark:text-amber-200 font-mono">
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-mono">
                 {tab.count}
               </span>
             </button>
@@ -130,7 +132,7 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                 <input
                   type="text"
-                  placeholder="Search employee or ID..."
+                  placeholder={t('clearance.searchEmployeePlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-white"
@@ -140,9 +142,9 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                 <select
                   value={filterService}
                   onChange={(e) => setFilterService(e.target.value as any)}
-                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 rounded-lg px-2 py-1.5 flex-1"
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 flex-1 text-slate-900 dark:text-white"
                 >
-                  <option value="All">All Divisions</option>
+                  <option value="All">{t('clearance.allDivisions')}</option>
                   <option value="Security">Security</option>
                   <option value="Cleaning">Cleaning</option>
                   <option value="Property Management">Property Management</option>
@@ -151,11 +153,11 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 rounded-lg px-2 py-1.5 flex-1"
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 flex-1 text-slate-900 dark:text-white"
                 >
-                  <option value="All">All Status</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Cleared">Cleared</option>
+                  <option value="All">{t('clearance.allStatus')}</option>
+                  <option value="In Progress">{t('clearance.inProgress')}</option>
+                  <option value="Cleared">{t('clearance.cleared')}</option>
                 </select>
               </div>
             </div>
@@ -169,7 +171,7 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                     key={c.id}
                     onClick={() => setSelectedClearanceId(c.id)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left ${
-                      isSelected ? 'bg-[#FCF0DA]/40 border-amber-600 shadow-xs ring-1 ring-amber-600/20' : 'bg-white dark:bg-slate-900 border-slate-200 hover:border-slate-300'
+                      isSelected ? 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-600 shadow-xs' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -180,14 +182,14 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                         </div>
                         <div className="text-[11px] text-slate-500 font-mono mt-0.5">{c.employeeCode} · {c.role}</div>
                       </div>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${c.status === 'Cleared' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'}`}>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${c.status === 'Cleared' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-amber-100 text-amber-900 dark:bg-amber-950/40 dark:text-amber-300'}`}>
                         {c.status}
                       </span>
                     </div>
                     <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
                       <span className="flex items-center gap-1">
                         <Package className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Items: <strong className="text-slate-800 dark:text-slate-200">{returnedCount}/{c.issuedItems.length}</strong></span>
+                        <span>{t('clearance.items')}: <strong className="text-slate-800 dark:text-slate-200">{returnedCount}/{c.issuedItems.length}</strong></span>
                       </span>
                       <span>{c.stage?.replace('_', ' ') || c.exitReason}</span>
                     </div>
@@ -208,8 +210,8 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                 onOpenCertificate={() => setIsCertificateModalOpen(true)}
               />
             ) : (
-              <div className="p-8 text-center bg-white dark:bg-slate-900 border border-slate-200 rounded-xl text-slate-500 text-xs">
-                Select an employee clearance case from the list.
+              <div className="p-8 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-500 text-xs">
+                {t('clearance.selectClearancePrompt')}
               </div>
             )}
           </div>

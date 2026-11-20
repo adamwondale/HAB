@@ -198,26 +198,21 @@ export const TopBar: React.FC<TopBarProps> = ({
             )}
           </div>
 
-          {/* Active User Role Badge & Sign Out Button */}
+          {/* Active User Name & Sign Out Button */}
           {activeUser && (
             <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white dark:bg-[#1E1B19] border border-[#EFE7D8] dark:border-[#3D3633]">
-                <div className="w-6 h-6 rounded-full bg-[#F2C46A] text-[#4C4541] flex items-center justify-center font-bold text-[11px] shrink-0">
+              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white dark:bg-[#1E1B19] border border-slate-200 dark:border-slate-800">
+                <div className="w-6 h-6 rounded-full bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 flex items-center justify-center font-bold text-[11px] shrink-0">
                   {activeUser.name.split(' ')[1] ? activeUser.name.split(' ')[1][0] : activeUser.name[0]}
                 </div>
                 <div className="min-w-0 max-w-[130px]">
-                  <div className="text-xs font-semibold text-[#4C4541] dark:text-[#F7F4EE] truncate leading-tight">
+                  <div className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate leading-tight">
                     {activeUser.name}
                   </div>
-                  <div className="text-[10px] text-[#4C4541]/70 dark:text-slate-400 truncate leading-tight font-medium">
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate leading-tight font-medium">
                     {roleConfig?.badge || activeUser.roleTitle || activeUser.title}
                   </div>
                 </div>
-                {roleConfig && (
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border leading-none ${roleConfig.badgeColor}`}>
-                    {roleConfig.type === 'super_admin' ? 'Admin' : roleConfig.type === 'executive' ? 'CEO' : roleConfig.type === 'hr' ? 'HR' : 'Finance'}
-                  </span>
-                )}
               </div>
 
               <button

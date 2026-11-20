@@ -35,7 +35,34 @@ export const deploymentEn = {
   status: 'Status',
   active: 'Active',
   inactive: 'Inactive',
-  unassigned: 'Unassigned'
+  unassigned: 'Unassigned',
+
+  // Simple Workspace & Unslop keys
+  workSitesTitle: 'Work sites',
+  activeAssignments: 'Active assignments',
+  positionsFilled: 'Positions filled',
+  workArea: 'Work area',
+  shift: 'Shift',
+  searchAssignments: 'Search employees or sites',
+  noAssignmentsFound: 'No work assignments found.',
+  unassignedStaffTitle: 'Unassigned staff',
+  unassignedStaffSubtitle: 'Drag an employee card onto an active work site to assign them.',
+  totalUnassigned: 'total unassigned',
+  allAssigned: 'All active employees are currently assigned to work sites.',
+  dragToDeploy: 'Drag to deploy',
+  assign: 'Assign',
+  chooseSite: 'Choose site',
+  confirmAssignment: 'Confirm assignment',
+  assignToSiteTitle: 'Assign employee to work site',
+  fastAssignment: 'Fast assignment',
+  postArea: 'Post / Area',
+  saveAssignment: 'Save assignment',
+  workSiteAndCode: 'Work site & Code',
+  required: 'Required',
+  deployed: 'Deployed',
+  noSitesMatch: 'No work sites match your filter.',
+  siteInactiveNotice: 'Site inactive — cannot deploy staff here.',
+  dropOntoPost: 'Choose an open post for'
 };
 
 export const deploymentAm = {
@@ -75,5 +102,32 @@ export const deploymentAm = {
   status: 'ሁኔታ',
   active: 'ንቁ',
   inactive: 'ቦዘኔ',
-  unassigned: 'ያልተመደበ'
+  unassigned: 'ያልተመደበ',
+
+  // Simple Workspace & Unslop keys
+  workSitesTitle: 'የሥራ ሳይቶች',
+  activeAssignments: 'ንቁ ስምሪቶች',
+  positionsFilled: 'የተሞሉ ቦታዎች',
+  workArea: 'የሥራ ቦታ',
+  shift: 'ፈረቃ',
+  searchAssignments: 'ሠራተኞችን ወይም ሳይቶችን ይፈልጉ',
+  noAssignmentsFound: 'ምንም የስምሪት መረጃ አልተገኘም።',
+  unassignedStaffTitle: 'ያልተመደቡ ሠራተኞች',
+  unassignedStaffSubtitle: 'ሠራተኛውን ወደ ንቁ የሥራ ሳይት በመጎተት በቀላሉ ይመድቡ።',
+  totalUnassigned: 'ጠቅላላ ያልተመደቡ',
+  allAssigned: 'ሁሉም ሠራተኞች በሥራ ሳይት ተመድበዋል።',
+  dragToDeploy: 'ለመመደብ ይጎትቱ',
+  assign: 'መድብ',
+  chooseSite: 'ሳይት ይምረጡ',
+  confirmAssignment: 'ምደባውን አጽድቅ',
+  assignToSiteTitle: 'ሠራተኛን ወደ ሥራ ሳይት መድብ',
+  fastAssignment: 'ፈጣን ምደባ',
+  postArea: 'ፖስት / የሥራ ቦታ',
+  saveAssignment: 'ምደባውን አስቀምጥ',
+  workSiteAndCode: 'የሳይት ስም እና መለያ',
+  required: 'የሚያስፈልግ',
+  deployed: 'የተመደበ',
+  noSitesMatch: 'በተመረጠው ማጣሪያ ምንም ሳይት አልተገኘም።',
+  siteInactiveNotice: 'ሳይቱ ቦዘኔ ነው — ሠራተኛ መመደብ አይቻልም።',
+  dropOntoPost: 'ክፍት ፖስት ይምረጡ ለ'
 };

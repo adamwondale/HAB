@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { TrendingDown, Download, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Download, Search } from 'lucide-react';
 import { downloadCsv } from '../../utils/csvExport';
 import { MaterialAsset, INITIAL_MATERIALS } from './materialAssetData';
 
 export const MaterialDepreciationTable: React.FC = () => {
+  const { t } = useTranslation();
   const [materials, setMaterials] = useState<MaterialAsset[]>(INITIAL_MATERIALS);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCodeId, setEditingCodeId] = useState<string | null>(null);
@@ -65,41 +67,46 @@ export const MaterialDepreciationTable: React.FC = () => {
       {/* Header and export */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
         <div>
-          <h2 className="text-sm font-bold text-[#4C4541] dark:text-slate-100 flex items-center gap-2">
-            <TrendingDown className="w-4 h-4 text-[#F2C46A]" />
-            <span>Material Depreciation & Valuation Over Time</span>
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {t('payroll.depreciationTitle')}
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Straight-line asset wear tracking, product coding, and store stock integration
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            {t('payroll.depreciationSubtitle')}
           </p>
         </div>
         <button
           type="button"
           onClick={handleExportCsv}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FCF0DA] hover:bg-[#F6E6C5] text-[#4C4541] text-xs font-bold border border-[#EFE7D8] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
         >
-          <Download className="w-3.5 h-3.5" />
-          <span>Export to Excel (CSV)</span>
+          <Download className="w-3.5 h-3.5 text-slate-500" />
+          <span>{t('payroll.exportCsv')}</span>
         </button>
       </div>
 
-      {/* Valuation summary metrics */}
+      {/* Valuation summary metrics - Calm eye friendly cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-[#FCF0DA]/60 dark:bg-slate-800/60 p-3 rounded-lg border border-[#EFE7D8]">
-          <span className="text-xs font-bold text-[#4C4541]/70 block">Total Asset Cost Basis</span>
-          <div className="text-base font-black font-mono tabular-nums text-[#4C4541] dark:text-slate-100 mt-1">
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.totalAssetCost')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100 mt-1">
             ETB {totalCostBasis.toLocaleString()}
           </div>
         </div>
-        <div className="bg-rose-50/70 dark:bg-rose-950/30 p-3 rounded-lg border border-rose-200/80">
-          <span className="text-xs font-bold text-rose-800 block">Accumulated Depreciation</span>
-          <div className="text-base font-black font-mono tabular-nums text-rose-800 dark:text-rose-200 mt-1">
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.totalAccumulatedDepr')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-700 dark:text-slate-300 mt-1">
             -ETB {totalAccumulatedDepr.toLocaleString()}
           </div>
         </div>
-        <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-3 rounded-lg border border-emerald-200/80">
-          <span className="text-xs font-bold text-emerald-800 block">Current Net Book Value</span>
-          <div className="text-base font-black font-mono tabular-nums text-emerald-800 dark:text-emerald-200 mt-1">
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
+            {t('payroll.totalNetBookValue')}
+          </span>
+          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">
             ETB {totalNetBookValue.toLocaleString()}
           </div>
         </div>
@@ -112,32 +119,32 @@ export const MaterialDepreciationTable: React.FC = () => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Filter by item name, product code, or category..."
-          className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+          placeholder={t('payroll.searchEquipment')}
+          className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400"
         />
       </div>
 
       {/* Main Material Table */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto">
-        <table className="w-full text-left text-xs min-w-[850px]">
-          <thead className="bg-[#FCF0DA] dark:bg-[#2C2724] text-[#4C4541] dark:text-slate-100 border-b border-[#EFE7D8] font-bold uppercase tracking-wider text-[11px]">
+        <table className="w-full text-left text-xs min-w-[850px] border-collapse">
+          <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 font-semibold text-xs">
             <tr>
-              <th className="py-2.5 px-3">Item & Category</th>
-              <th className="py-2.5 px-3">Product Code</th>
-              <th className="py-2.5 px-3 text-right">Price (Unit)</th>
-              <th className="py-2.5 px-3 text-right">Quantity</th>
-              <th className="py-2.5 px-3 text-right">Total Cost</th>
-              <th className="py-2.5 px-3 text-right">Accumulated Depr.</th>
-              <th className="py-2.5 px-3 text-right">Book Value</th>
-              <th className="py-2.5 px-3 text-center">Store Avail.</th>
-              <th className="py-2.5 px-3 text-center">Status</th>
+              <th className="py-2.5 px-3">{t('payroll.item')}</th>
+              <th className="py-2.5 px-3">{t('payroll.productCode')}</th>
+              <th className="py-2.5 px-3 text-right">{t('payroll.unitPrice')}</th>
+              <th className="py-2.5 px-3 text-right">{t('payroll.quantity')}</th>
+              <th className="py-2.5 px-3 text-right">{t('payroll.totalGross')}</th>
+              <th className="py-2.5 px-3 text-right">{t('payroll.depreciationRate')}</th>
+              <th className="py-2.5 px-3 text-right">{t('payroll.currentBookValue')}</th>
+              <th className="py-2.5 px-3 text-center">{t('payroll.availability')}</th>
+              <th className="py-2.5 px-3 text-center">{t('common.status')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
             {filtered.map((m) => (
               <tr key={m.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
                 <td className="py-2 px-3">
-                  <div className="font-semibold text-slate-900 dark:text-slate-100">{m.item}</div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">{m.item}</div>
                   <div className="text-[10px] text-slate-400">{m.category}</div>
                 </td>
                 <td className="py-2 px-3 font-mono">
@@ -153,7 +160,7 @@ export const MaterialDepreciationTable: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleSaveProductCode(m.id)}
-                        className="px-1.5 py-0.5 bg-emerald-600 text-white rounded text-[10px] font-bold cursor-pointer"
+                        className="px-1.5 py-0.5 bg-slate-900 text-white rounded text-[10px] font-bold cursor-pointer"
                       >
                         ✓
                       </button>
@@ -164,35 +171,35 @@ export const MaterialDepreciationTable: React.FC = () => {
                         setEditingCodeId(m.id);
                         setNewCodeInput(m.productCode);
                       }}
-                      className="cursor-pointer hover:underline text-[#4C4541] dark:text-slate-200 font-bold"
-                      title="Click to edit product code"
+                      className="cursor-pointer hover:underline text-slate-700 dark:text-slate-300 font-medium"
+                      title="Click to edit"
                     >
                       {m.productCode}
                     </span>
                   )}
                 </td>
                 <td className="py-2 px-3 text-right font-mono tabular-nums">ETB {m.price.toLocaleString()}</td>
-                <td className="py-2 px-3 text-right font-mono tabular-nums font-bold">{m.quantity}</td>
-                <td className="py-2 px-3 text-right font-mono tabular-nums font-semibold">
+                <td className="py-2 px-3 text-right font-mono tabular-nums font-semibold">{m.quantity}</td>
+                <td className="py-2 px-3 text-right font-mono tabular-nums">
                   ETB {m.totalCost.toLocaleString()}
                 </td>
-                <td className="py-2 px-3 text-right font-mono tabular-nums text-rose-600">
-                  -ETB {m.accumulatedDepreciation.toLocaleString()}
+                <td className="py-2 px-3 text-right font-mono tabular-nums text-slate-500">
+                  {m.depreciationRatePct}%
                 </td>
-                <td className="py-2 px-3 text-right font-mono tabular-nums font-bold text-emerald-700 dark:text-emerald-400">
+                <td className="py-2 px-3 text-right font-mono tabular-nums font-semibold text-slate-900 dark:text-slate-100">
                   ETB {m.currentBookValue.toLocaleString()}
                 </td>
                 <td className="py-2 px-3 text-center">
-                  <span className="inline-block px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-[#FCF0DA] text-[#4C4541] border border-[#EFE7D8]">
-                    {m.storeAvailability} in store
+                  <span className="inline-block px-2 py-0.5 rounded text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    {m.storeAvailability}
                   </span>
                 </td>
                 <td className="py-2 px-3 text-center">
                   <span
-                    className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium border ${
                       m.status === 'Active'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-slate-100 text-slate-600'
+                        ? 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                        : 'bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
                     }`}
                   >
                     {m.status}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, AlertTriangle, AlertCircle, TrendingUp, Sliders } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, AlertCircle } from 'lucide-react';
 
 export type ScorecardDepartment = 'hr' | 'store' | 'finance' | 'operations';
 
@@ -16,7 +16,7 @@ export interface ScorecardMetric {
 const METRICS_DATA: Record<ScorecardDepartment, { title: string; benchmark: string; metrics: ScorecardMetric[] }> = {
   hr: {
     title: 'HR & Workforce Performance Scorecard',
-    benchmark: 'CEO Target: 250 Workforce | 96% Attendance',
+    benchmark: 'Target: 250 Workforce | 96% Attendance',
     metrics: [
       { id: 1, name: 'Total workforce', formula: 'Active employee count', target: '250 employees', current: '250', variance: '0.0%', status: 'good' },
       { id: 2, name: 'Workforce deployment', formula: 'Assigned / Total employees', target: '95% deployed', current: '95.2%', variance: '+0.2%', status: 'good' },
@@ -34,7 +34,7 @@ const METRICS_DATA: Record<ScorecardDepartment, { title: string; benchmark: stri
   },
   store: {
     title: 'Store & Material Logistics Scorecard',
-    benchmark: 'CEO Target: ETB 3,500,000 Stock Value | 95% Availability',
+    benchmark: 'Target: ETB 3,500,000 Stock Value | 95% Availability',
     metrics: [
       { id: 1, name: 'Total inventory value', formula: 'Total value of available inventory', target: 'ETB 3,500,000', current: 'ETB 3,420,000', variance: '-2.3%', status: 'good' },
       { id: 2, name: 'Stock availability', formula: 'Available requested / Total requested', target: '95%', current: '94.2%', variance: '-0.8%', status: 'good' },
@@ -52,7 +52,7 @@ const METRICS_DATA: Record<ScorecardDepartment, { title: string; benchmark: stri
   },
   finance: {
     title: 'Finance & Fiscal Performance Scorecard',
-    benchmark: 'CEO Target: ETB 8,000,000 Revenue | 22.5% Margin',
+    benchmark: 'Target: ETB 8,000,000 Revenue | 22.5% Margin',
     metrics: [
       { id: 1, name: 'Total revenue', formula: 'Monthly revenue generated', target: 'ETB 8,000,000', current: 'ETB 8,150,000', variance: '+1.9%', status: 'good' },
       { id: 2, name: 'Operating expenses', formula: 'Monthly operating expenditure', target: 'ETB 6,200,000', current: 'ETB 6,180,000', variance: '-0.3%', status: 'good' },
@@ -70,7 +70,7 @@ const METRICS_DATA: Record<ScorecardDepartment, { title: string; benchmark: stri
   },
   operations: {
     title: 'Operations & Site Dispatch Scorecard',
-    benchmark: 'CEO Target: 15 Client Sites | 95% Deployment',
+    benchmark: 'Target: 15 Client Sites | 95% Deployment',
     metrics: [
       { id: 1, name: 'Active client sites', formula: 'Operational contract posts', target: '15 sites', current: '14 sites', variance: '-1 site', status: 'warning' },
       { id: 2, name: 'Guard & crew deployment', formula: 'Assigned / Total deployment', target: '95%', current: '95.2%', variance: '+0.2%', status: 'good' },
@@ -125,7 +125,7 @@ export const ExecutiveScorecardDrawer: React.FC<ExecutiveScorecardDrawerProps> =
     const Icon = status === 'good' ? CheckCircle2 : status === 'warning' ? AlertTriangle : AlertCircle;
     const label = status === 'good' ? 'Optimal' : status === 'warning' ? 'Attention' : 'Critical';
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${tone}`}>
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${tone}`}>
         <Icon className="w-3 h-3" />
         <span>{variance} ({label})</span>
       </span>
@@ -138,15 +138,10 @@ export const ExecutiveScorecardDrawer: React.FC<ExecutiveScorecardDrawerProps> =
         className="w-full max-w-4xl bg-white h-full shadow-2xl flex flex-col border-l border-slate-200 dark:bg-slate-900 dark:border-slate-800 animate-in slide-in-from-right duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-5 border-b border-slate-200 dark:border-slate-800 bg-[#FCF0DA]/50 dark:bg-slate-800/60 flex items-start justify-between gap-4">
+        <div className="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-start justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex p-1.5 rounded-lg bg-[#F2C46A] text-[#4C4541]">
-                <TrendingUp className="w-4 h-4" />
-              </span>
-              <h2 className="text-base font-bold text-[#4C4541] dark:text-slate-100">{currentConfig.title}</h2>
-            </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">{currentConfig.benchmark}</p>
+            <h2 className="text-base font-bold text-slate-950 dark:text-slate-100">{currentConfig.title}</h2>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{currentConfig.benchmark}</p>
           </div>
           <button
             type="button"
@@ -157,16 +152,16 @@ export const ExecutiveScorecardDrawer: React.FC<ExecutiveScorecardDrawerProps> =
           </button>
         </div>
 
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900">
+        <div className="flex items-center gap-1.5 px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900">
           {(['hr', 'store', 'finance', 'operations'] as ScorecardDepartment[]).map((dept) => (
             <button
               key={dept}
               type="button"
               onClick={() => handleDeptChange(dept)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors cursor-pointer ${
                 activeDept === dept
-                  ? 'bg-[#F2C46A] text-[#4C4541] shadow-xs'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-[#FCF0DA]/40'
+                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50'
               }`}
             >
               {dept} (12 KPIs)
@@ -177,12 +172,12 @@ export const ExecutiveScorecardDrawer: React.FC<ExecutiveScorecardDrawerProps> =
         <div className="flex-1 overflow-y-auto p-5">
           <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
             <table className="w-full text-left text-xs border-collapse">
-              <thead className="bg-[#FCF0DA]/30 dark:bg-slate-800/50 text-[#4C4541] dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-800">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="py-2.5 px-3 w-10 text-center">#</th>
                   <th className="py-2.5 px-3">Performance Parameter</th>
                   <th className="py-2.5 px-3">Calculation Formula</th>
-                  <th className="py-2.5 px-3">CEO Target</th>
+                  <th className="py-2.5 px-3">Target</th>
                   <th className="py-2.5 px-3">Current</th>
                   <th className="py-2.5 px-3 text-right">Variance / Health</th>
                 </tr>
@@ -194,7 +189,7 @@ export const ExecutiveScorecardDrawer: React.FC<ExecutiveScorecardDrawerProps> =
                     <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-slate-100">{m.name}</td>
                     <td className="py-2.5 px-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">{m.formula}</td>
                     <td className="py-2.5 px-3 font-mono font-semibold text-slate-800 dark:text-slate-200">{m.target}</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-[#4C4541] dark:text-[#F2C46A]">{m.current}</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-slate-900 dark:text-white">{m.current}</td>
                     <td className="py-2.5 px-3 text-right">{getStatusBadge(m.status, m.variance)}</td>
                   </tr>
                 ))}
@@ -204,14 +199,13 @@ export const ExecutiveScorecardDrawer: React.FC<ExecutiveScorecardDrawerProps> =
         </div>
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <Sliders className="w-3.5 h-3.5 text-[#AEAC78]" />
-            <span>Benchmark targets calibrated per Board Executive Resolution #2026-B4</span>
+          <div className="text-xs text-slate-500">
+            Benchmark targets calibrated for active fiscal period.
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#4C4541] text-white hover:bg-slate-800 cursor-pointer transition-colors"
+            className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 cursor-pointer transition-colors"
           >
             Close Scorecard
           </button>

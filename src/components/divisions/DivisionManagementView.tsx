@@ -8,6 +8,7 @@ import { AddEditDivisionModal } from './AddEditDivisionModal';
 import { DivisionEmployeeRosterModal } from './DivisionEmployeeRosterModal';
 import { DivisionKpiCards } from './DivisionKpiCards';
 import { DivisionCard } from './DivisionCard';
+import { AssignedStaffBreakdownModal } from './AssignedStaffBreakdownModal';
 
 interface DivisionManagementViewProps {
   divisions: Division[];
@@ -30,6 +31,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isBreakdownOpen, setIsBreakdownOpen] = useState(false);
   const [editingDivision, setEditingDivision] = useState<Division | null>(null);
   const [rosterDivision, setRosterDivision] = useState<Division | null>(null);
 
@@ -108,6 +110,7 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
         divisions={divisions}
         activeCount={activeCount}
         totalAssigned={totalAssigned}
+        onOpenAssignedBreakdown={() => setIsBreakdownOpen(true)}
       />
 
       {/* Filter / Search Bar */}
@@ -179,6 +182,13 @@ export const DivisionManagementView: React.FC<DivisionManagementViewProps> = ({
         employees={employees}
         allDivisions={divisions}
         onReassignEmployee={onReassignEmployee}
+      />
+
+      <AssignedStaffBreakdownModal
+        isOpen={isBreakdownOpen}
+        onClose={() => setIsBreakdownOpen(false)}
+        divisions={divisions}
+        employees={employees}
       />
     </div>
   );

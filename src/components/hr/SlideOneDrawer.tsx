@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, User, DollarSign, Calendar, Clock, MapPin, Award, CheckCircle2 } from 'lucide-react';
+import { X, User, DollarSign, Calendar, Clock, MapPin, Award, CheckCircle2, QrCode, AlertTriangle, TrendingUp, BookOpen } from 'lucide-react';
 import { Employee, LeaveRequest, AttendanceRecord } from '../../types/hrm';
 
 export type DrawerCategory = 'profile' | 'pay' | 'leave' | 'overtime' | 'site' | 'kpi';
@@ -12,15 +12,11 @@ interface SlideOneDrawerProps {
   onSelectCategory: (cat: DrawerCategory) => void;
   leaveRequests?: LeaveRequest[];
   attendance?: AttendanceRecord[];
+  onOpenKpiModal?: (employee: Employee) => void;
 }
 
 export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
-  employee,
-  category,
-  isOpen,
-  onClose,
-  onSelectCategory,
-  leaveRequests = []
+  employee, category, isOpen, onClose, onSelectCategory, leaveRequests = [], onOpenKpiModal
 }) => {
   if (!isOpen || !employee) return null;
 
@@ -39,6 +35,11 @@ export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
   const approvedLeaveDays = empLeaves.filter(l => l.status === 'Approved').reduce((sum, l) => sum + l.days, 0);
   const remainingAnnual = Math.max(0, 16 - approvedLeaveDays);
   const otHours = employee.serviceType === 'Security' ? 18.5 : 12.0;
+
+  const faydaId = employee.faydaNumber || `ET-FAYDA-${employee.employeeCode.replace(/[^0-9]/g, '').padEnd(4, '0')}-2026-8812`;
+  const kpiData = employee.kpiRating || {
+    attendanceScore: 96, customerScore: 4.5, compositeScore: 94, flag: 'Give Raise', lastEvaluated: '2026-10-25', evaluatorNotes: 'Praised by site manager.'
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/40 backdrop-blur-xs transition-opacity" onClick={onClose}>
@@ -90,9 +91,41 @@ export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
         <div className="flex-1 overflow-y-auto p-5 text-xs space-y-4">
           {category === 'profile' && (
             <div className="space-y-4">
+              {/* QR Code & Fayda Identifier Block */}
+              <div className="p-3.5 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-amber-800 dark:text-amber-300">National Fayda & Digital QR</span>
+                  <div className="font-mono font-bold text-slate-900 dark:text-slate-100 text-xs">{faydaId}</div>
+                  <div className="text-[10px] text-slate-500 font-medium">Unique Verification Identifier · Verified in National ID Registry</div>
+                </div>
+                <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 p-1 flex flex-col items-center justify-center shrink-0 shadow-xs">
+                  <QrCode className="w-10 h-10 text-slate-900 dark:text-slate-100" />
+                  <span className="text-[8px] font-mono text-slate-400 mt-0.5">HAB-QR</span>
+                </div>
+              </div>
+
+              {/* Previous Employee Details if Exited */}
+              {employee.exitDetails && (
+                <div className="p-3.5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold text-rose-800 dark:text-rose-300">Employee Exit Record</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      employee.exitDetails.rehireEligibility === 'Eligible'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-rose-100 text-rose-800'
+                    }`}>
+                      {employee.exitDetails.rehireEligibility === 'Eligible' ? 'Eligible to Return' : 'Ineligible / Blocked'}
+                    </span>
+                  </div>
+                  <div className="text-slate-700 dark:text-slate-300">Exit Date: <strong className="font-mono">{employee.exitDetails.exitDate}</strong></div>
+                  <div className="text-slate-700 dark:text-slate-300">Reason: <strong>{employee.exitDetails.reason}</strong></div>
+                  {employee.exitDetails.notes && <div className="text-slate-500 italic text-[11px]">{employee.exitDetails.notes}</div>}
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-lg border border-slate-200 dark:bg-slate-800/60 dark:border-slate-800">
                 <div><span className="text-slate-500 block text-[11px]">Phone:</span><span className="font-mono text-slate-900 dark:text-white font-medium">{employee.phone}</span></div>
-                <div><span className="text-slate-500 block text-[11px]">National ID:</span><span className="font-mono text-slate-900 dark:text-white font-medium">{employee.nationalId}</span></div>
+                <div><span className="text-slate-500 block text-[11px]">Contract Type:</span><span className="font-semibold text-slate-900 dark:text-white">{employee.employmentType || 'Permanent'}</span></div>
                 <div><span className="text-slate-500 block text-[11px]">Kebele & Subcity:</span><span className="text-slate-900 dark:text-white">{employee.subcity}, {employee.kebele}</span></div>
                 <div><span className="text-slate-500 block text-[11px]">Joined Date:</span><span className="font-mono text-slate-900 dark:text-white">{employee.hireDate}</span></div>
               </div>
@@ -120,11 +153,6 @@ export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
                 <div className="flex justify-between text-slate-600 dark:text-slate-400"><span>11% Employer Pension Rate:</span><span className="font-mono text-amber-700 dark:text-amber-400 font-medium">+ETB {pensionEmployer.toLocaleString()}</span></div>
                 <div className="flex justify-between font-bold text-slate-950 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-700"><span>Total Monthly Gross:</span><span className="font-mono">ETB {totalGross.toLocaleString()}</span></div>
               </div>
-              <div className="bg-[#FCF0DA]/50 p-3.5 rounded-lg border border-[#F2C46A]/50 dark:bg-slate-800/80">
-                <span className="font-bold text-[#4C4541] dark:text-[#F2C46A] block">Annual Increment Planning</span>
-                <p className="text-slate-600 dark:text-slate-300 mt-1">Eligible next cycle: <strong className="font-mono text-emerald-700 dark:text-emerald-400">+ETB {Math.round(employee.salary.baseSalary * 0.10).toLocaleString()} (Grade Jump)</strong></p>
-                <p className="text-[11px] text-slate-500 mt-0.5">Last reviewed: 2025-08-01 · Bank: {employee.bankAccount.bankName} ({employee.bankAccount.accountNumber})</p>
-              </div>
             </div>
           )}
 
@@ -135,16 +163,6 @@ export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
                 <div className="bg-amber-50 dark:bg-amber-950/40 p-3 rounded-lg border border-amber-200 dark:border-amber-900"><span className="text-[10px] font-semibold text-amber-800 dark:text-amber-300 block">Sick Leave</span><span className="text-xl font-mono font-bold text-amber-900 dark:text-amber-200">10</span><span className="text-[10px] text-amber-600 block">/ 10 days</span></div>
                 <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><span className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 block">Compassionate</span><span className="text-xl font-mono font-bold text-slate-900 dark:text-slate-100">5</span><span className="text-[10px] text-slate-500 block">/ 5 days</span></div>
               </div>
-              <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 dark:bg-slate-800/60 dark:border-slate-800">
-                <span className="font-semibold text-slate-900 dark:text-white block mb-2">Leave History & Deductions</span>
-                {empLeaves.length === 0 ? (
-                  <p className="text-slate-500 text-[11px] italic">No leave deductions taken this fiscal cycle.</p>
-                ) : (
-                  <div className="space-y-1.5">{empLeaves.map(l => (
-                    <div key={l.id} className="flex justify-between items-center text-[11px] py-1 border-b border-slate-100 dark:border-slate-800"><span>{l.leaveType} ({l.days} days)</span><span className="font-mono text-emerald-700 font-semibold">{l.status}</span></div>
-                  ))}</div>
-                )}
-              </div>
             </div>
           )}
 
@@ -154,7 +172,6 @@ export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
                 <div className="flex justify-between"><span>Accumulated Monthly OT:</span><span className="font-mono font-bold text-slate-900 dark:text-white">{otHours} hrs</span></div>
                 <div className="flex justify-between"><span>Approved OT Multiplier:</span><span className="font-mono">1.50x (Weekend/Night rate)</span></div>
                 <div className="flex justify-between"><span>Estimated OT Pay:</span><span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">ETB {Math.round((employee.salary.baseSalary / 240) * otHours * 1.5).toLocaleString()}</span></div>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 text-slate-500 text-[11px]">Authorized by Site Supervisor: <strong className="text-slate-800 dark:text-slate-200">Ato Tadesse Wolde</strong></div>
               </div>
             </div>
           )}
@@ -165,23 +182,54 @@ export const SlideOneDrawer: React.FC<SlideOneDrawerProps> = ({
                 <div className="flex justify-between"><span>Assigned Client Site:</span><span className="font-bold text-slate-900 dark:text-white">{employee.currentSiteName || 'Reserve Pool'}</span></div>
                 <div className="flex justify-between"><span>Active Shift:</span><span className="text-slate-800 dark:text-slate-200">{employee.currentShift || 'Standard Schedule'}</span></div>
                 <div className="flex justify-between"><span>Platoon / Rotation:</span><span>{employee.securityPlatoon || employee.cleaningShiftWeek || 'Main Wing'}</span></div>
-                <div className="flex justify-between text-slate-500 text-[11px]"><span>Uniform Spec:</span><span>Boots: EU {employee.uniformSizes.boots} · Shirt: {employee.uniformSizes.shirt}</span></div>
               </div>
             </div>
           )}
 
           {category === 'kpi' && (
             <div className="space-y-4">
-              <div className="bg-[#FCF0DA]/60 p-4 rounded-lg border border-[#F2C46A]/60 dark:bg-slate-800 text-center">
-                <span className="text-[11px] font-bold text-[#4C4541] dark:text-[#F2C46A] uppercase tracking-wider block">Performance Score</span>
-                <span className="text-3xl font-mono font-bold text-slate-950 dark:text-white mt-1 block">94%</span>
-                <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">Exceeds Expectations</span>
+              <div className="bg-[#FCF0DA]/60 p-4 rounded-xl border border-[#F2C46A]/60 dark:bg-slate-800 text-center">
+                <span className="text-[11px] font-bold text-[#4C4541] dark:text-[#F2C46A] uppercase tracking-wider block">Automated Composite KPI</span>
+                <span className="text-3xl font-mono font-bold text-slate-950 dark:text-white mt-1 block">{kpiData.compositeScore}%</span>
+                <div className="mt-2">
+                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-bold text-xs ${
+                    kpiData.flag === 'Give Raise'
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                      : kpiData.flag === 'Assign Training'
+                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                      : kpiData.flag === 'Warning'
+                      ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                      : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
+                  }`}>
+                    {kpiData.flag === 'Give Raise' && <TrendingUp className="w-3.5 h-3.5" />}
+                    {kpiData.flag === 'Assign Training' && <BookOpen className="w-3.5 h-3.5" />}
+                    {kpiData.flag === 'Warning' && <AlertTriangle className="w-3.5 h-3.5" />}
+                    <span>Action Flag: {kpiData.flag}</span>
+                  </span>
+                </div>
               </div>
-              <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 dark:bg-slate-800/60 dark:border-slate-800 space-y-1.5">
-                <div className="flex justify-between"><span>Punctuality & Attendance:</span><span className="font-mono font-bold text-slate-900 dark:text-white">98% (0 unexcused)</span></div>
-                <div className="flex justify-between"><span>Conduct & Uniform Rating:</span><span className="font-semibold text-emerald-700">Exceptional</span></div>
-                <p className="text-slate-500 text-[11px] pt-1 border-t border-slate-200 dark:border-slate-700">Next Performance Appraisal: Tahsas 2019</p>
+
+              <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 dark:bg-slate-800/60 dark:border-slate-800 space-y-2">
+                <div className="flex justify-between"><span>Attendance Rate:</span><span className="font-mono font-bold text-slate-900 dark:text-white">{kpiData.attendanceScore}%</span></div>
+                <div className="flex justify-between"><span>Client Feedback (1-5):</span><span className="font-mono font-bold text-amber-600">★ {kpiData.customerScore.toFixed(1)} / 5.0</span></div>
+                {kpiData.evaluatorNotes && (
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">Supervisor Notes:</span>
+                    <p className="text-slate-600 dark:text-slate-300 italic">{kpiData.evaluatorNotes}</p>
+                  </div>
+                )}
               </div>
+
+              {onOpenKpiModal && (
+                <button
+                  type="button"
+                  onClick={() => onOpenKpiModal(employee)}
+                  className="w-full py-2.5 px-3 rounded-lg bg-[#4C4541] hover:bg-slate-900 text-white font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs dark:bg-[#F2C46A] dark:text-[#4C4541]"
+                >
+                  <Award className="w-4 h-4" />
+                  <span>Update Customer Rating & Recalculate Flag</span>
+                </button>
+              )}
             </div>
           )}
         </div>

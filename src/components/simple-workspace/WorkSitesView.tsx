@@ -7,6 +7,7 @@ import { StandardPageLayout } from './StandardPageLayout';
 import { UnassignedDispatchDock } from './UnassignedDispatchDock';
 import { WorkSiteAssignForm } from './WorkSiteAssignForm';
 import { WorkSitesTable } from './WorkSitesTable';
+import { SiteTransferCard } from './SiteTransferCard';
 
 interface WorkSitesViewProps {
   sites: ClientSite[];
@@ -116,9 +117,9 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
       description={t('deployment.workSitesDesc')}
       guideKey="work_sites"
       metrics={[
-        { label: t('deployment.activeSites'), value: String(activeSites.length) },
-        { label: t('deployment.totalDeployed'), value: String(totalDeployed) },
-        { label: t('deployment.openPosts'), value: String(Math.max(0, totalRequired - totalDeployed)) }
+        { label: 'Active Sites', value: String(activeSites.length) },
+        { label: 'Deployed Staff', value: String(totalDeployed) },
+        { label: 'Need Deployment', value: String(Math.max(0, totalRequired - totalDeployed)) }
       ]}
       mainAction={{
         label: t('deployment.assignEmployee'),
@@ -163,17 +164,20 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
         )
       }
       extraWidget={
-        <UnassignedDispatchDock
-          unassignedEmployees={unassignedEmployees}
-          sites={sites}
-          draggedEmployee={draggedEmployee}
-          onDragStart={(emp) => setDraggedEmployee(emp)}
-          onDragEnd={() => {
-            setDraggedEmployee(null);
-            setHoveredSiteId(null);
-          }}
-          onAssign={handleAssign}
-        />
+        <div className="space-y-4">
+          <SiteTransferCard sites={sites} employees={employees} />
+          <UnassignedDispatchDock
+            unassignedEmployees={unassignedEmployees}
+            sites={sites}
+            draggedEmployee={draggedEmployee}
+            onDragStart={(emp) => setDraggedEmployee(emp)}
+            onDragEnd={() => {
+              setDraggedEmployee(null);
+              setHoveredSiteId(null);
+            }}
+            onAssign={handleAssign}
+          />
+        </div>
       }
       columns={[]}
       rows={[]}

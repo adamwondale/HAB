@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Search, Download, UploadCloud, Paperclip, FileSpreadsheet } from 'lucide-react';
 import { AttendanceRecord, AttendanceStatus, ClientSite, Employee } from '../types/hrm';
 import { AttendanceAttachmentModal } from './finance/AttendanceAttachmentModal';
+import { DailyAttendanceSheetModal } from './attendance/DailyAttendanceSheetModal';
+import { AttendanceUploadDropzone } from './attendance/AttendanceUploadDropzone';
 import { downloadCsv } from '../utils/csvExport';
 
 interface AttendanceViewProps {
@@ -24,6 +26,7 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
   const [selectedDate, setSelectedDate] = useState<string>('2026-10-01');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDailySheetOpen, setIsDailySheetOpen] = useState(false);
   const [uploadedScanNotice, setUploadedScanNotice] = useState<string | null>(null);
 
   const filtered = attendanceRecords.filter((r) => {
@@ -82,6 +85,14 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
             <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>{t('attendance.downloadReport')}</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setIsDailySheetOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] font-bold text-xs shadow-xs transition-colors cursor-pointer"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>Daily Sheet & Excel Sync</span>
+          </button>
         </div>
       </div>
 
@@ -101,29 +112,8 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
         </div>
       </div>
 
-      {/* Scan / Biometric Upload Box */}
-      <div className="border border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 bg-slate-50/70 dark:bg-slate-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div>
-          <div className="font-semibold text-slate-900 dark:text-slate-100">{t('attendance.dropScanNotice')}</div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('attendance.biometricSupport')}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {uploadedScanNotice && <span className="text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">{uploadedScanNotice}</span>}
-          <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold cursor-pointer transition-colors shrink-0">
-            <UploadCloud className="w-3.5 h-3.5" />
-            <span>{t('attendance.browseScan')}</span>
-            <input type="file" className="hidden" accept=".xlsx,.csv,.pdf,image/*" onChange={handleFileDrop} />
-          </label>
-          <button
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold hover:bg-slate-50 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <Paperclip className="w-3.5 h-3.5 text-slate-400" />
-            <span>{t('attendance.evidence')}</span>
-          </button>
-        </div>
-      </div>
+      {/* Attachment of Attendance: Physical Scan Dropzone (Screen 7 Parity) */}
+      <AttendanceUploadDropzone />
 
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
@@ -214,6 +204,16 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
       </div>
 
       <AttendanceAttachmentModal isOpen={isModalOpen} employees={effectiveEmployees} onClose={() => setIsModalOpen(false)} />
+      <DailyAttendanceSheetModal
+        isOpen={isDailySheetOpen}
+        onClose={() => setIsDailySheetOpen(false)}
+        sites={sites}
+        employees={effectiveEmployees}
+        attendanceRecords={attendanceRecords}
+        onSaveDailySheet={(records) => {
+          records.forEach(r => onUpdateAttendanceStatus(r.id, r.status));
+        }}
+      />
     </div>
   );
 };

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, AlertCircle } from 'lucide-react';
+import { Plus, AlertCircle, ShieldCheck } from 'lucide-react';
 import { LeaveRequest, Employee, ClientSite, ManagementPerson, EmployeeLeaveBalance } from '../types/hrm';
 import { SystemMasterConfig } from '../types/masterConfig';
 import { DEFAULT_SYSTEM_MASTER_CONFIG } from '../utils/masterConfigEngine';
 import { INITIAL_LEAVE_REQUESTS, INITIAL_EMPLOYEES, INITIAL_LEAVE_BALANCES } from '../data/mockData';
 import { LeaveRequestsTab } from './leave/LeaveRequestsTab';
 import { LeaveAvailableTab } from './leave/LeaveAvailableTab';
-import { ApplyLeaveModal } from './leave/ApplyLeaveModal';
+import { QuickLeaveRequestModal } from './leave/QuickLeaveRequestModal';
 
 interface LeaveManagementViewProps {
   leaveRequests?: LeaveRequest[];
@@ -142,6 +142,17 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
         </div>
       )}
 
+      {/* Multi-Tier Approval Protocol Banner (Screen 8 Wireframe Rule) */}
+      <div className="bg-[#FCF0DA]/60 dark:bg-slate-800/40 p-2.5 rounded-lg border border-[#EFE7D8] dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#4C4541] dark:text-slate-300 gap-1.5">
+        <span className="font-bold flex items-center gap-1.5">
+          <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+          Multi-Tier Approval Protocol: Requires Head of Department & CEO / Executive Sign-off
+        </span>
+        <span className="text-[10px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono font-bold w-fit border border-slate-200 dark:border-slate-700">
+          Labor Proclamation 1156/2019
+        </span>
+      </div>
+
       {/* 4 Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
@@ -214,13 +225,11 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
         )}
       </div>
 
-      <ApplyLeaveModal
+      <QuickLeaveRequestModal
         isOpen={isApplyModalOpen}
         onClose={() => setIsApplyModalOpen(false)}
         employees={employees}
-        leaveBalances={balances}
-        preselectedEmployeeId={preselectedEmpId}
-        onSubmit={handleAddRequest}
+        onSubmitLeave={handleAddRequest}
       />
     </div>
   );

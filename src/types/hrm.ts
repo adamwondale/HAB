@@ -27,6 +27,43 @@ export type ShiftType =
 export type SecurityPlatoon = 'Platoon Alpha' | 'Platoon Bravo' | 'Platoon Charlie';
 export type SecurityDutyCycle = 'Active 24h Duty' | 'Rest Period (Day 1 - 24h)' | 'Standby Rest (Day 2 - 48h)';
 
+export type SiteCategory = 
+  | 'Bank' 
+  | 'Apartment' 
+  | 'Hotel' 
+  | 'Bureau' 
+  | 'Commercial' 
+  | 'Hospital';
+
+export type EmploymentType = 'Permanent' | 'Contract';
+
+export type KpiActionFlag = 'Give Raise' | 'Assign Training' | 'Warning' | 'On Track';
+
+export interface EmployeeKpiRating {
+  attendanceScore: number; // 0-100%
+  customerScore: number; // 1-5 scale
+  compositeScore: number; // 0-100 composite
+  flag: KpiActionFlag;
+  lastEvaluated: string;
+  evaluatorNotes?: string;
+}
+
+export interface EmployeeExitDetails {
+  exitDate: string;
+  reason: 'Resignation' | 'End of Contract' | 'Termination' | 'Mutual Separation' | 'Disciplinary' | 'Medical';
+  rehireEligibility: 'Eligible' | 'Ineligible';
+  notes?: string;
+  exitLetterIssued?: boolean;
+}
+
+export interface EmployeePersona {
+  physicalFitness: 'Excellent' | 'Good' | 'Fair';
+  healthClearance: 'Passed' | 'Conditional' | 'Pending';
+  residenceArea: string;
+  commuteProximity: 'Near' | 'Medium' | 'Far';
+  vettedBackground: boolean;
+}
+
 export interface Employee {
   id: string;
   employeeCode: string; // e.g. HAB-SEC-0104, HAB-CLN-0205
@@ -42,6 +79,12 @@ export interface Employee {
   role: string; // Guard, Senior Guard, Security Supervisor, Cleaner, Senior Cleaner, Cleaning Lead, Operations Inspector
   grade: string; // L1, L2, L3, Senior, Supervisor
   status: EmployeeStatus;
+  employmentType?: EmploymentType;
+  faydaNumber?: string; // 16-digit Ethiopian National Fayda ID
+  qrCodeData?: string;
+  kpiRating?: EmployeeKpiRating;
+  exitDetails?: EmployeeExitDetails;
+  persona?: EmployeePersona;
   currentSiteId?: string;
   currentSiteName?: string;
   currentShift?: ShiftType;
@@ -93,6 +136,7 @@ export interface ClientSite {
   siteCode: string;
   name: string;
   clientOrganization: string;
+  category?: SiteCategory;
   district?: DistrictName;
   subcity: string;
   address: string;
@@ -105,8 +149,35 @@ export interface ClientSite {
   cleaningStaffRequired: number;
   securityStaffDeployed: number;
   cleaningStaffDeployed: number;
+  fitnessRequirement?: 'Standard' | 'Medium' | 'High';
   status: 'Active' | 'Inactive' | 'Renewal Pending' | 'Terminated';
   posts: string[]; // e.g., "Main Gate Entry", "Cash Desk Corridor", "Executive Wing", "Basement Parking"
+}
+
+export interface DeploymentProposal {
+  id: string;
+  employeeId: string;
+  employeeCode: string;
+  employeeName: string;
+  serviceType: ServiceType;
+  fromSiteId?: string;
+  fromSiteName?: string;
+  toSiteId: string;
+  toSiteName: string;
+  siteCategory: SiteCategory;
+  proposedBy: string;
+  proposedDate: string;
+  fitScore: number;
+  fitDetails: {
+    fitnessMatch: boolean;
+    healthClear: boolean;
+    proximityMatch: boolean;
+    backgroundClear: boolean;
+  };
+  status: 'Pending HR Acknowledgment' | 'Approved' | 'Rejected';
+  hrNotes?: string;
+  acknowledgedBy?: string;
+  acknowledgedAt?: string;
 }
 
 export interface Deployment {
@@ -128,6 +199,8 @@ export interface Deployment {
 }
 
 export type AttendanceStatus = 'Present' | 'Late' | 'Absent' | 'Excused' | 'Overtime';
+
+export type DrawerCategory = 'profile' | 'pay' | 'leave' | 'overtime' | 'site' | 'kpi';
 
 export interface AttendanceRecord {
   id: string;
@@ -274,12 +347,17 @@ export interface Candidate {
   appliedDate: string;
   stage: 'Applied' | 'Screened' | 'Interview' | 'Background Check' | 'Offer Issued' | 'Onboarded' | 'Rejected';
   experienceYears: number;
+  faydaNumber?: string;
+  kebeleId?: string;
   hasMilitaryOrPoliceExp?: boolean; // For security
   hasHospitalCommercialCleaningExp?: boolean; // For cleaning
   kebeleCardProvided: boolean;
   guarantorProvided: boolean;
   medicalFit: boolean;
   interviewScore?: number; // 0-100
+  questionnaireScore?: number;
+  questionnaireAnswers?: Record<string, string | number>;
+  backgroundHistory?: string;
   notes: string;
 }
 

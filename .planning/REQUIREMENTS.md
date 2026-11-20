@@ -209,4 +209,55 @@ The payroll calculation system and UI shall implement the exact architecture spe
    - Draft payroll periods dynamically recalculate when settings or attendance changes occur. Approved historical months remain immutable for audit integrity.
    - All components adhere strictly to the $\le 250$ line budget and Warm Earth token styling.
 
+---
+
+## Enterprise Workforce Scale (600 Staff), Operations Site Governance & HR Suite
+
+### REQ-HR-014: 600-Staff Division Scaling, Fayda/QR Identification & Persona-Fit Deployment Gate
+1. **Workforce Distribution & Contract Breakdown**:
+   - Total workforce calibrated to 600 employees distributed across divisions:
+     - Security: 60% (360 staff)
+     - Cleaning: 28% (168 staff)
+     - Property Management: 10% (60 staff)
+     - Head Office: 2% (12 staff)
+   - Clicking the "Assigned Staff" card displays a classification breakdown modal:
+     - Permanent vs. Contract employees per division and overall company.
+     - Roster inspection filterable by division and contract status.
+2. **Employee Directory, Fayda ID, QR & KPI Flagging**:
+   - Division filter on Employee Directory: `All Divisions`, `Security`, `Cleaning`, `Property Management`, `Head Office`, and `Previous Employees`.
+   - 16-digit Ethiopian Fayda National ID and Kebele residence tracking per employee.
+   - Unique scannable QR Code placeholder in employee profile detail.
+   - Automated KPI Engine: Combines Attendance % + Customer Comments rating (1–5 scale) to auto-calculate composite score and assign actionable flags:
+     - `Give Raise` (High attendance + high customer rating)
+     - `Assign Training` (Moderate score or skill refinement needed)
+     - `Warning` (Poor attendance or low customer rating)
+     - `On Track` (Standard performance)
+   - For Previous Employees: Records Exit Reason + Rehire Eligibility flag (`Eligible to Return` vs `Ineligible / Blocked`).
+3. **Recruitment Questionnaires & Background Vetting**:
+   - Captures Fayda or Kebele ID on new applicants.
+   - Division-specific interview evaluation questionnaires (Security: fitness, alertness, discipline; Cleaning: sanitization, chemicals, reliability; Property Mgt: technical, maintenance) with background vetting and scoring.
+4. **Operations Manager Site Governance & Persona-Fit Deployment**:
+   - Transfer work site creation and deployment permissions exclusively to the Operations Manager role.
+   - Establish Site Categories: `Bank`, `Apartment`, `Hotel`, `Bureau`, `Commercial`, `Hospital`.
+   - Persona-Fit Assessment tool matching candidate attributes (physical fitness, medical health clearance, commute proximity to site area, background history) against site requirements.
+   - Handshake Gate: Ops Manager deployment submits to `Pending HR Acknowledgment`; HR reviews and acknowledges before attendance and payroll track against that client site.
+
+### REQ-HR-015: Smart Daily Attendance Grid, Searchable Leave & Bilingual Exit Document Writer
+1. **Smart Daily Attendance Sheet & Excel Upload**:
+   - Daily spreadsheet-style entry sheet filterable by Site (or Division) and Date.
+   - Smart suggestions: 1-click "Mark All Scheduled as Present", auto-detects approved leaves, flags headcount shortages against site quota.
+   - Excel upload from daily sheets with immediate preview and commit.
+   - Header summary cards: Monthly/Weekly Overall Attendance Rate, Total Present, Total Absent, Punctuality Rate.
+2. **Searchable Leave Booking**:
+   - Fast autocomplete search for any active employee.
+   - Select statutory leave type (Annual, Sick, Compassionate, Maternity/Paternity, Unpaid) with date range and automated balance deduction.
+3. **Sidebar Consolidation & Work Letter Document Writer**:
+   - Remove separate "Other" tab from the sidebar; integrate its items (`clearance`, `experience`, `master-setup`, `audit`) directly into the HR menu hierarchy.
+   - Interactive Work Letter Document Writer supporting pre-filled bilingual (Amharic & English) templates:
+     - Certificate of Service / Work Experience Letter (የስራ ልምድ ማስረጃ)
+     - Exit Clearance Certificate (የክሊራንስ ማስረጃ)
+     - Letter of Recommendation (የምስክር ወረቀት)
+   - All text inside templates is 100% in-place editable before printing or exporting.
+
+
 

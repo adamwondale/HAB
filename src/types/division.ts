@@ -11,4 +11,9 @@ export interface Division {
   establishedDate?: string;
   createdAt?: string;
   targetHeadcount?: number;
+  assignedStaffCount?: number;
+  permanentCount?: number;
+  contractCount?: number;
+  percentage?: number;
 }
+

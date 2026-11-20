@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RefreshCw, RotateCcw, Lock, CheckCircle2, CreditCard, Clock, ShieldCheck, Package, ArrowRight, UserCheck, KeyRound } from 'lucide-react';
+import { RefreshCw, RotateCcw, Lock, CheckCircle2, CreditCard, Clock, ShieldCheck, Package, ArrowRight, UserCheck, KeyRound, Sliders } from 'lucide-react';
 import { ClearanceRecord, Employee, ManagementPerson, PayrollRecord, StockItem } from '../types/hrm';
 import { SystemMasterConfig } from '../types/masterConfig';
 import { DEFAULT_SYSTEM_MASTER_CONFIG, isSuperAdminUser } from '../utils/masterConfigEngine';
@@ -9,6 +9,7 @@ import { MasterGradesPenaltiesTab } from './master-setup/MasterGradesPenaltiesTa
 import { MasterInventoryTab } from './master-setup/MasterInventoryTab';
 import { MasterFormulaSandbox } from './master-setup/MasterFormulaSandbox';
 import { UserCredentialManager } from './UserCredentialManager';
+import { HrRulesConfigCard } from './hr/HrRulesConfigCard';
 
 interface SystemMasterSetupViewProps {
   masterConfig: SystemMasterConfig;
@@ -24,7 +25,7 @@ interface SystemMasterSetupViewProps {
   onNavigateTab?: (tabId: string) => void;
 }
 
-type MasterSubTab = 'payroll_tax' | 'shifts_leave' | 'grades_penalties' | 'inventory_rules' | 'user_credentials';
+type MasterSubTab = 'payroll_tax' | 'shifts_leave' | 'grades_penalties' | 'inventory_rules' | 'user_credentials' | 'hr_rules';
 
 export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
   masterConfig,
@@ -189,9 +190,13 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
         {canEditMaster && (
           <button type="button" onClick={() => setActiveSubTab('user_credentials')} className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${activeSubTab === 'user_credentials' ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs' : 'text-[#4C4541]/80 dark:text-slate-300 hover:bg-[#F2C46A]/20'}`}>
             <KeyRound className="w-3.5 h-3.5" />
-            <span>5. User Credentials & Access</span>
+            <span>5. User Credentials</span>
           </button>
         )}
+        <button type="button" onClick={() => setActiveSubTab('hr_rules')} className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${activeSubTab === 'hr_rules' ? 'bg-[#F2C46A] text-[#4C4541] font-bold shadow-xs' : 'text-[#4C4541]/80 dark:text-slate-300 hover:bg-[#F2C46A]/20'}`}>
+          <Sliders className="w-3.5 h-3.5" />
+          <span>6. HR System Rules</span>
+        </button>
       </div>
 
       {/* Main Split Grid: Left (8 cols) Active Editor + Right (4 cols) Live Sandbox */}
@@ -211,6 +216,9 @@ export const SystemMasterSetupView: React.FC<SystemMasterSetupViewProps> = ({
           )}
           {activeSubTab === 'user_credentials' && canEditMaster && (
             <UserCredentialManager />
+          )}
+          {activeSubTab === 'hr_rules' && (
+            <HrRulesConfigCard />
           )}
         </div>
 

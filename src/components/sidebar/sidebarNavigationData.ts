@@ -60,7 +60,7 @@ export function buildNavCategories(params: NavCategoryParams): NavCategory[] {
     {
       id: 'workforce',
       label: isAmharic ? 'የሰው ኃይል' : 'HR',
-      fullName: isAmharic ? 'የሰው ኃይል፣ ምልመላ እና ቅጥር አስተዳደር' : 'Employee records and hiring',
+      fullName: isAmharic ? 'የሰው ኃይል፣ ምልመላ፣ ቅጥር እና ክሊራንስ' : 'Workforce, recruitment, and HR operations',
       icon: Briefcase,
       items: [
         {
@@ -92,6 +92,31 @@ export function buildNavCategories(params: NavCategoryParams): NavCategory[] {
           label: isAmharic ? t('nav.transfers') : 'Transfers',
           fullName: isAmharic ? t('nav.transfers') : 'Track employee moves',
           icon: ArrowRightLeft
+        },
+        {
+          id: 'clearance',
+          label: isAmharic ? t('nav.clearance') : 'Employee exit',
+          fullName: isAmharic ? t('nav.clearance') : 'Finish exit checks',
+          icon: LogOut,
+          badge: activeClearanceCount > 0 ? activeClearanceCount : undefined
+        },
+        {
+          id: 'experience',
+          label: isAmharic ? t('nav.experience') : 'Work letters',
+          fullName: isAmharic ? t('nav.experience') : 'Document Writer & Certificates',
+          icon: Award
+        },
+        {
+          id: 'master-setup',
+          label: isAmharic ? 'ማስተር ሴትአፕ' : 'Settings',
+          fullName: isAmharic ? 'የሲስተም ማስተር ሴትአፕ እና የቀመር ህጎች' : 'View important system rules',
+          icon: Sliders
+        },
+        {
+          id: 'audit',
+          label: isAmharic ? 'የስርዓት ኦዲት' : 'Audit Log',
+          fullName: isAmharic ? 'የስርዓት ኦዲት እና የክስተቶች መዝገብ' : 'View sensitive activity audit trail',
+          icon: ShieldCheck
         }
       ]
     },
@@ -140,39 +165,6 @@ export function buildNavCategories(params: NavCategoryParams): NavCategory[] {
           fullName: isAmharic ? t('nav.store') : 'Track company items and equipment',
           icon: Package,
           badge: lowStockCount > 0 ? lowStockCount : undefined
-        }
-      ]
-    },
-    {
-      id: 'legal_exit',
-      label: isAmharic ? 'ህግ እና ክሊራንስ' : 'Other',
-      fullName: isAmharic ? 'የመልቀቂያ ክሊራንስ እና የስራ ልምድ' : 'Employee exit and settings',
-      icon: Scale,
-      items: [
-        {
-          id: 'clearance',
-          label: isAmharic ? t('nav.clearance') : 'Employee exit',
-          fullName: isAmharic ? t('nav.clearance') : 'Finish exit checks',
-          icon: LogOut,
-          badge: activeClearanceCount > 0 ? activeClearanceCount : undefined
-        },
-        {
-          id: 'experience',
-          label: isAmharic ? t('nav.experience') : 'Work letters',
-          fullName: isAmharic ? t('nav.experience') : 'Find employee letters',
-          icon: Award
-        },
-        {
-          id: 'master-setup',
-          label: isAmharic ? 'ማስተር ሴትአፕ' : 'Settings',
-          fullName: isAmharic ? 'የሲስተም ማስተር ሴትአፕ እና የቀመር ህጎች' : 'View important system rules',
-          icon: Sliders
-        },
-        {
-          id: 'audit',
-          label: isAmharic ? 'የስርዓት ኦዲት' : 'Audit Log',
-          fullName: isAmharic ? 'የስርዓት ኦዲት እና የክስተቶች መዝገብ' : 'View sensitive activity audit trail',
-          icon: ShieldCheck
         }
       ]
     }

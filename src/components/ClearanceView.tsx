@@ -9,6 +9,8 @@ import { FinanceClearanceTab } from './clearance/FinanceClearanceTab';
 import { HrClearanceDetail } from './clearance/HrClearanceDetail';
 import { ClearanceInitiationModal } from './clearance/ClearanceInitiationModal';
 import { ClearanceCertificateModal } from './clearance/ClearanceCertificateModal';
+import { WorkLetterDocumentWriterModal } from './hr/WorkLetterDocumentWriterModal';
+import { ClearanceWorkLetterSplitView } from './clearance/ClearanceWorkLetterSplitView';
 
 interface ClearanceViewProps {
   clearances: ClearanceRecord[];
@@ -31,13 +33,14 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
   const isSuperAdmin = activeUser?.role === 'super_admin' || activeUser?.id === 'mgmt-super-admin';
   const canInitiate = activeUser ? activeUser.permissions.canApproveClearance || isSuperAdmin : true;
 
-  const [activeTab, setActiveTab] = useState<'hr' | 'store' | 'finance'>('hr');
+  const [activeTab, setActiveTab] = useState<'split' | 'hr' | 'store' | 'finance'>('split');
   const [selectedClearanceId, setSelectedClearanceId] = useState<string>(clearances[0]?.id || '');
   const [filterService, setFilterService] = useState<'All' | ServiceType>('All');
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isInitiatingModalOpen, setIsInitiatingModalOpen] = useState(false);
   const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
+  const [isDocumentWriterOpen, setIsDocumentWriterOpen] = useState(false);
 
   const selectedClearance = clearances.find((c) => c.id === selectedClearanceId) || clearances[0];
   const storePendingCount = clearances.filter((c) => !c.storeItemsReturned && c.storeStatus !== 'returned' && c.stage !== 'completed').length;
@@ -59,52 +62,65 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
           <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('clearance.cockpitTitle')}</h1>
           <p className="text-xs text-slate-500 mt-0.5">{t('clearance.cockpitSubtitle')}</p>
         </div>
-        {canInitiate ? (
+        <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setIsInitiatingModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-colors shadow-xs dark:bg-slate-100 dark:text-slate-900"
+            onClick={() => setIsDocumentWriterOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] font-bold text-xs rounded-lg shadow-xs cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
-            <span>{t('clearance.initiateClearance')}</span>
+            <Package className="w-4 h-4" /><span>Document Writer</span>
           </button>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg border border-slate-200">
-            <Lock className="w-3.5 h-3.5 text-slate-400" />
-            <span>{activeUser?.title.split('(')[0]}</span>
-          </span>
-        )}
+          {canInitiate ? (
+            <button
+              type="button"
+              onClick={() => setIsInitiatingModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-xs dark:bg-slate-100 dark:text-slate-900 cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /><span>{t('clearance.initiateClearance')}</span>
+            </button>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-lg border border-slate-200">
+              <Lock className="w-3.5 h-3.5 text-slate-400" /><span>{activeUser?.title.split('(')[0]}</span>
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Perspective Navigation Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
         {[
+          { id: 'split', label: 'Wireframe Split View', count: clearances.length },
           { id: 'hr', label: t('clearance.stage1Hr'), count: clearances.filter((c) => c.status === 'In Progress').length },
           { id: 'store', label: t('clearance.stage2Store'), count: storePendingCount },
           { id: 'finance', label: t('clearance.stage3Finance'), count: financePendingCount }
-        ].map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 ${
-                isActive
-                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-mono">
-                {tab.count}
-              </span>
-            </button>
-          );
-        })}
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id as any)}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 ${
+              activeTab === tab.id
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            <span>{tab.label}</span>
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-mono">
+              {tab.count}
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* Perspective Views */}
+      {activeTab === 'split' && (
+        <ClearanceWorkLetterSplitView
+          clearances={clearances}
+          employees={employees}
+          onOpenDocumentWriter={() => setIsDocumentWriterOpen(true)}
+        />
+      )}
+
       {activeTab === 'store' && (
         <StoreClearanceTab
           clearances={clearances}
@@ -139,22 +155,14 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
                 />
               </div>
               <div className="flex items-center gap-2 text-xs">
-                <select
-                  value={filterService}
-                  onChange={(e) => setFilterService(e.target.value as any)}
-                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 flex-1 text-slate-900 dark:text-white"
-                >
+                <select value={filterService} onChange={(e) => setFilterService(e.target.value as any)} className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 flex-1 text-slate-900 dark:text-white">
                   <option value="All">{t('clearance.allDivisions')}</option>
                   <option value="Security">Security</option>
                   <option value="Cleaning">Cleaning</option>
                   <option value="Property Management">Property Management</option>
                   <option value="Head Office Staff">Head Office</option>
                 </select>
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 flex-1 text-slate-900 dark:text-white"
-                >
+                <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 flex-1 text-slate-900 dark:text-white">
                   <option value="All">{t('clearance.allStatus')}</option>
                   <option value="In Progress">{t('clearance.inProgress')}</option>
                   <option value="Cleared">{t('clearance.cleared')}</option>
@@ -218,14 +226,12 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
         </div>
       )}
 
-      {/* Modals */}
       <ClearanceInitiationModal
         isOpen={isInitiatingModalOpen}
         onClose={() => setIsInitiatingModalOpen(false)}
         employees={employees}
         onInitiate={(newRec) => { onInitiateClearance(newRec); setSelectedClearanceId(newRec.id); }}
       />
-
       {selectedClearance && (
         <ClearanceCertificateModal
           isOpen={isCertificateModalOpen}
@@ -233,6 +239,12 @@ export const ClearanceView: React.FC<ClearanceViewProps> = ({
           record={selectedClearance}
         />
       )}
+      <WorkLetterDocumentWriterModal
+        isOpen={isDocumentWriterOpen}
+        onClose={() => setIsDocumentWriterOpen(false)}
+        employees={employees}
+        initialEmployee={employees.find(e => e.id === selectedClearance?.employeeId)}
+      />
     </div>
   );
 };

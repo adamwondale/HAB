@@ -1,26 +1,36 @@
 import React, { useState } from 'react';
-import { Search, Filter, Building2, Clock, Calendar, Award, User, DollarSign } from 'lucide-react';
-import { Employee, LeaveRequest, AttendanceRecord, ServiceType } from '../../types/hrm';
+import { Search, Filter } from 'lucide-react';
+import { Employee, LeaveRequest, AttendanceRecord, ServiceType, EmployeeKpiRating } from '../../types/hrm';
 import { SlideOneDrawer, DrawerCategory } from './SlideOneDrawer';
+import { EmployeeKpiModal } from './EmployeeKpiModal';
+import { SlideOneTableRow } from './SlideOneTableRow';
 
 interface SlideOneMasterTableProps {
   employees: Employee[];
   leaveRequests?: LeaveRequest[];
   attendance?: AttendanceRecord[];
+  onUpdateEmployee?: (updated: Employee) => void;
 }
 
 export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
   employees,
   leaveRequests = [],
-  attendance = []
+  attendance = [],
+  onUpdateEmployee
 }) => {
-  const [selectedDept, setSelectedDept] = useState<'All' | ServiceType>('All');
+  const [selectedDept, setSelectedDept] = useState<'All' | ServiceType | 'Previous Employees'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [inspectEmployee, setInspectEmployee] = useState<Employee | null>(null);
   const [activeCategory, setActiveCategory] = useState<DrawerCategory>('profile');
+  const [kpiModalEmployee, setKpiModalEmployee] = useState<Employee | null>(null);
 
   const filtered = employees.filter(emp => {
-    if (selectedDept !== 'All' && emp.serviceType !== selectedDept) return false;
+    if (selectedDept === 'Previous Employees') {
+      if (emp.status !== 'Exited' && !emp.exitDetails) return false;
+    } else {
+      if (emp.status === 'Exited' && selectedDept !== 'All') return false;
+      if (selectedDept !== 'All' && emp.serviceType !== selectedDept) return false;
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       return (
@@ -39,6 +49,15 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
     setActiveCategory(cat);
   };
 
+  const handleSaveKpi = (empId: string, kpi: EmployeeKpiRating) => {
+    const target = employees.find(e => e.id === empId);
+    if (target && onUpdateEmployee) {
+      onUpdateEmployee({ ...target, kpiRating: kpi });
+    }
+  };
+
+  const isPreviousView = selectedDept === 'Previous Employees';
+
   return (
     <div className="space-y-4">
       {/* Top Filter and Search Bar */}
@@ -50,11 +69,12 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
             onChange={e => setSelectedDept(e.target.value as any)}
             className="bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-3 py-1.5 focus:border-[#F2C46A] dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700"
           >
-            <option value="All">All Divisions ({employees.length})</option>
-            <option value="Security">Security Division</option>
-            <option value="Cleaning">Cleaning Division</option>
-            <option value="Property Management">Property Management</option>
-            <option value="Head Office Staff">Head Office Staff</option>
+            <option value="All">All Active Divisions</option>
+            <option value="Security">Security Division (60%)</option>
+            <option value="Cleaning">Cleaning Division (28%)</option>
+            <option value="Property Management">Property Management (10%)</option>
+            <option value="Head Office Staff">Head Office Staff (2%)</option>
+            <option value="Previous Employees">Previous / Exited Staff (Alumni)</option>
           </select>
           <span className="text-xs text-slate-500 font-mono">Showing {filtered.length} staff</span>
         </div>
@@ -77,106 +97,25 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
           <thead className="bg-[#FCF0DA] text-[#4C4541] border-b border-slate-200 font-bold uppercase tracking-wider text-[11px] dark:bg-slate-800/90 dark:text-amber-200 dark:border-slate-700">
             <tr>
               <th className="py-3.5 px-4 font-bold">Employee</th>
-              <th className="py-3.5 px-4 font-bold">HR Profile</th>
-              <th className="py-3.5 px-4 font-bold">Pay Record</th>
-              <th className="py-3.5 px-4 font-bold">Leave Days</th>
-              <th className="py-3.5 px-4 font-bold">Overtime Record</th>
-              <th className="py-3.5 px-4 font-bold">Site</th>
-              <th className="py-3.5 px-4 font-bold">KPI</th>
+              <th className="py-3.5 px-4 font-bold">{isPreviousView ? 'Division & Role' : 'HR Profile'}</th>
+              <th className="py-3.5 px-4 font-bold">{isPreviousView ? 'Exit Date' : 'Pay Record'}</th>
+              <th className="py-3.5 px-4 font-bold">{isPreviousView ? 'Exit Reason' : 'Leave Days'}</th>
+              <th className="py-3.5 px-4 font-bold">{isPreviousView ? 'Rehire Status' : 'Overtime Record'}</th>
+              <th className="py-3.5 px-4 font-bold">{isPreviousView ? 'Last Work Site' : 'Site'}</th>
+              <th className="py-3.5 px-4 font-bold">{isPreviousView ? 'Documentation' : 'KPI & Flag'}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {filtered.map(emp => {
-              const empLeaves = leaveRequests.filter(l => l.employeeId === emp.id && l.status === 'Approved');
-              const usedDays = empLeaves.reduce((sum, l) => sum + l.days, 0);
-              const remainingDays = Math.max(0, 16 - usedDays);
-              const otHours = emp.serviceType === 'Security' ? 18.5 : 12.0;
-
-              return (
-                <tr
-                  key={emp.id}
-                  className="hover:bg-[#FCF0DA]/30 transition-colors group cursor-pointer dark:hover:bg-slate-800/60"
-                >
-                  {/* 1. Employee */}
-                  <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'profile')}>
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[#F2C46A] text-[#4C4541] font-bold text-xs flex items-center justify-center shrink-0">
-                        {emp.firstName[0]}{emp.lastName[0]}
-                      </div>
-                      <div>
-                        <span className="font-semibold text-slate-900 dark:text-white block group-hover:text-amber-900 dark:group-hover:text-[#F2C46A]">
-                          {emp.firstName} {emp.lastName}
-                        </span>
-                        <span className="text-[11px] font-mono text-slate-500">
-                          {emp.employeeCode} {emp.amharicName && `· ${emp.amharicName}`}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* 2. HR Profile */}
-                  <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'profile')}>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">{emp.role}</div>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold dark:bg-slate-800 dark:text-slate-300">
-                        {emp.serviceType}
-                      </span>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                        emp.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'
-                      }`}>
-                        {emp.status}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* 3. Pay Record */}
-                  <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'pay')}>
-                    <div className="font-mono tabular-nums font-bold text-slate-900 dark:text-white">
-                      ETB {emp.salary.baseSalary.toLocaleString()}
-                    </div>
-                    <div className="text-[11px] text-amber-800 dark:text-amber-400 font-semibold">
-                      Grade {emp.grade || 'L1'} · +10% Elig.
-                    </div>
-                  </td>
-
-                  {/* 4. Leave Days */}
-                  <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'leave')}>
-                    <div className="flex items-center gap-1 font-mono tabular-nums font-bold text-slate-900 dark:text-white">
-                      <Calendar className="w-3 h-3 text-emerald-600" />
-                      <span>{remainingDays} / 16 d</span>
-                    </div>
-                    <div className="text-[10px] text-slate-500">10 Sick · 5 Comp.</div>
-                  </td>
-
-                  {/* 5. Overtime Record */}
-                  <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'overtime')}>
-                    <div className="flex items-center gap-1 font-mono tabular-nums font-bold text-slate-900 dark:text-white">
-                      <Clock className="w-3 h-3 text-blue-600" />
-                      <span>{otHours} hrs</span>
-                    </div>
-                    <div className="text-[10px] text-slate-500">1.50x · Supervised</div>
-                  </td>
-
-                  {/* 6. Site */}
-                  <td className="py-3 px-4 max-w-xs truncate" onClick={() => handleCellClick(emp, 'site')}>
-                    <div className="flex items-center gap-1 text-slate-800 dark:text-slate-200 font-medium truncate">
-                      <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate">{emp.currentSiteName || 'Reserve Pool'}</span>
-                    </div>
-                    <div className="text-[10px] text-slate-500 truncate">{emp.currentShift || 'Day Duty'}</div>
-                  </td>
-
-                  {/* 7. KPI */}
-                  <td className="py-3 px-4" onClick={() => handleCellClick(emp, 'kpi')}>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-mono tabular-nums font-bold text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                      <Award className="w-3 h-3" />
-                      <span>94%</span>
-                    </span>
-                    <div className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5">Exceeds</div>
-                  </td>
-                </tr>
-              );
-            })}
+            {filtered.map(emp => (
+              <SlideOneTableRow
+                key={emp.id}
+                emp={emp}
+                isPreviousView={isPreviousView}
+                leaveRequests={leaveRequests}
+                onCellClick={handleCellClick}
+                onKpiClick={(e) => setKpiModalEmployee(e)}
+              />
+            ))}
           </tbody>
         </table>
       </div>
@@ -190,6 +129,15 @@ export const SlideOneMasterTable: React.FC<SlideOneMasterTableProps> = ({
         onSelectCategory={setActiveCategory}
         leaveRequests={leaveRequests}
         attendance={attendance}
+        onOpenKpiModal={(emp) => setKpiModalEmployee(emp)}
+      />
+
+      {/* KPI Evaluation Modal */}
+      <EmployeeKpiModal
+        isOpen={Boolean(kpiModalEmployee)}
+        onClose={() => setKpiModalEmployee(null)}
+        employee={kpiModalEmployee}
+        onSaveKpi={handleSaveKpi}
       />
     </div>
   );

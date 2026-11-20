@@ -19,6 +19,7 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
 - [x] **Phase 12: Super Admin Executive Observatory & Cross-Department In-Place Cockpits** - Incorporate team wireframes (CEO 36-KPI health matrix, management notification triage rail, integrated in-place editing across all roles, sequential 3-stage exit clearance, field technical dispatch, biometric attendance dropzone, and finance/store wireframe parity).
 - [x] **Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync** - Implement the team's two-tier 16-column payroll sheet, automated statutory allowance splitting (non-taxable vs taxable based on ETB 1,600 transport / ETB 2,000 mobile thresholds), and 1-click HR attendance import / Excel reconciliation.
+- [x] **Phase 15: Wireframe Specification Parity & Multi-Role Cockpit Realization** - Deliver 100% specification parity with CEO & Technical Manager Cockpits, 7-column Finance & Store tracking grid, 36 Departmental KPIs in ETB, and the 9-screen HR & Operations wireframe suite.
 
 ## Phase Details
 
@@ -38,7 +39,6 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 
 Plans:
 - [x] 09-01: Cross-module division synchronization, confirmation dialogs, table empty states, and responsive layout polish.
-
 
 ### Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings
 
@@ -79,7 +79,6 @@ Plans:
 Plans:
 - [x] 10-01: DashboardRouter, Admin Perspective Switcher, Reusable Metric Tiles, and Admin Master Dashboard.
 - [x] 10-02: Dedicated Departmental Cockpits (HR, Finance, Store, Operations) with KPIs, Action Queues, and Zero Data Leaks.
-
 
 ### Phase 8: Role-Based Access Control (RBAC)
 
@@ -170,6 +169,7 @@ Plans:
   6. Transfers support an explicit approval workflow (`Pending`, `Approved`, `Rejected`) with site location tracking.
   7. Leave Management splits into `Request` and `Available` views, clearly displaying balance days, and automatically deducts approved days from employee balances upon approval.
   8. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+
 **Plans:** 3 plans
 
 Plans:
@@ -193,6 +193,7 @@ Plans:
   8. Account system expands to 6 dedicated logins (`admin`, `ceo`, `hr`, `finance`, `tech`, `store` with password `hab2026`).
   9. Comprehensive design-craft audit (`charles-unslop` and `charles-polish`) executed across all ERP modules ensuring 0 AI tells, 4px grid spacing, and smooth micro-interactions.
   10. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+
 **Plans:** 5 plans
 
 Plans:
@@ -249,4 +250,51 @@ Plans:
 - [x] 13-01: Grouped 16-Column Two-Tier Payroll Table & Dynamic Allowance Exemption Engine (REQ-PAY-002).
 - [x] 13-02: HR Attendance Import Modal (Sync from HR + Excel Reconciliation) & Paid Leave Proration (REQ-PAY-002).
 
+### Phase 15: Wireframe Specification Parity & Multi-Role Cockpit Realization (CEO & Technical Manager Dashboards, 36 KPIs & 9-Screen HR/Operations Blueprint)
 
+**Goal:** Deliver 100% specification parity with the two master documents compiled from the team's wireframes: `Dashboard_Coding_Prompt_Specification.docx` (CEO & Technical Manager Cockpits, 7-column Finance & Store tracking grid, 36 Departmental KPIs in ETB) and `Unison_ERP_HR_Coding_Specification.docx` (9-screen HR & Operations wireframe blueprint, 4-division clickable donut, 5-point action triage card, split exit clearance vs work letter station, site-to-site staff transfers, and scanned attendance upload).
+**Requirements**: REQ-SPEC-001, REQ-SPEC-002, REQ-SPEC-003
+**Depends on:** Phase 14
+**Success Criteria** (what must be TRUE):
+  1. TypeScript compilation passes cleanly (`npx tsc --noEmit`) with 0 errors across all existing and newly created components.
+  2. Technical Manager cockpit features the exact 7-column Finance & Store tracking grid (`Site`, `Item requested`, `Requested employee`, `Low stock items`, `Issued type`, `Returned`, `Damaged`) and role navigation (Overview, HR/Divisions, Finance & Store, Worksite, Attendance, Settings).
+  3. CEO Dashboard displays the full 36-KPI matrix (12 HR, 12 Store, 12 Finance) formatted in ETB with explicit calculation formulas and benchmarks, and includes the CEO Settings modal (Theme, Color, Language, Password, Profile).
+  4. HR Overview dashboard implements the interactive 4-segment Work Distribution donut with drilldown, 5-alert "Need Attention" triage card, Employees Summary Table with grouped Deduction/Increment % salary adjustments, and 3 team workspace cards (HR, Finance, Property).
+  5. Exit Employee view implements the split two-panel layout (Clearance checklist on left, Work Letter generator on right).
+  6. Operations Worksite view features 4 KPI cards, Unassigned staff dock, and site-to-site staff transfer module.
+  7. Operations Attendance view provides scanned attendance sheet upload dropzone with preview.
+  8. Operations Leave view enforces multi-tier sign-off workflow (Head of Dept + CEO/Management).
+  9. Setting screen features HR system rules: 60-day probation, Leave +1 day/year tenure rule, work shifts, leave types.
+  10. All created and modified components adhere strictly to the $\le 250$ line budget and Warm Earth design tokens (`#F2C46A`, `#4C4541`, `#FCF0DA`, `#AEAC78`).
+
+**Plans:** 3 plans
+
+Plans:
+- [x] 15-01: Core Type Safety, Pre-requisite Repairs & Technical Manager 7-Column Tracking Cockpit (REQ-SPEC-001).
+- [x] 15-02: CEO Executive Observatory & Complete 36-KPI Matrix in ETB (REQ-SPEC-002).
+- [x] 15-03: 9-Screen HR & Operations Wireframe Blueprint Realization (REQ-SPEC-003).
+
+---
+
+### Phase 14: Enterprise Workforce Scale (600 Staff), Persona-Fit Site Deployment, Smart Attendance Grid & HR Document Suite
+
+**Goal:** Scale the operational workforce model to 600 employees across 4 divisions (Security 60%, Cleaning 28%, Property Management 10%, Head Office 2%) with Permanent/Contract classification, introduce Fayda ID & QR verification, implement Operations Manager persona-fit site governance with HR acknowledgment gating, build a smart daily attendance sheet with Excel upload, enable searchable leave booking, consolidate navigation by folding 'Other' into HR, and provide a 100% editable bilingual work letter document writer.
+**Depends on:** Phase 12, Phase 13
+**Requirements:** REQ-HR-014, REQ-HR-015
+**Success Criteria** (what must be TRUE):
+  1. Total workforce scaled to 600 employees across divisions (Security 360, Cleaning 168, Property Management 60, Head Office 12); clicking the "Assigned Staff" card displays a classification modal breaking down Permanent vs Contract staff per division.
+  2. Employee directory includes division filter (All, Security, Cleaning, Property Management, Head Office, Previous Employees). Previous employees display Exit Reason and Rehire Eligibility flag (`Eligible to Return` vs `Ineligible / Blocked`).
+  3. Employee detail includes 16-digit Fayda ID, unique QR code placeholder, and an automated KPI engine (Attendance % + 1-5 Customer Rating) calculating action flags (`Give Raise`, `Assign Training`, `Warning`, `On Track`).
+  4. Recruitment captures Fayda/Kebele ID and includes role-specific interview questionnaires (Security, Cleaning, Property Mgt) with background vetting and scoring.
+  5. Work sites are governed by Operations Manager with Site Categories (Bank, Apartment, Hotel, Bureau, Commercial, Hospital); Operations Manager performs Persona-Fit Assessment (fitness, health, proximity, background); submitted deployments enter `Pending HR Acknowledgment` and activate only after HR confirmation.
+  6. Attendance includes a daily spreadsheet-style manual entry sheet filterable by Site/Division and Date with smart suggestions (1-click mark present, shift detection, shortage alerts) and Excel sheet upload.
+  7. Leave management provides quick searchable employee lookup and booking across statutory leave types with immediate balance deduction.
+  8. Sidebar consolidates "Other" items directly into the HR hierarchy; Employee Exit links to an interactive Document Writer generating pre-filled, 100% editable bilingual work letters (Certificate of Service, Exit Clearance, Recommendation).
+  9. All components adhere strictly to the $\le 250$ line budget and Warm Earth design tokens.
+  10. TypeScript compilation passes cleanly (`npx tsc --noEmit`) and production build succeeds.
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 14-01: 600-Staff Workforce Scaling, Permanent/Contract Classification, Fayda & QR Verification, Recruitment Questionnaires & Operations Persona-Fit Deployment Gate (REQ-HR-014).
+- [ ] 14-02: Smart Daily Attendance Grid & Excel Upload, Searchable Leave Booking, Sidebar Consolidation & Editable Work Letter Document Writer (REQ-HR-015).

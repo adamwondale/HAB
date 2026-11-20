@@ -81,6 +81,7 @@ export function logAuditEvent(
 ): AuditLogEntry {
   const newEntry: AuditLogEntry = {
     ...entry,
+    status: entry.status || 'SUCCESS',
     id: `aud-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     timestamp: new Date().toISOString()
   };

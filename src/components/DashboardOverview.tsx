@@ -41,6 +41,7 @@ interface DashboardOverviewProps {
   onSelectActiveUser?: (user: ManagementPerson) => void;
   onNavigateTab: (tabId: string) => void;
   onQuickAction?: (action: string) => void;
+  onUpdateClearance?: (updated: ClearanceRecord) => void;
 }
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
@@ -59,7 +60,8 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   stockTransactions = [],
   divisions,
   activeUser,
-  onNavigateTab
+  onNavigateTab,
+  onUpdateClearance
 }) => {
   const { t } = useTranslation();
   const activeEmployees = employees.filter((e) => e.status !== 'Exited');
@@ -81,12 +83,9 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       {/* Overview Header */}
       <section className="flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-800 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
-          <div className="flex items-center gap-2">
-            <LayoutDashboard className="h-6 w-6 text-[#4C4541] dark:text-[#F2C46A]" />
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-3xl">
-              {t('dashboard.headerTitle')}
-            </h1>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-3xl">
+            {t('dashboard.headerTitle')}
+          </h1>
           <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
             {t('dashboard.headerSubtitle')}
           </p>
@@ -94,7 +93,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <button
           type="button"
           onClick={downloadSummary}
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#F2C46A] px-4 text-xs font-bold text-[#4C4541] hover:bg-[#E5B558] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C46A]"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#F2C46A] px-4 text-xs font-semibold text-[#4C4541] hover:bg-[#E5B558] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C46A]"
         >
           <FileDown className="h-4 w-4" /> {t('common.exportReport')}
         </button>
@@ -118,6 +117,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         divisions={divisions}
         activeUser={activeUser}
         onNavigateTab={onNavigateTab}
+        onUpdateClearance={onUpdateClearance}
       />
 
       <p className="text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-100 pt-3 dark:border-slate-800">

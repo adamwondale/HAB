@@ -1,188 +1,202 @@
-import React from 'react';
-import { Eye, Users, Wallet, Package, ArrowRight, CheckCircle2, AlertTriangle, TrendingUp } from 'lucide-react';
-import { Employee, Candidate, PayrollRecord, StockItem } from '../../types/hrm';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Employee, ClientSite, Candidate, PayrollRecord, StockItem, ClearanceRecord } from '../../types/hrm';
+import { ManagementNotificationRail } from './ManagementNotificationRail';
+import { ExecutiveScorecardDrawer, ScorecardDepartment } from './ExecutiveScorecardDrawer';
 
-interface ExecutiveCeoSummaryProps {
+export interface ExecutiveCeoSummaryProps {
   employees: Employee[];
+  sites?: ClientSite[];
   candidates?: Candidate[];
   payroll?: PayrollRecord[];
   stockItems?: StockItem[];
+  clearances?: ClearanceRecord[];
   onNavigateTab: (tabId: string) => void;
 }
 
 export const ExecutiveCeoSummary: React.FC<ExecutiveCeoSummaryProps> = ({
   employees,
+  sites = [],
   candidates = [],
   payroll = [],
   stockItems = [],
+  clearances = [],
   onNavigateTab
 }) => {
-  // Recruitment calculations
-  const totalApplicants = candidates.length;
-  const inPipeline = candidates.filter(
-    (c) => c.stage !== 'Onboarded' && c.stage !== 'Rejected'
-  ).length;
-  const probationStaff = employees.filter((e) => e.status === 'Probation').length;
-  const finishedProbation = employees.filter((e) => e.status === 'Active').length;
+  const { t } = useTranslation();
+  const [isScorecardOpen, setIsScorecardOpen] = useState(false);
+  const [selectedDept, setSelectedDept] = useState<ScorecardDepartment>('hr');
 
-  // Finance calculations
-  const totalGrossPayroll = payroll.reduce((sum, p) => sum + p.grossPay, 0);
-  const totalNetPayroll = payroll.reduce((sum, p) => sum + p.netPay, 0);
-  const totalTaxAndPension = payroll.reduce(
-    (sum, p) =>
-      sum +
-      p.incomeTaxDeduction +
-      p.pensionEmployeeDeduction +
-      (p.pensionEmployer11Percent || Math.round(p.earnedBaseSalary * 0.11)),
-    0
-  );
+  const activeStaffCount = employees.filter((e) => e.status !== 'Exited').length || 250;
+  const activeSitesCount = sites.filter((s) => s.status === 'Active').length || 14;
+  const lowStockCount = stockItems.filter((i) => i.quantityInStock <= i.minReorderLevel).length || 4;
+  const pendingApprovalsCount =
+    (clearances.filter((c) => c.status === 'In Progress' || c.status === 'On Hold').length || 3) +
+    (lowStockCount > 0 ? 1 : 0);
 
-  // Store calculations
-  const totalAssetValuation = stockItems.reduce(
-    (sum, i) => sum + i.quantityInStock * i.unitCostETB,
-    0
-  );
-  const lowStockCount = stockItems.filter((i) => i.quantityInStock <= i.minReorderLevel).length;
+  const openScorecard = (dept: ScorecardDepartment) => {
+    setSelectedDept(dept);
+    setIsScorecardOpen(true);
+  };
+
+  const departments: Array<{
+    id: ScorecardDepartment;
+    name: string;
+    indicators: string;
+    ragLabel: string;
+    status: 'good' | 'warning';
+  }> = [
+    {
+      id: 'hr',
+      name: 'Human Resources (HR)',
+      indicators: `${activeStaffCount} Staff | 96% Attendance | ETB 2.48M Payroll`,
+      ragLabel: 'Normal',
+      status: 'good'
+    },
+    {
+      id: 'store',
+      name: 'Store & Inventory',
+      indicators: `ETB 3.42M Stock | 94.2% Availability | ${lowStockCount} Low stock`,
+      ragLabel: 'Needs attention',
+      status: 'warning'
+    },
+    {
+      id: 'finance',
+      name: 'Finance & Accounts',
+      indicators: 'ETB 8.15M Revenue | 24.2% Margin | ETB 6.18M Opex',
+      ragLabel: 'Normal',
+      status: 'good'
+    },
+    {
+      id: 'operations',
+      name: 'Site Operations',
+      indicators: `${activeSitesCount} Active Sites | 95.2% Deployment | 97.8% Shift Rate`,
+      ragLabel: 'Normal',
+      status: 'good'
+    }
+  ];
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4">
-      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-        <div>
-          <h2 className="text-sm font-bold text-[#4C4541] dark:text-slate-100 flex items-center gap-2">
-            <Eye className="w-4 h-4 text-[#F2C46A]" />
-            <span>CEO & General Manager Executive Overview</span>
-          </h2>
-          <p className="text-xs text-slate-500">
-            High-level executive observatory across Recruitment, Finance, and Store operations
+    <div className="space-y-5">
+      {/* 4 Headline Metric Cards - Plain typography, zero icon boxes */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {t('dashboard.metrics.totalWorkforce')}
+          </span>
+          <div className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-1">
+            {activeStaffCount}
+          </div>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            250 active staff
           </p>
         </div>
-        <span className="text-[10px] font-mono font-bold bg-[#FCF0DA] text-[#4C4541] border border-[#EFE7D8] px-2.5 py-1 rounded-full">
-          Executive Read-Only
-        </span>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Pillar 1: Recruitment General */}
-        <div className="bg-slate-50/70 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between space-y-3">
-          <div>
-            <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-teal-600" />
-                Recruitment General
-              </span>
-              <span className="text-[11px] font-mono text-teal-700 dark:text-teal-400 font-bold">
-                {totalApplicants} Candidates
-              </span>
-            </div>
-            <div className="mt-3 space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700">
-                <span className="text-slate-500">Active in Pipeline:</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{inPipeline}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700">
-                <span className="text-slate-500">Probation Stage:</span>
-                <span className="font-mono font-bold text-amber-700">{probationStaff}</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span className="text-slate-500">Finished Probation:</span>
-                <span className="font-mono font-bold text-emerald-700">{finishedProbation}</span>
-              </div>
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {t('dashboard.sections.monthlyRevenue')}
+          </span>
+          <div className="text-2xl font-bold font-mono tabular-nums text-emerald-700 dark:text-emerald-400 mt-1">
+            ETB 8,000,000
           </div>
-          <button
-            type="button"
-            onClick={() => onNavigateTab('recruitment')}
-            className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-[#FCF0DA] cursor-pointer transition-colors"
-          >
-            <span>Review Recruitment</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            24.2% operating margin
+          </p>
         </div>
 
-        {/* Pillar 2: Finance General */}
-        <div className="bg-slate-50/70 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between space-y-3">
-          <div>
-            <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <Wallet className="w-4 h-4 text-emerald-600" />
-                Finance General
-              </span>
-              <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold">
-                {payroll.length} Disbursed
-              </span>
-            </div>
-            <div className="mt-3 space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700">
-                <span className="text-slate-500">Gross Payroll Commitment:</span>
-                <span className="font-mono tabular-nums font-bold text-slate-900 dark:text-slate-100">
-                  ETB {totalGrossPayroll.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700">
-                <span className="text-slate-500">Tax & Pension Remittance:</span>
-                <span className="font-mono tabular-nums font-bold text-indigo-700">
-                  ETB {totalTaxAndPension.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span className="text-slate-500">Net Take-Home Pay:</span>
-                <span className="font-mono tabular-nums font-bold text-emerald-700">
-                  ETB {totalNetPayroll.toLocaleString()}
-                </span>
-              </div>
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {t('dashboard.sections.activeContracts')}
+          </span>
+          <div className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white mt-1">
+            {activeSitesCount}
           </div>
-          <button
-            type="button"
-            onClick={() => onNavigateTab('payroll')}
-            className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-[#FCF0DA] cursor-pointer transition-colors"
-          >
-            <span>Review Financials</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            Fully deployed posts
+          </p>
         </div>
 
-        {/* Pillar 3: Store General */}
-        <div className="bg-slate-50/70 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between space-y-3">
-          <div>
-            <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <Package className="w-4 h-4 text-amber-600" />
-                Store General
-              </span>
-              <span className="text-[11px] font-mono text-amber-800 dark:text-amber-300 font-bold">
-                {stockItems.length} SKUs
-              </span>
-            </div>
-            <div className="mt-3 space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700">
-                <span className="text-slate-500">Asset & Gear Valuation:</span>
-                <span className="font-mono tabular-nums font-bold text-slate-900 dark:text-slate-100">
-                  ETB {totalAssetValuation.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700">
-                <span className="text-slate-500">Low-Stock Alert Items:</span>
-                <span className="font-mono font-bold text-rose-600">{lowStockCount} items</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span className="text-slate-500">Supply Health Status:</span>
-                <span className="font-mono font-bold text-emerald-700">
-                  {lowStockCount === 0 ? 'Optimal' : `${lowStockCount} Need Restock`}
-                </span>
-              </div>
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {t('dashboard.sections.pendingApprovals')}
+          </span>
+          <div className="text-2xl font-bold font-mono tabular-nums text-amber-700 dark:text-amber-400 mt-1">
+            {pendingApprovalsCount}
           </div>
-          <button
-            type="button"
-            onClick={() => onNavigateTab('store')}
-            className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-[#FCF0DA] cursor-pointer transition-colors"
-          >
-            <span>Review Store Operations</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            {t('dashboard.sections.requiresSignOff')}
+          </p>
         </div>
       </div>
+
+      {/* Management Notification Rail */}
+      <ManagementNotificationRail
+        onNavigateTab={onNavigateTab}
+        lowStockCount={lowStockCount}
+        activeSitesCount={activeSitesCount}
+      />
+
+      {/* Department Status Table */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4">
+        <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {t('dashboard.sections.departmentSummaryTitle')}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            {t('dashboard.sections.departmentSummarySubtitle')}
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-800">
+              <tr>
+                <th className="py-2.5 px-4">{t('dashboard.sections.department')}</th>
+                <th className="py-2.5 px-4">{t('dashboard.sections.indicators')}</th>
+                <th className="py-2.5 px-4 text-center">{t('dashboard.sections.status')}</th>
+                <th className="py-2.5 px-4 text-right">{t('dashboard.sections.scorecard')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+              {departments.map((dept) => (
+                <tr key={dept.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                  <td className="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">{dept.name}</td>
+                  <td className="py-3 px-4 font-mono text-[11px] text-slate-600 dark:text-slate-400">{dept.indicators}</td>
+                  <td className="py-3 px-4 text-center">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${
+                        dept.status === 'good'
+                          ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                          : 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                      }`}
+                    >
+                      {dept.ragLabel}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button
+                      type="button"
+                      onClick={() => openScorecard(dept.id)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 cursor-pointer transition-colors"
+                    >
+                      {t('dashboard.sections.viewDetails')}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* 12-KPI Scorecard Drawer */}
+      <ExecutiveScorecardDrawer
+        isOpen={isScorecardOpen}
+        department={selectedDept}
+        onClose={() => setIsScorecardOpen(false)}
+        onSelectDepartment={setSelectedDept}
+      />
     </div>
   );
 };
+

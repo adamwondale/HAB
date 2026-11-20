@@ -1176,6 +1176,10 @@ export const INITIAL_CLEARANCE_RECORDS: ClearanceRecord[] = [
     initiationDate: '2026-09-20',
     targetExitDate: '2026-10-05',
     status: 'In Progress',
+    stage: 'store_pending',
+    storeStatus: 'waiting',
+    storeItemsReturned: false,
+    financeStatus: 'waiting',
     issuedItems: [
       {
         id: 'sec-item-1',
@@ -1297,6 +1301,17 @@ export const INITIAL_CLEARANCE_RECORDS: ClearanceRecord[] = [
     initiationDate: '2026-09-15',
     targetExitDate: '2026-10-01',
     status: 'Cleared',
+    stage: 'completed',
+    storeStatus: 'returned',
+    storeItemsReturned: true,
+    storeVerifiedAt: '2026-09-28',
+    storeVerifiedBy: 'Ato Negussie Balcha (HAB Central Stores Manager)',
+    financeStatus: 'liquidated',
+    liquidationDate: '2026-09-29',
+    suspenseAmount: 0,
+    financeSettledAt: '2026-09-29',
+    financeSettledBy: 'W/ro Aster Demissie (Finance Officer)',
+    superAdminApprovedAt: '2026-10-01',
     issuedItems: [
       {
         id: 'cln-item-1',
@@ -1378,6 +1393,143 @@ export const INITIAL_CLEARANCE_RECORDS: ClearanceRecord[] = [
       certificateIssued: true,
       certificateNumber: 'HAB-CLR-2026-089',
       remarks: 'Clearance fully certified. Certificate of Service and settlement check issued.'
+    }
+  },
+  {
+    id: 'clr-03',
+    employeeId: 'emp-101',
+    employeeCode: 'HAB-SEC-0101',
+    employeeName: 'Alemayehu Tadesse',
+    serviceType: 'Security',
+    role: 'Armed Security Officer',
+    siteId: 'site-2',
+    siteName: 'United Nations Economic Commission for Africa (UNECA)',
+    exitReason: 'Mutual Separation',
+    initiationDate: '2026-10-02',
+    targetExitDate: '2026-10-18',
+    status: 'In Progress',
+    stage: 'finance_pending',
+    storeStatus: 'returned',
+    storeItemsReturned: true,
+    storeVerifiedAt: '2026-10-10',
+    storeVerifiedBy: 'Ato Negussie Balcha (Store Keeper)',
+    financeStatus: 'waiting',
+    liquidationDate: '2026-10-18',
+    suspenseAmount: 450,
+    issuedItems: [
+      {
+        id: 'sec-clr3-1',
+        name: 'HAB Security Uniform Shirts (Navy Blue, Embroidered)',
+        category: 'Uniform',
+        isReturned: true,
+        condition: 'Good',
+        penaltyFee: 0
+      },
+      {
+        id: 'sec-clr3-2',
+        name: 'Tactical Combat Boots (Size 43)',
+        category: 'Uniform',
+        isReturned: true,
+        condition: 'Good',
+        penaltyFee: 0
+      },
+      {
+        id: 'sec-clr3-3',
+        name: 'Two-Way Walkie-Talkie Radio & Dock',
+        category: 'Equipment',
+        isReturned: true,
+        condition: 'Good',
+        penaltyFee: 0
+      }
+    ],
+    siteSupervisorSignoff: {
+      completed: true,
+      signedBy: 'Inspector Daniel (Operations)',
+      signedDate: '2026-10-08',
+      remarks: 'Post equipment handed over cleanly.'
+    },
+    storeAssetSignoff: {
+      completed: true,
+      signedBy: 'Ato Negussie Balcha (Store Keeper)',
+      signedDate: '2026-10-10',
+      remarks: 'All 3 security items inspected and returned to store.'
+    },
+    financeSignoff: {
+      completed: false,
+      salaryAdvanceDeduction: 0,
+      unreturnedGearCost: 0,
+      finalSeveranceSettlement: 7200
+    },
+    hrClearanceSignoff: {
+      completed: false,
+      certificateIssued: false
+    }
+  },
+  {
+    id: 'clr-04',
+    employeeId: 'emp-105',
+    employeeCode: 'HAB-CLN-0203',
+    employeeName: 'Almaz Tefera',
+    serviceType: 'Cleaning',
+    role: 'Commercial Cleaner',
+    siteId: 'site-3',
+    siteName: 'Ethiopian Airlines Cargo Terminal',
+    exitReason: 'End of Contract',
+    initiationDate: '2026-10-05',
+    targetExitDate: '2026-10-20',
+    status: 'In Progress',
+    stage: 'admin_signoff',
+    storeStatus: 'returned',
+    storeItemsReturned: true,
+    storeVerifiedAt: '2026-10-12',
+    storeVerifiedBy: 'Ato Negussie Balcha (Store Keeper)',
+    financeStatus: 'liquidated',
+    liquidationDate: '2026-10-19',
+    suspenseAmount: 0,
+    financeSettledAt: '2026-10-19',
+    financeSettledBy: 'W/ro Aster Demissie (Finance Officer)',
+    issuedItems: [
+      {
+        id: 'cln-clr4-1',
+        name: 'HAB Hospital Sanitization Overalls (Teal, Embroidered)',
+        category: 'Uniform',
+        isReturned: true,
+        condition: 'Good',
+        penaltyFee: 0
+      },
+      {
+        id: 'cln-clr4-2',
+        name: 'Waterproof Non-Slip Safety Rubber Gumboots (Size 37)',
+        category: 'Safety Gear',
+        isReturned: true,
+        condition: 'Good',
+        penaltyFee: 0
+      }
+    ],
+    siteSupervisorSignoff: {
+      completed: true,
+      signedBy: 'Lead Inspector Yared',
+      signedDate: '2026-10-11',
+      remarks: 'Shift handover verified.'
+    },
+    storeAssetSignoff: {
+      completed: true,
+      signedBy: 'Ato Negussie Balcha (Store Keeper)',
+      signedDate: '2026-10-12',
+      remarks: 'All cleaning items checked in.'
+    },
+    financeSignoff: {
+      completed: true,
+      signedBy: 'W/ro Aster Demissie (Finance Officer)',
+      signedDate: '2026-10-19',
+      salaryAdvanceDeduction: 0,
+      unreturnedGearCost: 0,
+      finalSeveranceSettlement: 5800,
+      remarks: 'Final payroll settlement cleared with 0 deductions.'
+    },
+    hrClearanceSignoff: {
+      completed: false,
+      certificateIssued: false
     }
   }
 ];

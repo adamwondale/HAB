@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ManagementPerson } from '../types/hrm';
 import { HabMonogramIcon } from './HabLogo';
 import { authenticate, accountToManagementPerson, setActiveSession } from '../utils/authStorage';
-import { ShieldCheck, Eye, Users, DollarSign, Wrench, Package, AlertCircle } from 'lucide-react';
+import { AlertCircle, Languages } from 'lucide-react';
 
 interface LoginViewProps {
   managementPersons?: ManagementPerson[];
@@ -12,26 +12,31 @@ interface LoginViewProps {
 
 interface QuickFillRole {
   roleId: string;
-  label: string;
+  labelKey: string;
   username: string;
-  icon: React.ComponentType<{ className?: string }>;
-  roleHint: string;
+  hint: string;
 }
 
 const QUICK_FILL_ROLES: QuickFillRole[] = [
-  { roleId: 'admin', label: 'Admin', username: 'admin', icon: ShieldCheck, roleHint: 'Super Admin' },
-  { roleId: 'hr', label: 'HR', username: 'hr', icon: Users, roleHint: 'Workforce & Rosters' },
-  { roleId: 'finance', label: 'Finance', username: 'finance', icon: DollarSign, roleHint: '30-Day Payroll' },
-  { roleId: 'store', label: 'Store', username: 'store', icon: Package, roleHint: 'Inventory & Gear' },
-  { roleId: 'operations', label: 'Operations', username: 'operations', icon: Wrench, roleHint: 'Site Deployments' },
-  { roleId: 'ceo', label: 'CEO', username: 'ceo', icon: Eye, roleHint: 'Executive Oversight' }
+  { roleId: 'admin', labelKey: 'masterSetup.superAdmin', username: 'admin', hint: 'All access' },
+  { roleId: 'hr', labelKey: 'masterSetup.hrOfficer', username: 'hr', hint: 'Staff & hiring' },
+  { roleId: 'finance', labelKey: 'masterSetup.financeOfficer', username: 'finance', hint: 'Payroll & tax' },
+  { roleId: 'store', labelKey: 'masterSetup.storekeeper', username: 'store', hint: 'Supplies & gear' },
+  { roleId: 'operations', labelKey: 'masterSetup.operationsOfficer', username: 'operations', hint: 'Work sites' },
+  { roleId: 'ceo', labelKey: 'masterSetup.ceoRole', username: 'ceo', hint: 'Overview' }
 ];
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [identifier, setIdentifier] = useState<string>('admin');
   const [password, setPassword] = useState<string>('hab2026');
   const [error, setError] = useState<string | null>(null);
+
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === 'am' ? 'en' : 'am';
+    i18n.changeLanguage(nextLang);
+    localStorage.setItem('hab_language', nextLang);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,13 +44,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
     const cleanIdentifier = identifier.trim();
     if (!cleanIdentifier || !password) {
-      setError('Invalid username or password. Please verify your credentials.');
+      setError(t('masterSetup.invalidCredentials'));
       return;
     }
 
     const matchedAccount = authenticate(cleanIdentifier, password);
     if (!matchedAccount) {
-      setError('Invalid username or password. Please verify your credentials.');
+      setError(t('masterSetup.invalidCredentials'));
       return;
     }
 
@@ -62,7 +67,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white select-none">
       {/* Left Split Panel - Warm Linen (#FCF0DA) */}
-      <div className="w-full lg:w-[44%] min-h-[540px] lg:min-h-screen bg-[#FCF0DA] flex flex-col justify-center items-center px-6 sm:px-12 md:px-16 py-12 text-[#4C4541]">
+      <div className="w-full lg:w-[44%] min-h-[540px] lg:min-h-screen bg-[#FCF0DA] flex flex-col justify-center items-center px-6 sm:px-12 md:px-16 py-12 text-[#4C4541] relative">
+        {/* Language switch */}
+        <div className="absolute top-4 right-4">
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/80 hover:bg-white text-xs font-semibold text-[#4C4541] border border-[#EFE7D8] shadow-2xs transition-colors cursor-pointer"
+          >
+            <Languages className="w-3.5 h-3.5" />
+            <span>{i18n.language === 'am' ? 'English' : 'አማርኛ'}</span>
+          </button>
+        </div>
+
         <div className="w-full max-w-[380px]">
           <div className="text-center mb-8">
             <h1 className="text-2xl sm:text-[26px] font-bold text-[#4C4541] tracking-tight">
@@ -73,11 +90,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="workspace-identifier"
-                className="block text-xs font-bold text-[#4C4541] uppercase tracking-wider mb-1.5"
+                className="block text-xs font-semibold text-[#4C4541] mb-1.5"
               >
                 {t('masterSetup.username')}
               </label>
@@ -86,7 +103,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="admin, ceo, hr, finance, tech, store"
+                placeholder={t('masterSetup.usernamePlaceholder')}
                 required
                 className="w-full bg-white text-[#4C4541] placeholder-[#8C847E] rounded-lg px-3.5 py-2.5 text-sm border border-[#EFE7D8] focus:outline-none focus:ring-2 focus:ring-[#F2C46A] shadow-xs"
               />
@@ -95,7 +112,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             <div>
               <label
                 htmlFor="workspace-password"
-                className="block text-xs font-bold text-[#4C4541] uppercase tracking-wider mb-1.5"
+                className="block text-xs font-semibold text-[#4C4541] mb-1.5"
               >
                 {t('masterSetup.password')}
               </label>
@@ -119,42 +136,38 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
             <button
               type="submit"
-              className="w-full bg-[#F2C46A] hover:bg-[#E5B558] active:scale-[0.99] text-[#4C4541] font-bold py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer border border-[#E5B558]"
+              className="w-full bg-[#F2C46A] hover:bg-[#E5B558] active:scale-[0.99] text-[#4C4541] font-bold py-2.5 rounded-lg text-sm transition-all shadow-xs cursor-pointer border border-[#E5B558]"
             >
               {t('masterSetup.signIn')}
             </button>
           </form>
 
-          {/* Quick-fill Helper Chips */}
+          {/* Quick-fill Helper */}
           <div className="mt-8 pt-6 border-t border-[#EAE0CD]">
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#4C4541]/75">
+              <span className="text-xs font-semibold text-[#4C4541]">
                 {t('masterSetup.quickRoleFill')}
               </span>
-              <span className="text-[10px] text-[#4C4541]/60 font-mono">
-                default: hab2026
+              <span className="text-[11px] text-[#4C4541]/70 font-mono">
+                {t('masterSetup.defaultPasswordHint')}
               </span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_FILL_ROLES.map((r) => {
-                const Icon = r.icon;
                 const isCurrent = identifier.toLowerCase() === r.username;
                 return (
                   <button
                     key={r.roleId}
                     type="button"
                     onClick={() => handleQuickFill(r.username)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all border text-left cursor-pointer ${
+                    className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors border text-left cursor-pointer ${
                       isCurrent
-                        ? 'bg-[#F2C46A] text-[#4C4541] border-[#E5B558] shadow-xs'
-                        : 'bg-white/80 hover:bg-white text-[#4C4541] border-[#EFE7D8] hover:border-[#F2C46A]'
+                        ? 'bg-[#F2C46A] text-[#4C4541] border-[#E5B558] font-semibold'
+                        : 'bg-white/80 hover:bg-white text-[#4C4541] border-[#EFE7D8]'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5 shrink-0 text-[#4C4541]" />
-                    <div className="min-w-0">
-                      <div className="font-bold truncate leading-tight">{r.label}</div>
-                      <div className="text-[10px] opacity-75 truncate leading-tight font-normal">{r.roleHint}</div>
-                    </div>
+                    <div className="truncate leading-tight font-semibold">{t(r.labelKey as any)}</div>
+                    <div className="text-[10px] text-slate-500 truncate leading-tight mt-0.5">{r.hint}</div>
                   </button>
                 );
               })}
@@ -163,19 +176,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Right Split Panel - HAB identity & promise */}
+      {/* Right Split Panel - Clean HAB identity */}
       <div className="w-full lg:w-[56%] flex-1 bg-white flex flex-col items-center justify-center p-8 sm:p-16 relative overflow-hidden">
-        <div className="w-[310px] h-[310px] sm:w-[440px] sm:h-[440px] rounded-full bg-gradient-to-b from-[#F5F6F7]/90 via-white to-[#F5F6F7]/60 border border-slate-100 shadow-[0_8px_60px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center p-6 sm:p-10">
+        <div className="w-[310px] h-[310px] sm:w-[440px] sm:h-[440px] rounded-full bg-[#FDFBF7] border border-[#EFE7D8] flex flex-col items-center justify-center p-6 sm:p-10">
           <HabMonogramIcon className="w-36 h-36 sm:w-52 sm:h-52" forceBlack />
           <div className="mt-3 text-center">
-            <div className="text-lg sm:text-[23px] font-black text-black tracking-tight leading-snug">
+            <div className="text-lg sm:text-[23px] font-bold text-[#4C4541] tracking-tight leading-snug">
               ሀብ ቢዝነስ ኃላ/የተ/የግል/ማህበር
             </div>
-            <div className="text-xl sm:text-[26px] font-black text-black tracking-wide leading-tight mt-0.5">
+            <div className="text-xl sm:text-[24px] font-bold text-[#4C4541] tracking-wide leading-tight mt-0.5">
               HAB BUSINESS PLC
             </div>
-            <p className="mx-auto mt-4 max-w-xs text-sm font-medium leading-6 text-slate-600">
-              One place for employee, pay, and company property records.
+            <p className="mx-auto mt-3 max-w-xs text-xs font-medium leading-5 text-slate-500">
+              Staff, payroll, and company supplies management.
             </p>
           </div>
         </div>

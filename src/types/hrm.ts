@@ -190,6 +190,17 @@ export interface IssuedClearanceItem {
   notes?: string;
 }
 
+export type ClearanceStage =
+  | 'hr_pending'
+  | 'store_pending'
+  | 'finance_pending'
+  | 'admin_signoff'
+  | 'completed';
+
+export type StoreClearanceStatus = 'waiting' | 'returned' | 'damaged' | 'missing';
+
+export type FinanceClearanceStatus = 'waiting' | 'liquidated' | 'suspense';
+
 export interface ClearanceRecord {
   id: string;
   employeeId: string;
@@ -204,6 +215,19 @@ export interface ClearanceRecord {
   targetExitDate: string;
   status: 'In Progress' | 'Cleared' | 'On Hold' | 'Completed';
   
+  // Sequential 3-stage cross-department state machine
+  stage?: ClearanceStage;
+  storeStatus?: StoreClearanceStatus;
+  storeItemsReturned?: boolean;
+  storeVerifiedAt?: string;
+  storeVerifiedBy?: string;
+  financeStatus?: FinanceClearanceStatus;
+  liquidationDate?: string;
+  suspenseAmount?: number;
+  financeSettledAt?: string;
+  financeSettledBy?: string;
+  superAdminApprovedAt?: string;
+
   // Custom issued items list by service type (Uniforms, gloves, batons, radios, etc.)
   issuedItems: IssuedClearanceItem[];
   
@@ -298,6 +322,14 @@ export interface PayrollRecord {
   houseAllowance: number;
   overtimeHours: number;
   overtimePay: number;
+  // Allowance breakdown & statutory split
+  nonTaxableAllowance?: number;
+  taxableAllowance?: number;
+  transportExempt?: number;
+  transportTaxable?: number;
+  mobileExempt?: number;
+  mobileTaxable?: number;
+  standardDays?: number; // Defaults to 30
   // Legacy optional fields
   siteAllowance?: number;
   shiftAllowance?: number;

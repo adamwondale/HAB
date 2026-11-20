@@ -9,10 +9,11 @@ import { DivisionManagementView } from '../divisions/DivisionManagementView';
 import { PayrollView } from '../PayrollView';
 import { AuditTrailView } from '../rbac/AuditTrailView';
 import { OnboardingView } from '../OnboardingView';
+import { ClearanceView } from '../ClearanceView';
 import { AddEmployeeModal } from '../hr/AddEmployeeModal';
 import { NewApplicantModal } from '../recruitment/NewApplicantModal';
 import { ModuleId, WorkspaceData } from './types';
-import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord, Employee, Candidate, OnboardingChecklist } from '../../types/hrm';
+import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord, Employee, Candidate, OnboardingChecklist, ClearanceRecord } from '../../types/hrm';
 
 interface SimpleWorkspaceProps {
   activeTab: string;
@@ -34,6 +35,8 @@ interface SimpleWorkspaceProps {
   onToggleOnboardingTask?: (checklistId: string, taskId: string) => void;
   onCompleteOnboarding?: (checklistId: string) => void;
   onEnrollOnboardingChecklist?: (newOnb: OnboardingChecklist) => void;
+  onUpdateClearance?: (updated: ClearanceRecord) => void;
+  onInitiateClearance?: (newRecord: ClearanceRecord) => void;
 }
 
 function isModuleId(value: string): value is ModuleId {
@@ -75,7 +78,9 @@ export function SimpleWorkspace({
   onAddCandidate,
   onToggleOnboardingTask,
   onCompleteOnboarding,
-  onEnrollOnboardingChecklist
+  onEnrollOnboardingChecklist,
+  onUpdateClearance,
+  onInitiateClearance
 }: SimpleWorkspaceProps) {
   const { t } = useTranslation();
   const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
@@ -155,6 +160,19 @@ export function SimpleWorkspace({
 
   if (activeTab === 'audit') {
     return <AuditTrailView />;
+  }
+
+  if (activeTab === 'clearance') {
+    return (
+      <ClearanceView
+        clearances={data.clearances}
+        employees={data.employees}
+        activeUser={data.managementPersons?.find(p => p.id === 'mgmt-super-admin')}
+        masterConfig={data.masterConfig}
+        onUpdateClearance={onUpdateClearance || (() => {})}
+        onInitiateClearance={onInitiateClearance || (() => {})}
+      />
+    );
   }
 
   const mainAction =

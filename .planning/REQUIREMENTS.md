@@ -140,4 +140,73 @@ The application interface shall eliminate all hardcoded UI copy and deliver comp
 5. **Amharic Typography & Ge'ez Support**:
    - All Amharic translations shall use authentic, professional Ethiopian HR/legal terminology (aligned with Labor Proclamation No. 1156/2019) and appropriate Ethiopic typography rendering.
 
+---
+
+## Executive Observatory & Departmental Management Cockpits
+
+### REQ-EXEC-001: CEO Executive Observatory & 36-Parameter Performance Health Matrix
+The application shall implement the CEO / Super Admin Executive Overview matching the wireframe architecture:
+1. **Headline Metrics & Triage Rail**:
+   - Top 4 KPI Cards: Total Active Workforce (250 employees), Monthly Revenue (ETB 8,000,000), Active Contracts, and Pending Executive Approvals.
+   - 3-State Management Notification Rail: `Attention` (urgent contract reviews, overdue invoices, min stock alerts), `Ready` (Finance approved disbursements, HR probation confirmations), and `On Track` (active recurring contracts).
+2. **Department Summary & 36-Parameter Scorecards**:
+   - Master summary table listing all departments (HR, Store, Finance, Operations/Technical) with high-level Key Indicators and overall RAG health status (`Active / Good / Need Attention`).
+   - One-click expandable scorecard drawers displaying the full 12 performance parameters for each department (36 total KPIs) with target formulas, CEO benchmark targets (e.g., HR: 95% deployment, 96% attendance, 3% turnover; Store: ETB 3.5M inventory, 95% availability, 5% stock-out; Finance: ETB 8M revenue, ETB 6.2M opex, 22.5% profit margin, 92% budget utilization), and live calculated variance.
+
+### REQ-EXEC-002: Integrated In-Place Super Admin Editing & Audit Trail
+Super Admin and Executive users shall have unconstrained operational management capabilities across all departmental cockpits:
+1. **In-Place Modification Rights**:
+   - When the Super Admin navigates into HR, Store, Finance, or Operations via the perspective switcher, all data tables, action drawers, and status toggles shall be active and editable in-place (no read-only lockdowns for Super Admin).
+2. **Audit Trail & Attribution**:
+   - Every state mutation, salary adjustment, inventory write-off, or status override executed by the Super Admin shall automatically stamp an audit log entry recording actor ID (`mgmt-super-admin`), timestamp, previous value, and new value.
+
+### REQ-EXEC-003: Sequential 3-Stage Cross-Department Exit Clearance System
+The application shall enforce an unbroken 3-stage sequential gating process for employee exits across HR, Store, and Finance:
+1. **Stage 1 (HR Initiation)**: HR flags an employee for exit, creating pending clearance records across departments.
+2. **Stage 2 (Store Asset Verification)**: Store management verifies and checks off whether all issued tools, uniforms, and equipment have been returned (`Waiting` vs `Finished` tabs). Finance clearance remains locked until Store confirms asset return.
+3. **Stage 3 (Finance Liquidation & Suspense Clearance)**: Once Store clearance passes, Finance calculates liquidation date, deductions, and suspense settlement (`Waiting` vs `Finished` tabs), syncing the final settlement amount back to HR.
+4. **Final Sign-off**: Super Admin receives the completed clearance dossier in the Executive Notification Rail for final archival approval.
+
+### REQ-EXEC-004: Field Technical Dispatch & Departmental Wireframe Parity
+The application shall update departmental cockpits to align with the team's wireframe specifications:
+1. **Technical Manager & Operations Cockpit**:
+   - Top KPI cards: Active Sites, Deployed Personnel, Total Work Orders, Store Requests.
+   - Dual-tier Technical Alert panel: `Urgent` (Equipment breakdown, site emergencies) and `Pending` (Stock requests, deployed staff, preventive maintenance schedule).
+   - Work request dispatch table with service type, assigned field team, and real-time status.
+   - Site inventory tracking showing requested items, requesting employees, low stock items, issued type, returned, and damaged items.
+2. **Attendance Management Cockpit**:
+   - Top counters for Present, Late, and Absent staff with one-click report download.
+   - Direct biometric/scan attendance upload dropzone with attachment preview modal.
+   - Attendance roster table recording employee, upload date, work site, check-in/out timestamps, scan attachment link, and approval status.
+3. **Finance & Store Wireframe Alignment**:
+   - Finance dashboard featuring Monthly Revenue vs Expense Trend bar chart, Operational Expense Breakdown pie chart, overdue alerts, and statutory tax/VAT/WHT policy settings.
+   - Store dashboard featuring Total Stock, Issued Stock, Fixed Asset Valuation, Stock Allocation donut chart, and Minimum Stock Alert quick list.
+
+---
+
+## 16-Column Payroll Engine & Cross-Department Attendance Integration
+
+### REQ-PAY-002: Grouped 16-Column Multi-Tier Table, Dynamic Allowance Splitting & HR Attendance Sync
+The payroll calculation system and UI shall implement the exact architecture specified in the team's hand-drawn wireframe:
+1. **Two-Tier Grouped Column Structure**:
+   - Header Tier 1: `ID` | `Employee` | `Working Days` | `Basic Salary` | `Allowance` | `Gross Pay` | `Deductions` | `Net Salary` | `Employer Pension (11%)` | `Actions`.
+   - Header Tier 2 (Sub-headers):
+     - Under `Allowance`: `Non-taxable` (Exempt) | `Taxable`.
+     - Under `Deductions`: `Income Tax` | `Pension (7%)` | `Other Deductions`.
+   - Hover and drawer popovers detailing specific itemized allowances (Transport, Mobile, Housing, Overtime).
+2. **Dynamic Statutory Allowance Exemption Engine**:
+   - System automatically partitions employee allowances into non-taxable and taxable portions based on active settings thresholds:
+     - Transport allowance exempt up to **ETB 1,600** per month; excess amount is treated as taxable.
+     - Mobile / communication allowance exempt up to **ETB 2,000** per month; excess is treated as taxable.
+   - Taxable income for Schedule 'A' progressive brackets is strictly: $\text{Earned Basic} + \text{Taxable Allowance} + \text{Overtime}$.
+   - Employer Pension (11%) is calculated strictly as $11\% \times \text{Earned Basic}$ and presented as a non-deductible company contribution.
+3. **HR Attendance Sync & Excel Reconciliation**:
+   - Finance Payroll workspace shall include an **"Import Attendance"** modal with two workflows:
+     - **"Sync from HR" (1-Click Live Import)**: Pulls active month's attendance records from HR, calculating payable working days ($30 - \text{unexcused absences}$), honoring approved leaves (Annual Leave, Sick Leave, Bereavement) as fully paid days.
+     - **"Upload Attendance Excel"**: Allows uploading and reconciling an external spreadsheet containing `[Employee ID, Present Days, Absent Days, Leave Days]` with an available template download.
+   - Proration applies standard 30-day Ethiopian basis: $\text{Earned Basic} = \frac{\text{Basic Salary}}{30} \times \text{Payable Days}$.
+4. **Approval Immutability & File Budget**:
+   - Draft payroll periods dynamically recalculate when settings or attendance changes occur. Approved historical months remain immutable for audit integrity.
+   - All components adhere strictly to the $\le 250$ line budget and Warm Earth token styling.
+
 

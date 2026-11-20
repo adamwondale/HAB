@@ -17,6 +17,8 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 9: Integration and Final Polish** - Full cross-module sync, responsive checks, empty/error states, and end-to-end verification.
 - [x] **Phase 10: Role-Specific Dashboards & Admin Perspective Switcher** - Dedicated landing cockpits for HR, Finance, Store, Operations, and Admin/CEO, with live KPI metrics, actionable deep-link queues, zero payroll leakage, and administrative perspective switching.
 - [x] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
+- [x] **Phase 12: Super Admin Executive Observatory & Cross-Department In-Place Cockpits** - Incorporate team wireframes (CEO 36-KPI health matrix, management notification triage rail, integrated in-place editing across all roles, sequential 3-stage exit clearance, field technical dispatch, biometric attendance dropzone, and finance/store wireframe parity).
+- [ ] **Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync** - Implement the team's two-tier 16-column payroll sheet, automated statutory allowance splitting (non-taxable vs taxable based on ETB 1,600 transport / ETB 2,000 mobile thresholds), and 1-click HR attendance import / Excel reconciliation.
 
 ## Phase Details
 
@@ -199,3 +201,52 @@ Plans:
 - [x] 04-03: Store Daily Issue/Receive, Asset Register, and Minimum Stock Alerts.
 - [x] 04-04: Executive & Technical Dashboards, Record Comments, and Copilot Chatbot.
 - [x] 04-05: Global UI Unslop & Design-Craft Audit across all ERP views.
+
+---
+
+### Phase 12: Super Admin Executive Observatory & Cross-Department In-Place Cockpits
+
+**Goal:** Incorporate the team's 17 hand-drawn wireframes and 36-parameter performance scorecards into a cohesive, production-grade Super Admin and Departmental Management architecture.
+**Depends on:** Phase 10, Phase 11
+**Requirements:** REQ-EXEC-001, REQ-EXEC-002, REQ-EXEC-003, REQ-EXEC-004
+**Success Criteria** (what must be TRUE):
+  1. CEO Executive Overview renders the 4 headline cards (Total Employees 250, Revenue ETB 8M, Active Contracts, Pending Approvals), 3-state Management Notification Rail (`Attention`, `Ready`, `On Track`), and Department Summary RAG health table with expandable 12-parameter scorecards for HR, Store, and Finance.
+  2. Super Admin can switch perspectives into any department with full in-place editing, drawer adjustments, and status toggles; every override automatically stamps an audit log entry.
+  3. Sequential 3-stage cross-department exit clearance (HR initiation $\rightarrow$ Store asset return verification $\rightarrow$ Finance payroll/suspense liquidation $\rightarrow$ Super Admin final sign-off) is enforced with live state synchronization.
+  4. Technical Manager & Operations cockpit features dual-tier technical alerts (Urgent vs Pending), work request dispatch table, and site inventory tracking.
+  5. Attendance view includes Present/Late/Absent summary badges, biometric/scan attendance upload dropzone, attachment preview modal, and full attendance log.
+  6. Finance and Store dashboards implement the team's visual enhancements: Revenue vs Expense Trend bar chart, Operational Expense Breakdown pie chart, VAT/WHT/Pension statutory configuration, Fixed Asset Valuation, and Minimum Stock alert table.
+  7. All components adhere strictly to the 250-line limit and Warm Earth theme tokens (`#F2C46A`, `#4C4541`, `#FCF0DA`, `#AEAC78`).
+  8. TypeScript compiles with zero errors (`npx tsc --noEmit`).
+
+**Plans:** 3 plans
+
+Plans:
+- [x] 12-01: CEO Executive Observatory, 36-Parameter Performance Scorecards & Management Notification Rail (REQ-EXEC-001, REQ-EXEC-002).
+- [x] 12-02: Sequential 3-Stage Cross-Department Exit Clearance & Super Admin In-Place Editing / Audit Trail (REQ-EXEC-002, REQ-EXEC-003).
+- [x] 12-03: Field Technical Dispatch, Attendance Biometric Upload, and Finance/Store Wireframe Parity (REQ-EXEC-004).
+
+---
+
+### Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync
+
+**Goal:** Implement the team's hand-drawn 16-column payroll architecture with two-tier grouped headers, dynamic statutory allowance splitting (non-taxable vs taxable), and a 1-click HR attendance import / Excel reconciliation modal.
+**Depends on:** Phase 6, Phase 12
+**Requirements:** REQ-PAY-002
+**Success Criteria** (what must be TRUE):
+  1. `PayrollCalculationTable.tsx` renders a two-tier grouped header: `Allowance` groups `[Non-taxable | Taxable]` and `Deduction` groups `[Income Tax | Pension (7%) | Other Deductions]`.
+  2. Allowance engine automatically calculates non-taxable vs taxable portions based on configured thresholds (Transport exempt up to ETB 1,600, Mobile exempt up to ETB 2,000). Excess is added to taxable earnings.
+  3. Taxable income for Schedule 'A' tax brackets is strictly: $\text{Earned Basic} + \text{Taxable Allowance} + \text{Overtime}$.
+  4. Employer Pension (11%) is calculated strictly as $11\% \times \text{Earned Basic}$ and presented as non-deductible company contribution.
+  5. `ImportAttendanceModal.tsx` provides both **"Sync from HR" (1-Click Live Import)** and **"Upload Attendance Excel"** with template download.
+  6. Automatic Paid Leave Recognition honors approved leaves (Annual, Sick, Bereavement) as full payable days ($30 - \text{unexcused absences}$).
+  7. All created/modified files adhere strictly to the 250-line limit and Warm Earth design tokens.
+  8. TypeScript compilation passes cleanly (`npx tsc --noEmit`).
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 13-01: Grouped 16-Column Two-Tier Payroll Table & Dynamic Allowance Exemption Engine (REQ-PAY-002).
+- [ ] 13-02: HR Attendance Import Modal (Sync from HR + Excel Reconciliation) & Paid Leave Proration (REQ-PAY-002).
+
+

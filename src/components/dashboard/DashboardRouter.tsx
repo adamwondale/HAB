@@ -16,6 +16,7 @@ import {
   ManagementPerson
 } from '../../types/hrm';
 import { Division } from '../../types/division';
+import { logAuditEvent } from '../../utils/auditLogger';
 import { AdminPerspectiveSwitcher, DashboardPerspective } from './AdminPerspectiveSwitcher';
 import { AdminMasterDashboard } from './roles/AdminMasterDashboard';
 import { HrDashboard } from './roles/HrDashboard';
@@ -40,6 +41,7 @@ export interface DashboardRouterProps {
   divisions?: Division[];
   activeUser?: ManagementPerson;
   onNavigateTab: (tabId: string) => void;
+  onUpdateClearance?: (updated: ClearanceRecord) => void;
 }
 
 export const DashboardRouter: React.FC<DashboardRouterProps> = ({
@@ -56,7 +58,8 @@ export const DashboardRouter: React.FC<DashboardRouterProps> = ({
   stockTransactions = [],
   divisions,
   activeUser,
-  onNavigateTab
+  onNavigateTab,
+  onUpdateClearance
 }) => {
   const isSuperOrExec =
     activeUser?.role === 'super_admin' ||
@@ -81,10 +84,22 @@ export const DashboardRouter: React.FC<DashboardRouterProps> = ({
     setActivePerspective(getDefaultPerspective());
   }, [activeUser?.id, activeUser?.role]);
 
-  // Regular staff are locked to their own departmental perspective
-  const effectivePerspective: DashboardPerspective = isSuperOrExec
-    ? activePerspective
-    : getDefaultPerspective();
+  const effectivePerspective: DashboardPerspective = isSuperOrExec ? activePerspective : getDefaultPerspective();
+
+  const handleClearanceAdjustment = (updated: ClearanceRecord) => {
+    onUpdateClearance?.(updated);
+    if (isSuperOrExec) {
+      logAuditEvent({
+        actorId: activeUser?.id || 'mgmt-super-admin',
+        actorName: activeUser?.name || 'Super Admin',
+        actorRole: activeUser?.role || 'super_admin',
+        action: 'CLEARANCE_STAGE_TRANSITION',
+        targetModule: 'Clearance',
+        targetId: updated.id,
+        details: `Super Admin in-place clearance transition for ${updated.employeeName} to ${updated.stage || updated.status}`
+      });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -93,7 +108,6 @@ export const DashboardRouter: React.FC<DashboardRouterProps> = ({
         <AdminPerspectiveSwitcher
           activePerspective={effectivePerspective}
           onSelectPerspective={setActivePerspective}
-          roleTitle={activeUser?.role === 'executive' ? 'CEO Overview' : 'System Administrator'}
         />
       )}
 
@@ -108,6 +122,7 @@ export const DashboardRouter: React.FC<DashboardRouterProps> = ({
           leaveRequests={leaveRequests}
           onboardingList={onboardingList}
           divisions={divisions}
+          candidates={candidates}
           onNavigateTab={onNavigateTab}
         />
       )}

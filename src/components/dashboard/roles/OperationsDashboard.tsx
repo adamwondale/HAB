@@ -87,9 +87,8 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({
         <div className="lg:col-span-7 rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Shield className="h-4 w-4 text-[#F2C46A]" />
-                <span>Client Site Deployment Coverage</span>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                Client Site Deployment Coverage
               </h2>
               <p className="text-xs text-slate-500">Live operational contract posts across Addis Ababa & regional branches.</p>
             </div>

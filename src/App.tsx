@@ -798,6 +798,7 @@ export default function App() {
             onSelectActiveUser={handleSelectActiveUser}
             onNavigateTab={setActiveTab}
             onQuickAction={handleQuickAction}
+            onUpdateClearance={handleUpdateClearance}
           />
         )}
 
@@ -847,6 +848,8 @@ export default function App() {
               onToggleOnboardingTask={handleToggleOnboardingTask}
               onCompleteOnboarding={handleCompleteOnboarding}
               onEnrollOnboardingChecklist={handleEnrollOnboarding}
+              onUpdateClearance={handleUpdateClearance}
+              onInitiateClearance={handleInitiateClearance}
             />
           )
         )}

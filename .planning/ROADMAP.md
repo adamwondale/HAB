@@ -362,8 +362,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 18-01: Dedicated Super Admin System Settings View (Appearance & Security + HR & Labor Rules) (REQ-SYS-001).
-- [ ] 18-02: Live Integration — Dynamic Leave Recalculation & 1-Click Permanent Confirmation in Onboarding (REQ-SYS-001).
+- [x] 18-01: Dedicated Super Admin System Settings View (Appearance & Security + HR & Labor Rules) (REQ-SYS-001).
+- [x] 18-02: Live Integration — Dynamic Leave Recalculation & 1-Click Permanent Confirmation in Onboarding (REQ-SYS-001).
 
 ---
 

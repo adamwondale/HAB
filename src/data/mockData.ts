@@ -1845,7 +1845,7 @@ export const INITIAL_ONBOARDING: OnboardingChecklist[] = [
     fullName: 'Birhanu Zewdu',
     serviceType: 'Security',
     role: 'Armed Security Officer',
-    progressPercent: 80,
+    progressPercent: 71,
     tasks: [
       { id: 't1', title: 'National ID & Kebele Residence Verification', category: 'Verification', completed: true, completedAt: '2026-09-25' },
       { id: 't2', title: 'Police Character Clearance Certificate (Criminal Records Directorate)', category: 'Verification', completed: true, completedAt: '2026-09-26' },
@@ -1857,7 +1857,83 @@ export const INITIAL_ONBOARDING: OnboardingChecklist[] = [
     ],
     contractSigned: false,
     initialSiteAssigned: 'Commercial Bank of Ethiopia Tower (HQ)',
-    targetStartDate: '2026-10-06'
+    targetStartDate: '2026-11-10',
+    joinedDate: '2026-11-10',
+    probationStatus: 'In Probation',
+    contractType: 'Probationary'
+  },
+  {
+    id: 'onb-02',
+    candidateId: 'cand-02',
+    employeeCode: 'HAB-CLN-0209',
+    fullName: 'Tigist Haile',
+    serviceType: 'Cleaning',
+    role: 'Hospital Sanitation Lead',
+    progressPercent: 100,
+    tasks: [
+      { id: 't1', title: 'National ID & Kebele Residence Verification', category: 'Verification', completed: true, completedAt: '2026-10-10' },
+      { id: 't2', title: 'Police Character Clearance Certificate', category: 'Verification', completed: true, completedAt: '2026-10-11' },
+      { id: 't3', title: 'Notarized Guarantor Undertaking Agreement', category: 'Verification', completed: true, completedAt: '2026-10-12' },
+      { id: 't4', title: 'Occupational Health & Infection Control Exam', category: 'Medical', completed: true, completedAt: '2026-10-13' },
+      { id: 't5', title: 'HAB Smart ID Badge & Biometric Registration', category: 'Equipment', completed: true, completedAt: '2026-10-14' },
+      { id: 't6', title: 'Sanitation Overalls, Gloves, Gumboots & Apron Issue', category: 'Equipment', completed: true, completedAt: '2026-10-15' },
+      { id: 't7', title: 'Employment Contract Execution (Proc 1156/2019)', category: 'Contract', completed: true, completedAt: '2026-10-15' }
+    ],
+    contractSigned: true,
+    initialSiteAssigned: "St. Paul's Hospital Millennium Medical College",
+    targetStartDate: '2026-10-15',
+    joinedDate: '2026-10-15',
+    probationStatus: 'In Probation',
+    contractType: 'Probationary'
+  },
+  {
+    id: 'onb-03',
+    candidateId: 'cand-03',
+    employeeCode: 'HAB-SEC-0110',
+    fullName: 'Dawit Mengistu',
+    serviceType: 'Security',
+    role: 'CCTV Surveillance Specialist',
+    progressPercent: 100,
+    tasks: [
+      { id: 't1', title: 'National ID & Kebele Residence Verification', category: 'Verification', completed: true, completedAt: '2026-09-05' },
+      { id: 't2', title: 'Police Character Clearance Certificate', category: 'Verification', completed: true, completedAt: '2026-09-06' },
+      { id: 't3', title: 'Notarized Guarantor Undertaking Agreement', category: 'Verification', completed: true, completedAt: '2026-09-07' },
+      { id: 't4', title: 'Occupational Medical Fitness & Drug Screening', category: 'Medical', completed: true, completedAt: '2026-09-08' },
+      { id: 't5', title: 'Biometric Enrollment & Access Control Keycard', category: 'Equipment', completed: true, completedAt: '2026-09-09' },
+      { id: 't6', title: 'Tactical Security Uniform, Boots, Beret & Belt Issue', category: 'Equipment', completed: true, completedAt: '2026-09-10' },
+      { id: 't7', title: 'Standard Employment Contract Execution', category: 'Contract', completed: true, completedAt: '2026-09-10' }
+    ],
+    contractSigned: true,
+    initialSiteAssigned: 'Ethiopian Airlines Cargo Terminal Hub',
+    targetStartDate: '2026-09-10',
+    joinedDate: '2026-09-10',
+    probationStatus: 'Due for Permanent Confirmation',
+    contractType: 'Probationary'
+  },
+  {
+    id: 'onb-04',
+    candidateId: 'cand-04',
+    employeeCode: 'HAB-HQ-0301',
+    fullName: 'Helen Berhanu',
+    serviceType: 'Head Office Staff',
+    role: 'HR Officer',
+    progressPercent: 100,
+    tasks: [
+      { id: 't1', title: 'National ID & Kebele Residence Verification', category: 'Verification', completed: true, completedAt: '2026-08-10' },
+      { id: 't2', title: 'Police Character Clearance Certificate', category: 'Verification', completed: true, completedAt: '2026-08-11' },
+      { id: 't3', title: 'Notarized Guarantor Undertaking Agreement', category: 'Verification', completed: true, completedAt: '2026-08-12' },
+      { id: 't4', title: 'Occupational Health Examination', category: 'Medical', completed: true, completedAt: '2026-08-13' },
+      { id: 't5', title: 'HAB Smart ID Badge & System Credentials', category: 'Equipment', completed: true, completedAt: '2026-08-14' },
+      { id: 't6', title: 'Head Office Access Badge & Stationery Kit', category: 'Equipment', completed: true, completedAt: '2026-08-15' },
+      { id: 't7', title: 'Permanent Employment Contract Execution', category: 'Contract', completed: true, completedAt: '2026-08-15' }
+    ],
+    contractSigned: true,
+    initialSiteAssigned: 'HAB Head Office (Bole)',
+    targetStartDate: '2026-08-15',
+    joinedDate: '2026-08-15',
+    completedDate: '2026-10-20',
+    probationStatus: 'Completed',
+    contractType: 'Permanent'
   }
 ];
 

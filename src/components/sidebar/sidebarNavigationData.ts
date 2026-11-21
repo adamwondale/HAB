@@ -109,10 +109,16 @@ export function buildNavCategories(params: NavCategoryParams): NavCategory[] {
           icon: Award
         },
         {
-          id: 'master-setup',
-          label: isAmharic ? 'ማስተር ሴትአፕ' : 'Settings',
-          fullName: isAmharic ? 'የሲስተም ማስተር ሴትአፕ እና የቀመር ህጎች' : 'View important system rules',
+          id: 'settings',
+          label: isAmharic ? 'የስርዓት ቅንብሮች' : 'System Settings',
+          fullName: isAmharic ? 'የስርዓት ገጽታ፣ የይለፍ ቃል እና የሰራተኛ ህጎች' : 'Configure theme, language, passwords, and labor rules',
           icon: Sliders
+        },
+        {
+          id: 'master-setup',
+          label: isAmharic ? 'ማስተር ሴትአፕ' : 'Master Rules',
+          fullName: isAmharic ? 'የሲስተም ማስተር ሴትአፕ እና የቀመር ህጎች' : 'View tax brackets, pensions, and statutory payroll rules',
+          icon: Scale
         },
         {
           id: 'audit',

@@ -13,6 +13,7 @@ import { AttendanceView } from '../AttendanceView';
 import { EmployeeManagementView } from '../EmployeeManagementView';
 import { RecruitmentView } from '../RecruitmentView';
 import { LeaveManagementView } from '../LeaveManagementView';
+import { SystemSettingsView } from '../settings/SystemSettingsView';
 import { ModuleId, WorkspaceData } from './types';
 import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord, Employee, Candidate, OnboardingChecklist, ClearanceRecord, AttendanceStatus, AttendanceRecord } from '../../types/hrm';
 
@@ -42,7 +43,11 @@ interface SimpleWorkspaceProps {
   onAddAttendanceRecord?: (record: AttendanceRecord) => void;
 }
 
-const VALID_MODULES = new Set(['org', 'divisions', 'recruitment', 'onboarding', 'management', 'deployment', 'attendance', 'leave', 'payroll', 'store', 'transfers', 'experience', 'clearance', 'master-setup', 'audit']);
+const VALID_MODULES = new Set([
+  'org', 'divisions', 'recruitment', 'onboarding', 'management',
+  'deployment', 'attendance', 'leave', 'payroll', 'store',
+  'transfers', 'experience', 'clearance', 'master-setup', 'audit', 'settings'
+]);
 const isModuleId = (value: string): value is ModuleId => VALID_MODULES.has(value);
 
 export function SimpleWorkspace({
@@ -201,20 +206,18 @@ export function SimpleWorkspace({
           if (c) c.stage = st;
         }}
         onSendToOnboarding={(cand) => onEnrollOnboardingChecklist?.({
-          id: `onb-${Date.now()}`,
-          candidateId: cand.id,
+          id: `onb-${Date.now()}`, candidateId: cand.id,
           employeeCode: `HAB-NEW-${Date.now().toString().slice(-4)}`,
-          fullName: cand.fullName,
-          role: cand.targetRole,
-          serviceType: cand.targetService,
-          progressPercent: 0,
-          contractSigned: false,
-          targetStartDate: new Date().toISOString().slice(0, 10),
-          tasks: []
+          fullName: cand.fullName, role: cand.targetRole, serviceType: cand.targetService,
+          progressPercent: 0, contractSigned: false, targetStartDate: new Date().toISOString().slice(0, 10), tasks: []
         })}
         onAddCandidate={onAddCandidate || (() => {})}
       />
     );
+  }
+
+  if (activeTab === 'settings') {
+    return <SystemSettingsView />;
   }
 
   if (activeTab === 'leave') {
@@ -225,14 +228,8 @@ export function SimpleWorkspace({
         sites={data.sites}
         activeUser={data.managementPersons?.find(p => p.id === 'mgmt-hr-head')}
         onAddLeaveRequest={(req) => data.leaveRequests?.unshift(req)}
-        onApproveLeave={(reqId: string) => {
-          const req = data.leaveRequests?.find(l => l.id === reqId);
-          if (req) req.status = 'Approved';
-        }}
-        onRejectLeave={(reqId: string) => {
-          const req = data.leaveRequests?.find(l => l.id === reqId);
-          if (req) req.status = 'Rejected';
-        }}
+        onApproveLeave={(reqId: string) => { const req = data.leaveRequests?.find(l => l.id === reqId); if (req) req.status = 'Approved'; }}
+        onRejectLeave={(reqId: string) => { const req = data.leaveRequests?.find(l => l.id === reqId); if (req) req.status = 'Rejected'; }}
       />
     );
   }

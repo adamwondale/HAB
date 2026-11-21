@@ -32,7 +32,8 @@ export type ModuleId =
   | 'experience'
   | 'clearance'
   | 'master-setup'
-  | 'audit';
+  | 'audit'
+  | 'settings';
 
 export type CellTone = 'good' | 'warn' | 'bad' | 'quiet';
 

@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { Search, Calendar, Plus } from 'lucide-react';
 import { Employee, EmployeeLeaveBalance, ServiceType } from '../../types/hrm';
+import { HrLaborRulesSettings } from '../../types/systemSettings';
+import { calculateEmployeeStatutoryLeave, loadSystemSettings } from '../../utils/systemSettingsStorage';
 
 interface LeaveAvailableTabProps {
   employees: Employee[];
   leaveBalances: Record<string, EmployeeLeaveBalance>;
+  rules?: HrLaborRulesSettings;
   onRequestLeaveForEmployee: (empId: string) => void;
 }
 
 export const LeaveAvailableTab: React.FC<LeaveAvailableTabProps> = ({
   employees,
   leaveBalances,
+  rules,
   onRequestLeaveForEmployee
 }) => {
+  const activeRules = rules || loadSystemSettings().hrLaborRules;
   const [searchQuery, setSearchQuery] = useState('');
   const [divisionFilter, setDivisionFilter] = useState<string>('All');
 
@@ -81,15 +86,20 @@ export const LeaveAvailableTab: React.FC<LeaveAvailableTabProps> = ({
               </tr>
             ) : (
               filteredEmployees.map(emp => {
+                const statutory = calculateEmployeeStatutoryLeave(emp.hireDate, activeRules);
+                const annualTotal = statutory.statutoryDays;
                 const bal = leaveBalances[emp.id] || {
-                  annual: 16,
+                  annual: annualTotal,
                   sick: 30,
                   compassionate: 7,
-                  totalRemaining: 53
+                  totalRemaining: annualTotal + 37
                 };
 
-                const annualPct = Math.max(0, Math.min(100, Math.round((bal.annual / 16) * 100)));
+                const annualRemaining = bal.annual !== undefined ? bal.annual : annualTotal;
+                const annualPct = Math.max(0, Math.min(100, Math.round((annualRemaining / annualTotal) * 100)));
                 const sickPct = Math.max(0, Math.min(100, Math.round((bal.sick / 30) * 100)));
+                const bonusDays = annualTotal - activeRules.baseLeaveDays;
+                const totalRemaining = annualRemaining + bal.sick + bal.compassionate;
 
                 return (
                   <tr key={emp.id} className="odd:bg-white even:bg-slate-50/70 hover:bg-amber-50/20 transition-colors">
@@ -107,14 +117,17 @@ export const LeaveAvailableTab: React.FC<LeaveAvailableTabProps> = ({
                     </td>
                     <td className="py-3.5 px-4">
                       <div className="flex items-center justify-between text-[11px] font-medium mb-1">
-                        <span className="text-slate-700 font-bold">{bal.annual} / 16 Days</span>
+                        <span className="text-slate-700 font-bold">{annualRemaining} / {annualTotal} Days</span>
                         <span className="text-slate-400 font-mono">{annualPct}%</span>
                       </div>
                       <div className="w-full bg-slate-150 h-1.5 rounded-full overflow-hidden">
                         <div
-                          className={`h-full rounded-full transition-all ${bal.annual > 5 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                          className={`h-full rounded-full transition-all ${annualRemaining > 5 ? 'bg-amber-500' : 'bg-rose-500'}`}
                           style={{ width: `${annualPct}%` }}
                         />
+                      </div>
+                      <div className="text-[10px] text-amber-800 font-medium mt-1">
+                        Statutory: {annualTotal}d ({activeRules.baseLeaveDays} Base{bonusDays > 0 ? ` + ${bonusDays}d for ${statutory.tenureYears}y service` : ' · Year 1'})
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
@@ -134,7 +147,7 @@ export const LeaveAvailableTab: React.FC<LeaveAvailableTabProps> = ({
                     </td>
                     <td className="py-3.5 px-4 text-center">
                       <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 font-mono font-bold text-xs">
-                        {bal.totalRemaining} Days
+                        {totalRemaining} Days
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-right">

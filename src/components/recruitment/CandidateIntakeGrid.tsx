@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Search, Phone, ArrowRight, FileText, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Phone, ArrowRight, FileText, ShieldCheck, Clock } from 'lucide-react';
 import { Candidate, ServiceType } from '../../types/hrm';
+import { loadSystemSettings } from '../../utils/systemSettingsStorage';
+import { SystemSettings } from '../../types/systemSettings';
 
 interface CandidateIntakeGridProps {
   candidates: Candidate[];
@@ -19,6 +21,19 @@ export const CandidateIntakeGrid: React.FC<CandidateIntakeGridProps> = ({
 }) => {
   const [selectedService, setSelectedService] = useState<'All' | ServiceType>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [probationDays, setProbationDays] = useState<number>(() => loadSystemSettings().hrLaborRules.probationDurationDays || 60);
+
+  useEffect(() => {
+    const handleUpdate = (e: Event) => {
+      const custom = e as CustomEvent<SystemSettings>;
+      if (custom.detail?.hrLaborRules?.probationDurationDays) {
+        setProbationDays(custom.detail.hrLaborRules.probationDurationDays);
+      }
+    };
+    window.addEventListener('hab_system_settings_updated', handleUpdate);
+    return () => window.removeEventListener('hab_system_settings_updated', handleUpdate);
+  }, []);
+
   const stages: Candidate['stage'][] = ['Applied', 'Screened', 'Interview', 'Background Check', 'Offer Issued'];
 
   const filtered = candidates.filter(c => {
@@ -49,15 +64,21 @@ export const CandidateIntakeGrid: React.FC<CandidateIntakeGridProps> = ({
           ))}
         </div>
 
-        <div className="relative w-full md:w-64">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            placeholder="Search candidate, role, code..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs rounded-lg pl-8 pr-3 py-1.5 focus:border-[#F2C46A] focus:outline-none"
-          />
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <span className="hidden lg:inline-flex items-center gap-1 text-[11px] font-medium bg-[#FCF0DA]/80 dark:bg-slate-800 text-[#4C4541] dark:text-[#F2C46A] px-2.5 py-1.5 rounded-lg border border-[#F2C46A]/50 shrink-0">
+            <Clock className="w-3 h-3 text-amber-600" />
+            <span>Policy: {probationDays}-Day Probation</span>
+          </span>
+          <div className="relative w-full md:w-64">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              placeholder="Search candidate, role, code..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs rounded-lg pl-8 pr-3 py-1.5 focus:border-[#F2C46A] focus:outline-none"
+            />
+          </div>
         </div>
       </div>
 

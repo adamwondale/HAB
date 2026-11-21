@@ -36,6 +36,8 @@ export type SiteCategory =
   | 'Hospital';
 
 export type EmploymentType = 'Permanent' | 'Contract';
+export type ProbationStatus = 'In Probation' | 'Due for Permanent Confirmation' | 'Completed';
+export type ContractType = 'Probationary' | 'Permanent' | 'Contract';
 
 export type KpiActionFlag = 'Give Raise' | 'Assign Training' | 'Warning' | 'On Track';
 
@@ -82,6 +84,9 @@ export interface Employee {
   grade: string; // L1, L2, L3, Senior, Supervisor
   status: EmployeeStatus;
   employmentType?: EmploymentType;
+  contractType?: ContractType;
+  probationStatus?: ProbationStatus;
+  joinedDate?: string;
   faydaNumber?: string; // 16-digit Ethiopian National Fayda ID
   qrCodeData?: string;
   kpiRating?: EmployeeKpiRating;
@@ -384,6 +389,9 @@ export interface OnboardingChecklist {
   initialSiteAssigned?: string;
   targetStartDate: string;
   completedDate?: string;
+  joinedDate?: string;
+  probationStatus?: ProbationStatus;
+  contractType?: ContractType;
 }
 
 export interface PayrollRecord {

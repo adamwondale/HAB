@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Calendar, Search, UserCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Employee, LeaveRequest, LeaveType } from '../../types/hrm';
+import { calculateEmployeeStatutoryLeave, loadSystemSettings } from '../../utils/systemSettingsStorage';
 
 interface QuickLeaveRequestModalProps {
   isOpen: boolean;
@@ -129,23 +130,44 @@ export const QuickLeaveRequestModal: React.FC<QuickLeaveRequestModalProps> = ({
             </select>
           </div>
 
-          {/* Selected Employee Snapshot */}
-          {selectedEmp && (
-            <div className="p-3 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between">
-              <div>
-                <span className="font-bold text-slate-900 dark:text-slate-100 block">{selectedEmp.firstName} {selectedEmp.lastName}</span>
-                <span className="text-[10px] text-slate-500 font-mono">{selectedEmp.serviceType} · Site: {selectedEmp.currentSiteName || 'Reserve Pool'}</span>
+          {/* Selected Employee Snapshot & Dynamic Statutory Formula */}
+          {selectedEmp && (() => {
+            const rules = loadSystemSettings().hrLaborRules;
+            const statutory = calculateEmployeeStatutoryLeave(selectedEmp.hireDate, rules);
+            const bonus = statutory.statutoryDays - rules.baseLeaveDays;
+            return (
+              <div className="p-3 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-slate-900 dark:text-slate-100 block">{selectedEmp.firstName} {selectedEmp.lastName}</span>
+                  <span className="text-[10px] text-slate-500 font-mono">{selectedEmp.serviceType} · Site: {selectedEmp.currentSiteName || 'Reserve Pool'}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400 block">Statutory Entitlement</span>
+                  <span className="font-mono font-bold text-sm text-emerald-800 dark:text-emerald-300">
+                    {statutory.statutoryDays} Days
+                  </span>
+                  <span className="text-[9px] text-slate-500 block">
+                    ({rules.baseLeaveDays} Base{bonus > 0 ? ` + ${bonus}d for ${statutory.tenureYears}y service` : ' · Year 1'})
+                  </span>
+                </div>
               </div>
-              <div className="text-right">
-                <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400 block">Available Annual</span>
-                <span className="font-mono font-bold text-sm text-emerald-800 dark:text-emerald-300">16 Days</span>
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
-          {/* Leave Type */}
+          {/* Leave Type with Approval Tier Indicator */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Statutory Leave Type *</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Statutory Leave Type *</label>
+              {leaveType.includes('Maternity') || leaveType.includes('Unpaid') ? (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-200">
+                  Tier 2: CEO Sign-off
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
+                  Tier 1: Head of Dept
+                </span>
+              )}
+            </div>
             <select
               value={leaveType}
               onChange={e => setLeaveType(e.target.value as LeaveType)}

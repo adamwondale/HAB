@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, Users, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, XCircle, Users, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { LeaveRequest, Employee, EmployeeLeaveBalance } from '../../types/hrm';
+import { HrLaborRulesSettings } from '../../types/systemSettings';
+import { loadSystemSettings } from '../../utils/systemSettingsStorage';
 
 interface LeaveRequestsTabProps {
   leaveRequests: LeaveRequest[];
   employees: Employee[];
   leaveBalances: Record<string, EmployeeLeaveBalance>;
+  rules?: HrLaborRulesSettings;
   canApprove: boolean;
   onApprove: (requestId: string, replacementId: string, replacementName: string) => void;
   onReject: (requestId: string) => void;
@@ -15,10 +18,12 @@ export const LeaveRequestsTab: React.FC<LeaveRequestsTabProps> = ({
   leaveRequests,
   employees,
   leaveBalances,
+  rules,
   canApprove,
   onApprove,
   onReject
 }) => {
+  const activeRules = rules || loadSystemSettings().hrLaborRules;
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [selectedReplacementMap, setSelectedReplacementMap] = useState<Record<string, string>>({});
 
@@ -87,6 +92,11 @@ export const LeaveRequestsTab: React.FC<LeaveRequestsTabProps> = ({
                 }
                 const isOverdraft = req.days > currentBal && req.status === 'Pending';
 
+                const matchedRule = activeRules.leaveTypes?.find(
+                  lt => lt.name.toLowerCase().includes(req.leaveType.toLowerCase()) || req.leaveType.toLowerCase().includes(lt.name.toLowerCase())
+                );
+                const isCeoApproval = matchedRule ? matchedRule.approvalTier === 'CEO' : req.leaveType.includes('Maternity') || req.leaveType.includes('Unpaid');
+
                 return (
                   <tr key={req.id} className="odd:bg-white even:bg-slate-50/70 hover:bg-amber-50/20 transition-colors">
                     <td className="py-3.5 px-4 font-normal">
@@ -99,7 +109,21 @@ export const LeaveRequestsTab: React.FC<LeaveRequestsTabProps> = ({
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-slate-600 max-w-xs truncate">{req.siteName}</td>
-                    <td className="py-3.5 px-4 font-medium text-slate-800">{req.leaveType}</td>
+                    <td className="py-3.5 px-4">
+                      <div className="font-medium text-slate-800">{req.leaveType}</div>
+                      <div className="mt-1">
+                        {isCeoApproval ? (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-200">
+                            <ShieldCheck className="w-2.5 h-2.5 text-purple-600" />
+                            Tier 2: CEO Sign-off
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                            Tier 1: Head of Dept
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="py-3.5 px-4 text-slate-600">
                       <div>{req.startDate} to {req.endDate}</div>
                       <div className="flex items-center gap-1 mt-0.5">

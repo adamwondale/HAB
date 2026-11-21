@@ -41,7 +41,8 @@ const QUICK_SEARCH_MODULES = [
   { id: 'transfers', label: 'Transfers', keywords: 'transfer promotion site rotation' },
   { id: 'clearance', label: 'Employee exit', keywords: 'clearance exit termination handover' },
   { id: 'experience', label: 'Work letters', keywords: 'experience certificate testimonial' },
-  { id: 'master-setup', label: 'Settings', keywords: 'settings tax pension overtime salary grades penalty rules credentials' }
+  { id: 'settings', label: 'System Settings', keywords: 'system settings appearance theme color language password labor probation rules' },
+  { id: 'master-setup', label: 'Master Rules', keywords: 'tax pension overtime salary grades penalty rules credentials' }
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({

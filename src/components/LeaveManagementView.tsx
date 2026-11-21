@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, AlertCircle, ShieldCheck } from 'lucide-react';
 import { LeaveRequest, Employee, ClientSite, ManagementPerson, EmployeeLeaveBalance } from '../types/hrm';
 import { SystemMasterConfig } from '../types/masterConfig';
-import { DEFAULT_SYSTEM_MASTER_CONFIG } from '../utils/masterConfigEngine';
 import { INITIAL_LEAVE_REQUESTS, INITIAL_EMPLOYEES, INITIAL_LEAVE_BALANCES } from '../data/mockData';
 import { LeaveRequestsTab } from './leave/LeaveRequestsTab';
 import { LeaveAvailableTab } from './leave/LeaveAvailableTab';
+import { LeaveSummaryStats } from './leave/LeaveSummaryStats';
 import { QuickLeaveRequestModal } from './leave/QuickLeaveRequestModal';
+import { loadSystemSettings, calculateEmployeeStatutoryLeave } from '../utils/systemSettingsStorage';
+import { SystemSettings } from '../types/systemSettings';
 
 interface LeaveManagementViewProps {
   leaveRequests?: LeaveRequest[];
@@ -33,6 +35,7 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
     ? activeUser.permissions.canManageShiftsAndDeployments || activeUser.permissions.canEditEmployees
     : true;
 
+  const [settings, setSettings] = useState<SystemSettings>(() => loadSystemSettings());
   const [activeTab, setActiveTab] = useState<'Request' | 'Available'>('Request');
   const [requests, setRequests] = useState<LeaveRequest[]>(leaveRequests);
   const [balances, setBalances] = useState<Record<string, EmployeeLeaveBalance>>(() => {
@@ -44,21 +47,36 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
   const [preselectedEmpId, setPreselectedEmpId] = useState('');
   const [warningToast, setWarningToast] = useState<string | null>(null);
 
+  useEffect(() => {
+    const handleSettingsUpdate = (e: Event) => {
+      const custom = e as CustomEvent<SystemSettings>;
+      if (custom.detail) {
+        setSettings(custom.detail);
+      }
+    };
+    window.addEventListener('hab_system_settings_updated', handleSettingsUpdate);
+    return () => window.removeEventListener('hab_system_settings_updated', handleSettingsUpdate);
+  }, []);
+
   const handleApprove = (leaveId: string, replacementId: string, replacementName: string) => {
     const targetReq = requests.find(r => r.id === leaveId);
     if (!targetReq) return;
 
     const empId = targetReq.employeeId;
     const daysToDeduct = targetReq.days;
+    const emp = employees.find(e => e.id === empId);
+    const statutory = emp ? calculateEmployeeStatutoryLeave(emp.hireDate, settings.hrLaborRules) : null;
+    const baseAnnual = statutory ? statutory.statutoryDays : settings.hrLaborRules.baseLeaveDays;
+
     const currentBal = balances[empId] || {
       employeeId: empId,
       employeeCode: targetReq.employeeCode,
       employeeName: targetReq.employeeName,
       serviceType: targetReq.serviceType,
-      annual: 16,
+      annual: baseAnnual,
       sick: 30,
       compassionate: 7,
-      totalRemaining: 53
+      totalRemaining: baseAnnual + 37
     };
 
     let field: 'annual' | 'sick' | 'compassionate' = 'annual';
@@ -142,36 +160,29 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
         </div>
       )}
 
-      {/* Multi-Tier Approval Protocol Banner (Screen 8 Wireframe Rule) */}
-      <div className="bg-[#FCF0DA]/60 dark:bg-slate-800/40 p-2.5 rounded-lg border border-[#EFE7D8] dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#4C4541] dark:text-slate-300 gap-1.5">
+      {/* Multi-Tier Approval Protocol & Statutory Progression Banner */}
+      <div className="bg-[#FCF0DA]/60 dark:bg-slate-800/40 p-2.5 rounded-lg border border-[#EFE7D8] dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between text-xs text-[#4C4541] dark:text-slate-300 gap-2">
         <span className="font-bold flex items-center gap-1.5">
           <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
           Multi-Tier Approval Protocol: Requires Head of Department & CEO / Executive Sign-off
         </span>
-        <span className="text-[10px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono font-bold w-fit border border-slate-200 dark:border-slate-700">
-          Labor Proclamation 1156/2019
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono font-bold border border-slate-200 dark:border-slate-700 text-amber-800 dark:text-amber-300">
+            Formula: {settings.hrLaborRules.baseLeaveDays}d + 1d/{settings.hrLaborRules.leaveYearsPerStep}y (Cap: {settings.hrLaborRules.leaveMaxDaysCap}d)
+          </span>
+          <span className="text-[10px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono font-bold border border-slate-200 dark:border-slate-700">
+            Labor Proc 1156/2019
+          </span>
+        </div>
       </div>
 
       {/* 4 Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
-          <div className="text-xs font-medium text-slate-500">{t('hr.allRecords')}</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{requests.length}</div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
-          <div className="text-xs font-medium text-slate-500">{t('hr.waiting')}</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{pendingCount}</div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
-          <div className="text-xs font-medium text-slate-500">{t('hr.approved')}</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{approvedCount}</div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
-          <div className="text-xs font-medium text-slate-500">{t('hr.allEmployees')}</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-slate-950 dark:text-white mt-1">{employees.length}</div>
-        </div>
-      </div>
+      <LeaveSummaryStats
+        totalRequests={requests.length}
+        pendingCount={pendingCount}
+        approvedCount={approvedCount}
+        totalEmployees={employees.length}
+      />
 
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
         <div className="flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -209,6 +220,7 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
             leaveRequests={requests}
             employees={employees}
             leaveBalances={balances}
+            rules={settings.hrLaborRules}
             canApprove={canApprove}
             onApprove={handleApprove}
             onReject={handleReject}
@@ -217,6 +229,7 @@ export const LeaveManagementView: React.FC<LeaveManagementViewProps> = ({
           <LeaveAvailableTab
             employees={employees}
             leaveBalances={balances}
+            rules={settings.hrLaborRules}
             onRequestLeaveForEmployee={(empId) => {
               setPreselectedEmpId(empId);
               setIsApplyModalOpen(true);

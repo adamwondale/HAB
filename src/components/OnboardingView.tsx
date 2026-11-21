@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle2, UserCheck, Lock, Plus } from 'lucide-react';
 import { OnboardingChecklist, ClientSite, ManagementPerson, Candidate } from '../types/hrm';
 import { EnrollOnboardingModal } from './onboarding/EnrollOnboardingModal';
+import { OnboardingProbationCard } from './onboarding/OnboardingProbationCard';
+import { OnboardingTaskList } from './onboarding/OnboardingTaskList';
+import { loadSystemSettings } from '../utils/systemSettingsStorage';
+import { SystemSettings } from '../types/systemSettings';
 
-interface OnboardingViewProps {
+export interface OnboardingViewProps {
   onboardingList: OnboardingChecklist[];
   sites: ClientSite[];
   activeUser?: ManagementPerson;
@@ -12,6 +16,7 @@ interface OnboardingViewProps {
   onToggleTask: (checklistId: string, taskId: string) => void;
   onCompleteOnboarding: (checklistId: string) => void;
   onEnrollChecklist?: (newChecklist: OnboardingChecklist) => void;
+  onConfirmPermanent?: (checklistId: string) => void;
 }
 
 export const OnboardingView: React.FC<OnboardingViewProps> = ({
@@ -21,34 +26,59 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
   candidates = [],
   onToggleTask,
   onCompleteOnboarding,
-  onEnrollChecklist
+  onEnrollChecklist,
+  onConfirmPermanent
 }) => {
   const { t } = useTranslation();
+  const [items, setItems] = useState<OnboardingChecklist[]>(onboardingList);
   const [selectedChecklistId, setSelectedChecklistId] = useState<string>(onboardingList[0]?.id || '');
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
-  const selectedChecklist = onboardingList.find(o => o.id === selectedChecklistId) || onboardingList[0];
+  const [filterTab, setFilterTab] = useState<'All Candidates' | 'In Review' | 'On Probation' | 'Ready for Permanent'>('All Candidates');
+  const [probationDays, setProbationDays] = useState<number>(() => loadSystemSettings().hrLaborRules.probationDurationDays || 60);
 
-  const isStorekeeper = activeUser?.id === 'mgmt-storekeeper';
-  const isLegal = activeUser?.id === 'mgmt-legal';
+  useEffect(() => { setItems(onboardingList); }, [onboardingList]);
+
+  useEffect(() => {
+    const handleSettingsUpdated = (e: Event) => {
+      const custom = e as CustomEvent<SystemSettings>;
+      if (custom.detail?.hrLaborRules?.probationDurationDays) setProbationDays(custom.detail.hrLaborRules.probationDurationDays);
+    };
+    window.addEventListener('hab_system_settings_updated', handleSettingsUpdated);
+    return () => window.removeEventListener('hab_system_settings_updated', handleSettingsUpdated);
+  }, []);
+
+  const selectedChecklist = items.find(o => o.id === selectedChecklistId) || items[0];
   const canActivateEmployee = activeUser ? activeUser.permissions.canEditEmployees : true;
 
+  const handlePermanentConfirmed = (id: string) => {
+    setItems(prev => prev.map(it => it.id === id ? { ...it, probationStatus: 'Completed', contractType: 'Permanent' } : it));
+    onConfirmPermanent?.(id);
+  };
+
   const isTaskAuthorizedForRole = (cat: string) =>
-    !activeUser || (isStorekeeper ? cat === 'Uniform & Equipment' : isLegal ? cat === 'Police & Guarantor' : true);
+    !activeUser || (activeUser.id === 'mgmt-storekeeper' ? cat === 'Uniform & Equipment' : activeUser.id === 'mgmt-legal' ? cat === 'Police & Guarantor' : true);
+
+  const filteredList = items.filter(item => {
+    const isPerm = item.probationStatus === 'Completed' || item.contractType === 'Permanent';
+    const elapsed = Math.floor(Math.max(0, Date.now() - new Date(item.joinedDate || item.targetStartDate || '2026-10-01').getTime()) / 86400000);
+    const isReady = !isPerm && (elapsed >= probationDays || item.probationStatus === 'Due for Permanent Confirmation');
+    if (filterTab === 'In Review') return item.tasks.some(t => !t.completed);
+    if (filterTab === 'On Probation') return !isPerm && !isReady;
+    if (filterTab === 'Ready for Permanent') return isReady;
+    return true;
+  });
 
   return (
     <div className="space-y-6">
+      {/* Centralized Onboarding & Probation Header */}
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 dark:bg-slate-900 dark:border-slate-800">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-            {t('recruitment.onboardingTitle')}
-          </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {t('recruitment.onboardingSubtitle')}
-          </p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">{t('recruitment.onboardingTitle')}</h1>
+          <p className="text-xs text-slate-500 mt-0.5">{t('recruitment.onboardingSubtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700">
-            <span>{t('recruitment.inInduction')}: </span><strong className="text-slate-900 dark:text-white font-bold">{onboardingList.length} {t('recruitment.newHires')}</strong>
+            <span>{t('recruitment.inInduction')}: </span><strong className="text-slate-900 dark:text-white font-bold">{items.length} {t('recruitment.newHires')}</strong>
           </div>
           {onEnrollChecklist && (
             <button
@@ -63,17 +93,39 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
         </div>
       </div>
 
+      {/* Wireframe Image 7 Filter Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+        {(['All Candidates', 'In Review', 'On Probation', 'Ready for Permanent'] as const).map(tab => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setFilterTab(tab)}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+              filterTab === tab
+                ? 'bg-[#4C4541] text-[#FCF0DA] dark:bg-[#F2C46A] dark:text-[#4C4541] shadow-xs'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Candidate Onboarding & Probation Roster */}
         <div className="lg:col-span-4 space-y-2.5">
           <h2 className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-            {t('recruitment.pendingInductions')} ({onboardingList.length})
+            {filterTab} ({filteredList.length})
           </h2>
           <div className="space-y-2">
-            {onboardingList.map((item) => {
+            {filteredList.map((item) => {
               const isSelected = selectedChecklist?.id === item.id;
               const completedTasks = item.tasks.filter(t => t.completed).length;
               const totalTasks = item.tasks.length;
               const percent = Math.round((completedTasks / totalTasks) * 100);
+              const elapsed = Math.floor(Math.max(0, Date.now() - new Date(item.joinedDate || item.targetStartDate || '2026-10-01').getTime()) / 86400000);
+              const isPerm = item.probationStatus === 'Completed' || item.contractType === 'Permanent';
+              const isReady = !isPerm && (elapsed >= probationDays || item.probationStatus === 'Due for Permanent Confirmation');
 
               return (
                 <div
@@ -95,7 +147,13 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                       </div>
                       <div className="text-xs text-slate-500 font-mono mt-0.5">{item.employeeCode} · {item.role}</div>
                     </div>
-                    <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">{percent}%</span>
+                    {isPerm ? (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Permanent</span>
+                    ) : isReady ? (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 animate-pulse">⚡ Due</span>
+                    ) : (
+                      <span className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400">Day {elapsed}/{probationDays}</span>
+                    )}
                   </div>
                   <div className="mt-2.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                     <div className="bg-slate-900 dark:bg-slate-200 h-full rounded-full transition-all duration-300" style={{ width: `${percent}%` }} />
@@ -110,109 +168,61 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
           </div>
         </div>
 
-        <div className="lg:col-span-8">
+        {/* Right Column: Probation Clock & Verification Milestones */}
+        <div className="lg:col-span-8 space-y-4">
           {selectedChecklist ? (
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-5 dark:bg-slate-900 dark:border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-slate-900 dark:text-white">{selectedChecklist.fullName}</h2>
-                    <span className="text-xs font-mono text-slate-600 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
-                      {selectedChecklist.employeeCode}
-                    </span>
-                    <span className="text-xs text-slate-500">· {selectedChecklist.role}</span>
+            <>
+              {/* 60-Day Probation Tracker Card */}
+              <OnboardingProbationCard
+                item={selectedChecklist}
+                onConfirmPermanent={handlePermanentConfirmed}
+                activeUser={activeUser}
+              />
+
+              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 dark:bg-slate-900 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-base font-bold text-slate-900 dark:text-white">{selectedChecklist.fullName}</h2>
+                      <span className="text-xs font-mono text-slate-600 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                        {selectedChecklist.employeeCode}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {t('recruitment.designatedDeployment')}: <strong className="text-slate-800 dark:text-slate-200">{selectedChecklist.initialSiteAssigned || 'TBD'}</strong>
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {t('recruitment.designatedDeployment')}: <strong className="text-slate-800 dark:text-slate-200">{selectedChecklist.initialSiteAssigned || 'TBD'}</strong>
-                  </p>
-                </div>
 
-                {selectedChecklist.tasks.every(t => t.completed) ? (
-                  canActivateEmployee ? (
-                    <button
-                      type="button"
-                      onClick={() => onCompleteOnboarding(selectedChecklist.id)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors shadow-xs cursor-pointer"
-                    >
-                      <UserCheck className="w-4 h-4" />
-                      <span>{t('recruitment.activateInduct')}</span>
-                    </button>
+                  {selectedChecklist.tasks.every(t => t.completed) ? (
+                    canActivateEmployee ? (
+                      <button type="button" onClick={() => onCompleteOnboarding(selectedChecklist.id)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors shadow-xs cursor-pointer">
+                        <UserCheck className="w-4 h-4" /><span>{t('recruitment.activateInduct')}</span>
+                      </button>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-semibold text-xs rounded-lg">
+                        <Lock className="w-3.5 h-3.5 text-slate-400" /><span>{t('recruitment.readyForHrActivation')}</span>
+                      </span>
+                    )
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-semibold text-xs rounded-lg">
-                      <Lock className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{t('recruitment.readyForHrActivation')}</span>
-                    </span>
-                  )
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      selectedChecklist.tasks.forEach(t => {
-                        if (!t.completed) onToggleTask(selectedChecklist.id, t.id);
-                      });
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-semibold text-xs rounded-lg transition-colors cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
-                    title={t('recruitment.completeAllChecks')}
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{t('recruitment.completeAllChecks')}</span>
-                  </button>
-                )}
-              </div>
+                    <button type="button" onClick={() => selectedChecklist.tasks.forEach(t => { if (!t.completed) onToggleTask(selectedChecklist.id, t.id); })} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-semibold text-xs rounded-lg transition-colors cursor-pointer dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-slate-500" /><span>{t('recruitment.completeAllChecks')}</span>
+                    </button>
+                  )}
+                </div>
 
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
-                  <span className="font-semibold text-xs">{t('recruitment.requiredMilestones')}</span>
-                  <span>{t('recruitment.clickToToggle')}</span>
-                </div>
                 <div className="space-y-2">
-                  {selectedChecklist.tasks.map((task) => {
-                    const canToggle = isTaskAuthorizedForRole(task.category);
-                    return (
-                      <div
-                        key={task.id}
-                        onClick={() => { if (canToggle) onToggleTask(selectedChecklist.id, task.id); }}
-                        className={`p-3 rounded-lg border flex items-center justify-between gap-3 transition-colors ${
-                          !canToggle
-                            ? 'bg-slate-50/60 border-slate-200/70 opacity-65 cursor-not-allowed'
-                            : task.completed
-                            ? 'bg-slate-50 dark:bg-slate-800/40 border-emerald-300 dark:border-emerald-700 text-slate-900 cursor-pointer'
-                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 hover:border-slate-300 cursor-pointer'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={task.completed}
-                            disabled={!canToggle}
-                            onChange={() => {}}
-                            className="w-4 h-4 rounded text-slate-900 focus:ring-slate-500 border-slate-300 disabled:cursor-not-allowed"
-                          />
-                          <div>
-                            <div className={`text-xs font-medium ${task.completed ? 'text-slate-900 dark:text-white line-through opacity-80' : 'text-slate-700 dark:text-slate-200'}`}>
-                              {task.title}
-                            </div>
-                            <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
-                              <span className="px-1.5 py-0.2 rounded border text-[10px] font-medium bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
-                                {task.category}
-                              </span>
-                              {task.completedAt && <span>Verified on: {task.completedAt}</span>}
-                            </div>
-                          </div>
-                        </div>
-                        {task.completed ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        ) : !canToggle ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded"><Lock className="w-2.5 h-2.5" />{t('recruitment.otherDept')}</span>
-                        ) : (
-                          <span className="text-[10px] text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-mono">{t('common.pending')}</span>
-                        )}
-                      </div>
-                    );
-                  })}
+                  <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+                    <span className="font-semibold text-xs">{t('recruitment.requiredMilestones')}</span>
+                    <span>{t('recruitment.clickToToggle')}</span>
+                  </div>
+                  <OnboardingTaskList
+                    checklist={selectedChecklist}
+                    isTaskAuthorizedForRole={isTaskAuthorizedForRole}
+                    onToggleTask={onToggleTask}
+                  />
                 </div>
               </div>
-            </div>
+            </>
           ) : (
             <div className="p-8 text-center bg-white border border-slate-200 rounded-xl text-slate-500 text-xs shadow-xs dark:bg-slate-900 dark:border-slate-800">
               {t('recruitment.selectCandidate')}
@@ -231,7 +241,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
           }}
           candidates={candidates}
           sites={sites}
-          existingCount={onboardingList.length}
+          existingCount={items.length}
         />
       )}
     </div>

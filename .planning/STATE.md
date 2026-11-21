@@ -26,7 +26,7 @@
 - [x] **Phase 15: Wireframe Specification Parity & Multi-Role Cockpit Realization** (3/3 plans complete)
 - [x] **Phase 16: Fayda Digital QR Identification & Smart Attendance Scanner Terminal** (1/1 plans complete)
 - [ ] **Phase 17: Dynamic Tab-Based Access Matrix & Navigation Filtering** (0/1 plans planned)
-- [ ] **Phase 18: Super Admin System Settings & Automated Probation-to-Permanent Engine** (0/2 plans planned)
+- [x] **Phase 18: Super Admin System Settings & Automated Probation-to-Permanent Engine** (2/2 plans complete)
 - [x] **Phase 19: Client Site Invoicing, Multi-Bank Payment Collection & Executive CEO Collections Observatory** (2/2 plans complete)
 
 

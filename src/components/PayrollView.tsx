@@ -13,6 +13,7 @@ import { AddPayrollModal } from './payroll/AddPayrollModal';
 import { ImportAttendanceModal } from './payroll/ImportAttendanceModal';
 import { ChequeCashControlCard } from './finance/ChequeCashControlCard';
 import { MaterialDepreciationTable } from './finance/MaterialDepreciationTable';
+import { SiteAccountsReceivableView } from './finance/SiteAccountsReceivableView';
 export { getDivisionBadgeStyle } from './payroll/payrollHelpers';
 
 interface PayrollViewProps {
@@ -47,7 +48,7 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const canApprove = activeUser ? activeUser.permissions.canApprovePayroll : true;
-  const [activeFinanceTab, setActiveFinanceTab] = useState<'payroll' | 'cheque_cash' | 'depreciation'>('payroll');
+  const [activeFinanceTab, setActiveFinanceTab] = useState<'payroll' | 'client_ar' | 'cheque_cash' | 'depreciation'>('payroll');
   const [filterService, setFilterService] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('October 2026');
@@ -124,6 +125,17 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
           }`}
         >
           {t('payroll.sheetTitle')}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveFinanceTab('client_ar')}
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+            activeFinanceTab === 'client_ar'
+              ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          Client Site Invoices & AR
         </button>
         <button
           type="button"
@@ -217,21 +229,15 @@ export const PayrollView: React.FC<PayrollViewProps> = ({
         </div>
       )}
 
+      {activeFinanceTab === 'client_ar' && <SiteAccountsReceivableView />}
       {activeFinanceTab === 'cheque_cash' && <ChequeCashControlCard />}
       {activeFinanceTab === 'depreciation' && <MaterialDepreciationTable />}
 
       {/* Modals */}
       <PayslipModal record={selectedPayslipRecord} onClose={() => setSelectedPayslipRecord(null)} />
-      <EditPayrollModal record={editingRecord} onClose={() => setEditingRecord(null)} onSave={(updated) => { if (onUpdatePayrollRecord) onUpdatePayrollRecord(updated); setEditingRecord(null); }} />
-      <AddPayrollModal isOpen={isAddModalOpen} employees={employees} onClose={() => setIsAddModalOpen(false)} onAdd={(newRec) => { if (onAddPayrollRecord) onAddPayrollRecord(newRec); }} />
-      <ImportAttendanceModal
-        isOpen={isImportAttendanceOpen}
-        onClose={() => setIsImportAttendanceOpen(false)}
-        payrollRecords={payrollRecords}
-        attendanceRecords={attendance}
-        leaveRequests={leaveRequests}
-        onApplyAttendance={handleApplyAttendance}
-      />
+      <EditPayrollModal record={editingRecord} onClose={() => setEditingRecord(null)} onSave={(u) => { if (onUpdatePayrollRecord) onUpdatePayrollRecord(u); setEditingRecord(null); }} />
+      <AddPayrollModal isOpen={isAddModalOpen} employees={employees} onClose={() => setIsAddModalOpen(false)} onAdd={(r) => { if (onAddPayrollRecord) onAddPayrollRecord(r); }} />
+      <ImportAttendanceModal isOpen={isImportAttendanceOpen} onClose={() => setIsImportAttendanceOpen(false)} payrollRecords={payrollRecords} attendanceRecords={attendance} leaveRequests={leaveRequests} onApplyAttendance={handleApplyAttendance} />
     </div>
   );
 };

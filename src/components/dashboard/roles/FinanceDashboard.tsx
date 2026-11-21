@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Sliders, AlertTriangle } from 'lucide-react';
+import { Sliders, AlertTriangle, FileText, LayoutDashboard } from 'lucide-react';
 import { PayrollRecord, Employee, StockItem } from '../../../types/hrm';
 import { FinanceSettingsModal } from '../../finance/FinanceSettingsModal';
+import { SiteAccountsReceivableView } from '../../finance/SiteAccountsReceivableView';
+import { loadClientInvoices, calculateARMetrics } from '../../../utils/clientBillingStorage';
 
 interface FinanceDashboardProps {
   payroll?: PayrollRecord[];
@@ -40,7 +42,10 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
   onNavigateTab
 }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [activeView, setActiveView] = useState<'overview' | 'client_billing'>('overview');
   const storeStockValuation = stockItems.reduce((sum, i) => sum + i.quantityInStock * i.unitCostETB, 0) || 3500000;
+  const invoices = loadClientInvoices();
+  const arMetrics = calculateARMetrics(invoices);
 
   return (
     <div className="space-y-4">
@@ -52,17 +57,51 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
           </h1>
           <p className="text-xs text-slate-500">Revenue, expenditure run-rates, statutory taxes, and liquidity checkpoints</p>
         </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsSettingsOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 font-semibold text-xs transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
+          >
+            <Sliders className="w-3.5 h-3.5 text-slate-500" />
+            <span>Statutory Tax & Policy Settings</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Workspace Subtab Toggle */}
+      <div className="flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-2 text-xs">
         <button
           type="button"
-          onClick={() => setIsSettingsOpen(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 font-semibold text-xs transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
+          onClick={() => setActiveView('overview')}
+          className={`px-3 py-1.5 rounded-lg font-semibold inline-flex items-center gap-1.5 cursor-pointer ${
+            activeView === 'overview'
+              ? 'bg-[#F2C46A] text-[#4C4541] shadow-2xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
         >
-          <Sliders className="w-3.5 h-3.5 text-slate-500" />
-          <span>Statutory Tax & Policy Settings</span>
+          <LayoutDashboard className="w-3.5 h-3.5" />
+          <span>Ledger & Run-Rates</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveView('client_billing')}
+          className={`px-3 py-1.5 rounded-lg font-semibold inline-flex items-center gap-1.5 cursor-pointer ${
+            activeView === 'client_billing'
+              ? 'bg-[#F2C46A] text-[#4C4541] shadow-2xs'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          <span>Client Site Invoicing & AR Ledger ({invoices.length} Sites)</span>
         </button>
       </div>
 
-      {/* 4 Metric Cards */}
+      {activeView === 'client_billing' ? (
+        <SiteAccountsReceivableView onBack={() => setActiveView('overview')} />
+      ) : (
+        <>
+          {/* 4 Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total revenue</span>
@@ -91,10 +130,20 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3.5 rounded-xl flex items-center justify-between shadow-xs">
           <div>
             <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Accounts receivable (AR)</div>
-            <div className="text-lg font-bold font-mono text-slate-900 dark:text-white mt-0.5">ETB 2,000,000</div>
-            <div className="text-[10px] text-slate-500 mt-0.5">Collection efficiency: <strong className="text-emerald-600">88%</strong> (ETB 1.76M collected)</div>
+            <div className="text-lg font-bold font-mono text-slate-900 dark:text-white mt-0.5 tabular-nums">
+              ETB {arMetrics.totalOutstandingETB.toLocaleString()}
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Collection efficiency: <strong className="text-emerald-600">{arMetrics.collectionEfficiencyRate}%</strong> (ETB {(arMetrics.totalCollectedETB / 1000000).toFixed(2)}M collected)
+            </div>
           </div>
-          <button type="button" onClick={() => onNavigateTab('payroll')} className="px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 cursor-pointer">Invoices</button>
+          <button
+            type="button"
+            onClick={() => setActiveView('client_billing')}
+            className="px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 cursor-pointer"
+          >
+            Invoices
+          </button>
         </div>
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3.5 rounded-xl flex items-center justify-between shadow-xs">
           <div>
@@ -179,6 +228,8 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
           ))}
         </div>
       </div>
+    </>
+  )}
 
       <FinanceSettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>

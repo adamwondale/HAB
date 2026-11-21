@@ -19,7 +19,8 @@ export type AuditActionType =
   | 'CLEARANCE_ASSET_RETURN'
   | 'CLEARANCE_FINANCE_SETTLED'
   | 'SUPER_ADMIN_CLEARANCE_APPROVAL'
-  | 'SUPER_ADMIN_OVERRIDE';
+  | 'SUPER_ADMIN_OVERRIDE'
+  | 'RECORD_PAYMENT';
 
 export interface AuditLogEntry {
   id: string;
@@ -28,7 +29,7 @@ export interface AuditLogEntry {
   actorName: string;
   actorRole: string;
   action: AuditActionType | string;
-  targetModule: 'Divisions' | 'Payroll' | 'Store' | 'Employees' | 'RBAC' | 'Deployment' | 'System' | 'Clearance';
+  targetModule: 'Divisions' | 'Payroll' | 'Store' | 'Employees' | 'RBAC' | 'Deployment' | 'System' | 'Clearance' | 'Onboarding' | 'ClientBilling';
   targetId?: string;
   previousValue?: string;
   newValue?: string;

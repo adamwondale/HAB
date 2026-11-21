@@ -14,6 +14,8 @@ import { CeoWorkDistributionSection } from './CeoWorkDistributionSection';
 import { CeoAttentionRail } from './CeoAttentionRail';
 import { CeoSummaryGrid } from './CeoSummaryGrid';
 import { CeoDepartmentKpiCards } from './CeoDepartmentKpiCards';
+import { CeoCollectionsSummaryWidget } from './CeoCollectionsSummaryWidget';
+import { CeoCollectionsReportDrawer } from '../CeoCollectionsReportDrawer';
 import { CeoSettingsModal } from '../CeoSettingsModal';
 import { Sliders } from 'lucide-react';
 
@@ -43,6 +45,7 @@ export const CeoDashboard: React.FC<CeoDashboardProps> = ({
   onNavigateTab
 }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCollectionsDrawerOpen, setIsCollectionsDrawerOpen] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -69,6 +72,9 @@ export const CeoDashboard: React.FC<CeoDashboardProps> = ({
           </button>
         </div>
       </section>
+
+      {/* Executive Accounts Receivable & Collections Telemetry */}
+      <CeoCollectionsSummaryWidget onOpenDrawer={() => setIsCollectionsDrawerOpen(true)} />
 
       {/* Top Row: Work Distribution Donut (Left) + Need Attention Triage Rail (Right) */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -119,6 +125,12 @@ export const CeoDashboard: React.FC<CeoDashboardProps> = ({
       <CeoSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      {/* CEO Collections Observatory Report Drawer */}
+      <CeoCollectionsReportDrawer
+        isOpen={isCollectionsDrawerOpen}
+        onClose={() => setIsCollectionsDrawerOpen(false)}
       />
     </div>
   );

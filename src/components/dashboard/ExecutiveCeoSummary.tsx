@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Employee, ClientSite, Candidate, PayrollRecord, StockItem, ClearanceRecord } from '../../types/hrm';
 import { ManagementNotificationRail } from './ManagementNotificationRail';
 import { ExecutiveScorecardDrawer, ScorecardDepartment } from './ExecutiveScorecardDrawer';
+import { loadClientInvoices, calculateARMetrics } from '../../utils/clientBillingStorage';
 
 export interface ExecutiveCeoSummaryProps {
   employees: Employee[];
@@ -34,6 +35,9 @@ export const ExecutiveCeoSummary: React.FC<ExecutiveCeoSummaryProps> = ({
     (clearances.filter((c) => c.status === 'In Progress' || c.status === 'On Hold').length || 3) +
     (lowStockCount > 0 ? 1 : 0);
 
+  const clientInvoices = loadClientInvoices();
+  const arMetrics = calculateARMetrics(clientInvoices);
+
   const openScorecard = (dept: ScorecardDepartment) => {
     setSelectedDept(dept);
     setIsScorecardOpen(true);
@@ -63,9 +67,9 @@ export const ExecutiveCeoSummary: React.FC<ExecutiveCeoSummaryProps> = ({
     {
       id: 'finance',
       name: 'Finance & Accounts',
-      indicators: 'ETB 8.15M Revenue | 24.2% Margin | ETB 6.18M Opex',
-      ragLabel: 'Normal',
-      status: 'good'
+      indicators: `ETB 8.15M Rev | ${arMetrics.collectionEfficiencyRate}% AR Coll. | ETB ${(arMetrics.totalOutstandingETB / 1000000).toFixed(2)}M Outst.`,
+      ragLabel: arMetrics.totalOverdueETB > 0 ? 'AR Overdue' : 'Normal',
+      status: arMetrics.totalOverdueETB > 0 ? 'warning' : 'good'
     },
     {
       id: 'operations',

@@ -1,5 +1,7 @@
 import React from 'react';
 import { AlertCircle, ChevronRight } from 'lucide-react';
+import { loadClientInvoices } from '../../../utils/clientBillingStorage';
+import { computeCeoCollectionsTelemetry } from '../../../utils/ceoCollectionsAggregator';
 
 interface AttentionItem {
   label: string;
@@ -9,7 +11,7 @@ interface AttentionItem {
   urgency: 'high' | 'medium' | 'normal';
 }
 
-const ATTENTION_ITEMS: AttentionItem[] = [
+const BASE_ATTENTION_ITEMS: AttentionItem[] = [
   { label: 'Contract renewal time', count: 3, tab: 'divisions', action: 'Review', urgency: 'high' },
   { label: 'Onboarding employees', count: 2, tab: 'onboarding', action: 'Track', urgency: 'normal' },
   { label: 'Leave request', count: 4, tab: 'leave', action: 'Approve', urgency: 'medium' },
@@ -22,6 +24,23 @@ interface CeoAttentionRailProps {
 }
 
 export const CeoAttentionRail: React.FC<CeoAttentionRailProps> = ({ onNavigateTab }) => {
+  const invoices = loadClientInvoices();
+  const telemetry = computeCeoCollectionsTelemetry(invoices);
+  const overdueCount = telemetry.topOverdueRiskSites.length;
+
+  const attentionItems: AttentionItem[] = [
+    ...(overdueCount > 0
+      ? [{
+          label: 'Overdue client payments',
+          count: overdueCount,
+          tab: 'payroll',
+          action: 'Collect',
+          urgency: 'high' as const
+        }]
+      : []),
+    ...BASE_ATTENTION_ITEMS
+  ];
+
   return (
     <div className="rounded-xl border border-[#EFE7D8] bg-white p-5 dark:border-[#3D3633] dark:bg-[#24201E]">
       <div className="flex items-center justify-between border-b border-[#F5EFE3] pb-3 dark:border-[#3D3633]">
@@ -36,7 +55,7 @@ export const CeoAttentionRail: React.FC<CeoAttentionRailProps> = ({ onNavigateTa
         </span>
       </div>
       <div className="mt-3 divide-y divide-[#F5EFE3] dark:divide-[#3D3633]">
-        {ATTENTION_ITEMS.map((item) => (
+        {attentionItems.map((item) => (
           <div
             key={item.label}
             onClick={() => onNavigateTab(item.tab)}
@@ -69,3 +88,4 @@ export const CeoAttentionRail: React.FC<CeoAttentionRailProps> = ({ onNavigateTa
     </div>
   );
 };
+

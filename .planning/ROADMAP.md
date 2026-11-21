@@ -365,3 +365,26 @@ Plans:
 - [ ] 18-01: Dedicated Super Admin System Settings View (Appearance & Security + HR & Labor Rules) (REQ-SYS-001).
 - [ ] 18-02: Live Integration — Dynamic Leave Recalculation & 1-Click Permanent Confirmation in Onboarding (REQ-SYS-001).
 
+---
+
+### Phase 19: Client Site Invoicing, Multi-Bank Payment Collection & Executive CEO Collections Observatory
+
+**Goal:** Implement end-to-end client site payment collection within Finance and an aggregated executive accounts receivable intelligence observatory for the CEO. This includes contract-based monthly invoice generation for 14+ client facilities, multi-bank receipt logging (CBE, Awash, Abyssinia, Telebirr, Cheques) with 2% Ethiopian withholding tax deduction and auto-updating AR balances, coupled with an interactive CEO Dashboard collections widget and drill-down drawer featuring 30/60/90+ day aging analysis, top risk defaulters, and CSV export.
+**Depends on:** Phase 4, Phase 10, Phase 15
+**Requirements:** REQ-FIN-001, REQ-CEO-001
+**Success Criteria** (what must be TRUE):
+  1. Finance module provides an interactive "Client Site Collections & Invoicing" ledger (`SiteAccountsReceivableView`) listing all client facilities with billed totals, collections, and outstanding balances.
+  2. Finance officers can record payments via `SitePaymentCollectionModal` with multi-bank channel selection (CBE, Awash, Cheque, Telebirr), slip/reference number, and 2% Ethiopian withholding tax certificate credit.
+  3. Invoice payment status (`Paid`, `Partially Paid`, `Overdue`, `Pending`) and client AR balance update reactively upon payment submission.
+  4. CEO Dashboard embeds `CeoCollectionsSummaryWidget` displaying real-time aggregated metrics: Total Invoiced, Total Collected, Outstanding AR, and Collection Efficiency Rate (%).
+  5. CEO Dashboard includes a 4-tier aging analysis visualizer (0–30d, 31–60d, 61–90d, 90+d) and Top 5 Overdue Risk Sites alert rail.
+  6. CEO can launch an executive drill-down drawer (`CeoCollectionsReportDrawer`) displaying full site-by-site matrix, division breakdown (Security vs. Cleaning), and 1-click CSV export.
+  7. All new and modified components strictly obey the $\le 250$ line budget and Warm Earth design tokens.
+  8. TypeScript compilation passes cleanly (`npx tsc --noEmit`) with 0 errors.
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 19-01: Finance Client Site Invoicing Engine, Multi-Bank Collection Logging & AR Ledger (REQ-FIN-001).
+- [ ] 19-02: Executive CEO Collections Widget, 30/60/90+ Aging Visualizer & Drill-Down Observatory (REQ-CEO-001).
+

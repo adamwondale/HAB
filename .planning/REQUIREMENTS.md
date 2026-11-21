@@ -327,3 +327,37 @@ The application shall implement a dedicated Super Admin System Settings module a
      $$\text{Entitlement} = \min\left(\text{Base Days} + \left\lfloor \frac{\text{Tenure Years}}{\text{Years per Step}} \right\rfloor \times \text{Increment Days},\; \text{Max Cap}\right)$$
    - Live synchronization when settings are updated by Super Admin.
 
+---
+
+### REQ-FIN-001: Client Site Invoicing, Multi-Bank Payment Collection & Ethiopian Tax Settlement
+The application shall implement an end-to-end client site billing and payment collection ledger within the Finance workspace:
+1. **Auto-Generated Monthly Site Invoicing Engine**:
+   - Automatically generates monthly billing invoices for each active commercial client facility (14+ sites) based on contract baseline terms and deployed personnel (guards and custodial cleaners).
+   - Invoices include line-item service breakdown, 15% Ethiopian VAT calculation, gross billing total, billing issue date, and 30-day payment due date.
+2. **Interactive Payment Collection Logging (`SitePaymentCollectionModal`)**:
+   - Finance officers can record full or partial payments received against any outstanding site invoice.
+   - Captures payment channel (Commercial Bank of Ethiopia, Awash Bank, Bank of Abyssinia, Telebirr, or Cheque), transaction reference/bank slip number, collection date, and depositing entity.
+   - Supports 2% Ethiopian Withholding Tax deduction tracking with credit note verification.
+   - Automatically computes remaining balance and dynamically updates invoice status (`Paid`, `Partially Paid`, `Pending`, `Overdue`).
+3. **Site Accounts Receivable Ledger (`SiteAccountsReceivableView`)**:
+   - Searchable, filterable ledger embedded in the Finance module displaying all client site invoices, total billed, amount collected, outstanding balance, and payment status.
+   - Filterable by Division (Security vs. Cleaning), Client Site, Payment Status, and Date Range.
+
+---
+
+### REQ-CEO-001: Aggregated CEO Collections & Accounts Receivable Intelligence Report
+The application shall provide executive-grade aggregated accounts receivable telemetry and risk drill-downs for the CEO:
+1. **CEO Collections Executive Widget (`CeoCollectionsSummaryWidget`)**:
+   - Embedded directly on `CeoDashboard.tsx` displaying high-level performance metrics:
+     - Total Invoiced Revenue (ETB)
+     - Total Amount Collected (ETB)
+     - Total Outstanding Accounts Receivable (ETB)
+     - Overall Collection Efficiency Rate (%)
+   - Visual 4-tier aging analysis breakdown bar (0–30 Days Current, 31–60 Days, 61–90 Days, 90+ Days Overdue).
+   - "Top 5 Overdue Risk Sites" alert callout identifying clients with highest delinquent balances and days overdue.
+2. **CEO Executive Collections Drill-Down Observatory (`CeoCollectionsReportDrawer`)**:
+   - Full-screen or drawer view accessible from the CEO dashboard for comprehensive executive review.
+   - Site-by-site collection performance matrix with division breakdown (Security Services vs. Cleaning Services).
+   - Executive action indicators for defaulting clients (e.g., Flag for Demand Letter, Deployment Hold Alert).
+   - 1-Click CSV and printable briefing export for executive committee and board meetings.
+

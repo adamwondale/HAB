@@ -385,6 +385,6 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 19-01: Finance Client Site Invoicing Engine, Multi-Bank Collection Logging & AR Ledger (REQ-FIN-001).
-- [ ] 19-02: Executive CEO Collections Widget, 30/60/90+ Aging Visualizer & Drill-Down Observatory (REQ-CEO-001).
+- [x] 19-01: Finance Client Site Invoicing Engine, Multi-Bank Collection Logging & AR Ledger (REQ-FIN-001).
+- [x] 19-02: Executive CEO Collections Widget, 30/60/90+ Aging Visualizer & Drill-Down Observatory (REQ-CEO-001).
 

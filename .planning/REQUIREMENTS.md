@@ -259,5 +259,71 @@ The payroll calculation system and UI shall implement the exact architecture spe
      - Letter of Recommendation (የምስክር ወረቀት)
    - All text inside templates is 100% in-place editable before printing or exporting.
 
+---
 
+### REQ-ATT-002: Digital Fayda QR Identification & Smart Attendance Scanner Terminal
+1. **Fayda ID Capture & Auto-Generation (`AddEmployeeModal`)**:
+   - Field for 16-digit Ethiopian Fayda National ID (`ET-FAYDA-XXXX-YYYY-ZZZZ`) with format validation.
+   - 1-click "⚡ Auto-Generate Fayda ID" button to populate a valid national ID during live demonstrations.
+2. **Scannable Digital QR Employee Badge (`SlideOneDrawer` / `EmployeeQrBadgeModal`)**:
+   - Scalable, high-contrast scannable QR badge containing employee verification payload (`employeeCode`, `faydaNumber`, `fullName`, `serviceType`, `siteName`).
+   - Scannable by standard mobile phone cameras and the in-app scanner.
+   - Printable/previewable digital staff identity card with HAB Business PLC branding and Warm Earth tokens.
+3. **Smart Attendance Scanner Terminal (`AttendanceView`)**:
+   - Interactive "Scan QR Badge" terminal with dual modes:
+     a) Live web camera feed (`navigator.mediaDevices.getUserMedia`) with animated targeting radar.
+     b) "Quick Demo Scan" selector allowing instant 1-click simulation for any employee on stage.
+   - Dual-scan daily cycle:
+     - Scan 1 (Clock-In): Verifies Fayda ID against registry, records employee as `Present` with check-in time stamp.
+     - Scan 2 (Clock-Out): Records departure time, computes shift duration, and automatically logs overtime hours exceeding standard 8-hour shift under Ethiopian Labor Proclamation No. 1156/2019.
+   - Real-time updates to daily attendance statistics badges and attendance table.
+
+
+---
+
+### REQ-RBAC-002: Dynamic Tab-Based Access Matrix & Navigation Filtering
+The application shall implement dynamic tab-based role-based access control (RBAC) eliminating 403 Forbidden screens:
+1. **Navigation Tab Filtering**:
+   - The application navigation sidebar shall strictly render only the tabs that the active authenticated user is authorized to view.
+   - Any tab not in the user's effective permissions list shall be completely hidden from the sidebar.
+   - When all child items within a parent navigation section (e.g. Operations, HR, Finance & Store) are hidden, that section header/accordion shall automatically hide as well.
+2. **Zero 403 Error Fallback & Auto-Redirect**:
+   - The application shall eliminate dead-end 403 Forbidden screens during normal navigation.
+   - If a user attempts to access an unauthorized tab via URL, direct link, or after an administrative permission revocation, the system shall automatically redirect them to the safe default (`overview`) view.
+3. **Single Source of Truth & Hierarchical Overrides**:
+   - Tab permissions shall be calculated via a unified single calculation engine:
+     `Effective Tabs = (Role Baseline Tabs + User-Specific Grants) - User-Specific Revocations`
+   - Super Admin accounts are safeguarded with permanent, non-revocable full access (`ALL`).
+4. **Dedicated System Master Setup Access Matrix**:
+   - System Master Setup shall feature a dedicated "Access & Role Matrix" subtab providing an interactive side-by-side grid.
+   - Super Admins can toggle allowed tabs per Role (Role Baselines) and assign granular overrides per User account (User Overrides).
+   - Changes are persisted in `SystemMasterConfig` with 1-click "Reset to Baseline Defaults" and immediate live synchronization with the active session.
+
+---
+
+### REQ-SYS-001: Super Admin System Settings & Automated Probation-to-Permanent Lifecycle
+The application shall implement a dedicated Super Admin System Settings module and operational lifecycle integration based on team wireframe Image 1 and Image 7:
+1. **Dedicated System Settings View (`SystemSettingsView`)**:
+   - Dedicated top-level navigation item under Super Admin with two tabbed control centers:
+     - **Tab 1: Appearance & Security**:
+       - Theme selection (`Light`, `Dark`, `System`) with immediate reactive theme application.
+       - Accent color selection from Warm Earth palette (`#F2C46A`, `#AEAC78`, `#4C4541`, `#3B82F6`).
+       - Language switcher toggling between **English** and **አማርኛ** across all UI labels.
+       - Credential manager allowing Super Admin to update administrative passwords and reset departmental demo accounts (`admin`, `hr`, `finance`, `store`, `operations`, `ceo`).
+     - **Tab 2: HR & Labor Rules**:
+       - Probation duration input (default `60 days` / 2 months) governing probation countdowns.
+       - Editable Annual Leave progression formula with inputs for Base Days (default 16), Years per step (default 1 or 2), Increment per step (default 1 day), and Max Cap (default 30 days).
+       - Standard working hours & shift times (8 hrs/day, 48 hrs/week, 24h ON / 48h REST security rotation).
+       - Statutory leave categories (Annual, Sick, Maternity/Paternity, Compassionate, Unpaid) with paid/unpaid status and approval tier thresholds.
+2. **Onboarding Roster Integration & 1-Click Permanent Confirmation (`OnboardingView`)**:
+   - Visual probation tracker showing days elapsed vs. configured probation duration.
+   - Visual milestone alert when probation period completes: `Due for Permanent Confirmation`.
+   - 1-Click action button: `⚡ Confirm Permanent Status`:
+     - Updates employee record `probationStatus: 'Completed'` and `contractType: 'Permanent'`.
+     - Appends an entry to the Audit Log.
+     - Automatically updates workforce distribution permanent vs. contract counts.
+3. **Dynamic Leave Balance Recalculation (`LeaveManagementView`)**:
+   - Automatically computes each employee's statutory annual leave entitlement using the active formula settings:
+     $$\text{Entitlement} = \min\left(\text{Base Days} + \left\lfloor \frac{\text{Tenure Years}}{\text{Years per Step}} \right\rfloor \times \text{Increment Days},\; \text{Max Cap}\right)$$
+   - Live synchronization when settings are updated by Super Admin.
 

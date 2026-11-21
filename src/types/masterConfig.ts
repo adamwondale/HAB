@@ -77,4 +77,6 @@ export interface SystemMasterConfig {
   gearPenalties: GearPenaltyRule[];
   divisionGrades: DivisionSalaryGradeRule[];
   inventoryThresholds: InventoryThresholdRule[];
+  roleTabPermissions?: Record<string, string[] | 'ALL'>;
+  userTabOverrides?: Record<string, { grantedTabs?: string[]; revokedTabs?: string[] }>;
 }

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, UserPlus } from 'lucide-react';
 import { getModuleModel } from './getModuleModel';
 import { SimpleModulePage } from './SimpleModulePage';
 import { WorkSitesView } from './WorkSitesView';
@@ -10,10 +9,12 @@ import { PayrollView } from '../PayrollView';
 import { AuditTrailView } from '../rbac/AuditTrailView';
 import { OnboardingView } from '../OnboardingView';
 import { ClearanceView } from '../ClearanceView';
-import { AddEmployeeModal } from '../hr/AddEmployeeModal';
-import { NewApplicantModal } from '../recruitment/NewApplicantModal';
+import { AttendanceView } from '../AttendanceView';
+import { EmployeeManagementView } from '../EmployeeManagementView';
+import { RecruitmentView } from '../RecruitmentView';
+import { LeaveManagementView } from '../LeaveManagementView';
 import { ModuleId, WorkspaceData } from './types';
-import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord, Employee, Candidate, OnboardingChecklist, ClearanceRecord } from '../../types/hrm';
+import { Deployment, StockItem, StockTransaction, Division, ServiceType, PayrollRecord, Employee, Candidate, OnboardingChecklist, ClearanceRecord, AttendanceStatus, AttendanceRecord } from '../../types/hrm';
 
 interface SimpleWorkspaceProps {
   activeTab: string;
@@ -37,27 +38,12 @@ interface SimpleWorkspaceProps {
   onEnrollOnboardingChecklist?: (newOnb: OnboardingChecklist) => void;
   onUpdateClearance?: (updated: ClearanceRecord) => void;
   onInitiateClearance?: (newRecord: ClearanceRecord) => void;
+  onUpdateAttendanceStatus?: (recordId: string, newStatus: AttendanceStatus, overtimeHours?: number) => void;
+  onAddAttendanceRecord?: (record: AttendanceRecord) => void;
 }
 
-function isModuleId(value: string): value is ModuleId {
-  return [
-    'org',
-    'divisions',
-    'recruitment',
-    'onboarding',
-    'management',
-    'deployment',
-    'attendance',
-    'leave',
-    'payroll',
-    'store',
-    'transfers',
-    'experience',
-    'clearance',
-    'master-setup',
-    'audit'
-  ].includes(value);
-}
+const VALID_MODULES = new Set(['org', 'divisions', 'recruitment', 'onboarding', 'management', 'deployment', 'attendance', 'leave', 'payroll', 'store', 'transfers', 'experience', 'clearance', 'master-setup', 'audit']);
+const isModuleId = (value: string): value is ModuleId => VALID_MODULES.has(value);
 
 export function SimpleWorkspace({
   activeTab,
@@ -80,11 +66,11 @@ export function SimpleWorkspace({
   onCompleteOnboarding,
   onEnrollOnboardingChecklist,
   onUpdateClearance,
-  onInitiateClearance
+  onInitiateClearance,
+  onUpdateAttendanceStatus,
+  onAddAttendanceRecord
 }: SimpleWorkspaceProps) {
   const { t } = useTranslation();
-  const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
-  const [isAddCandidateOpen, setIsAddCandidateOpen] = useState(false);
 
   if (!isModuleId(activeTab)) {
     return null;
@@ -164,7 +150,7 @@ export function SimpleWorkspace({
     return <AuditTrailView />;
   }
 
-  if (activeTab === 'clearance') {
+  if (activeTab === 'clearance' || activeTab === 'experience') {
     return (
       <ClearanceView
         clearances={data.clearances}
@@ -177,46 +163,83 @@ export function SimpleWorkspace({
     );
   }
 
-  const mainAction =
-    activeTab === 'management' && onAddEmployee
-      ? {
-          label: t('hr.addEmployee'),
-          onClick: () => setIsAddEmployeeOpen(true),
-          icon: <Plus className="h-4 w-4" />
-        }
-      : activeTab === 'recruitment' && onAddCandidate
-      ? {
-          label: t('recruitment.newApplicant'),
-          onClick: () => setIsAddCandidateOpen(true),
-          icon: <UserPlus className="h-4 w-4" />
-        }
-      : undefined;
+  if (activeTab === 'attendance') {
+    return (
+      <AttendanceView
+        attendanceRecords={data.attendance}
+        sites={data.sites}
+        employees={data.employees}
+        onUpdateAttendanceStatus={onUpdateAttendanceStatus || (() => {})}
+        onAddAttendanceRecord={onAddAttendanceRecord}
+      />
+    );
+  }
+
+  if (activeTab === 'management') {
+    return (
+      <EmployeeManagementView
+        employees={data.employees}
+        sites={data.sites}
+        activeUser={data.managementPersons?.find(p => p.id === 'mgmt-hr-head')}
+        masterConfig={data.masterConfig}
+        leaveRequests={data.leaveRequests}
+        attendance={data.attendance}
+        onAddEmployee={onAddEmployee || (() => {})}
+        onInitiateClearanceFromEmployee={() => {}}
+        onDeployFromEmployee={() => {}}
+      />
+    );
+  }
+
+  if (activeTab === 'recruitment') {
+    return (
+      <RecruitmentView
+        candidates={data.candidates}
+        employees={data.employees}
+        onUpdateCandidateStage={(cId, st) => {
+          const c = data.candidates.find(x => x.id === cId);
+          if (c) c.stage = st;
+        }}
+        onSendToOnboarding={(cand) => onEnrollOnboardingChecklist?.({
+          id: `onb-${Date.now()}`,
+          candidateId: cand.id,
+          employeeCode: `HAB-NEW-${Date.now().toString().slice(-4)}`,
+          fullName: cand.fullName,
+          role: cand.targetRole,
+          serviceType: cand.targetService,
+          progressPercent: 0,
+          contractSigned: false,
+          targetStartDate: new Date().toISOString().slice(0, 10),
+          tasks: []
+        })}
+        onAddCandidate={onAddCandidate || (() => {})}
+      />
+    );
+  }
+
+  if (activeTab === 'leave') {
+    return (
+      <LeaveManagementView
+        leaveRequests={data.leaveRequests || []}
+        employees={data.employees}
+        sites={data.sites}
+        activeUser={data.managementPersons?.find(p => p.id === 'mgmt-hr-head')}
+        onAddLeaveRequest={(req) => data.leaveRequests?.unshift(req)}
+        onApproveLeave={(reqId: string) => {
+          const req = data.leaveRequests?.find(l => l.id === reqId);
+          if (req) req.status = 'Approved';
+        }}
+        onRejectLeave={(reqId: string) => {
+          const req = data.leaveRequests?.find(l => l.id === reqId);
+          if (req) req.status = 'Rejected';
+        }}
+      />
+    );
+  }
 
   return (
-    <>
-      <SimpleModulePage
-        model={getModuleModel(activeTab, data, t as any)}
-        mainAction={mainAction}
-      />
-
-      {isAddEmployeeOpen && onAddEmployee && (
-        <AddEmployeeModal
-          isOpen={isAddEmployeeOpen}
-          onClose={() => setIsAddEmployeeOpen(false)}
-          onAddEmployee={onAddEmployee}
-          existingCount={data.employees.length}
-          masterConfig={data.masterConfig}
-        />
-      )}
-
-      {isAddCandidateOpen && onAddCandidate && (
-        <NewApplicantModal
-          isOpen={isAddCandidateOpen}
-          onClose={() => setIsAddCandidateOpen(false)}
-          onAddCandidate={onAddCandidate}
-          existingCount={data.candidates.length}
-        />
-      )}
-    </>
+    <SimpleModulePage
+      model={getModuleModel(activeTab, data, t as any)}
+    />
   );
 }

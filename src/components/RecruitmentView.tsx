@@ -7,6 +7,7 @@ import { AssignedEmployeeModal } from './recruitment/AssignedEmployeeModal';
 import { DocumentGeneratorModal } from './recruitment/DocumentGeneratorModal';
 import { NewApplicantModal } from './recruitment/NewApplicantModal';
 import { ApplicantDossierModal } from './recruitment/ApplicantDossierModal';
+import { ApplicantEvaluationModal } from './recruitment/ApplicantEvaluationModal';
 import { CandidateIntakeGrid } from './recruitment/CandidateIntakeGrid';
 import { ProbationRosterTables } from './recruitment/ProbationRosterTables';
 
@@ -30,11 +31,22 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedDossier, setSelectedDossier] = useState<Candidate | null>(null);
+  const [selectedEvalCandidate, setSelectedEvalCandidate] = useState<Candidate | null>(null);
   const [selectedAssignedEmp, setSelectedAssignedEmp] = useState<Employee | null>(null);
   const [selectedDocEmp, setSelectedDocEmp] = useState<Employee | null>(null);
 
   const probationCount = employees.filter(e => e.status === 'Probation' || e.grade === 'L1').length;
   const finishedCount = employees.filter(e => e.status === 'Active').length;
+
+  const handleSaveEvaluation = (candidateId: string, updates: Partial<Candidate>) => {
+    const target = candidates.find(c => c.id === candidateId);
+    if (target) {
+      Object.assign(target, updates);
+      if (updates.stage) {
+        onUpdateCandidateStage(candidateId, updates.stage);
+      }
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -97,6 +109,7 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
           onAdvanceStage={onUpdateCandidateStage}
           onSendToOnboarding={onSendToOnboarding}
           onPreviewDossier={setSelectedDossier}
+          onEvaluateCandidate={setSelectedEvalCandidate}
         />
       )}
 
@@ -121,6 +134,13 @@ export const RecruitmentView: React.FC<RecruitmentViewProps> = ({
         candidate={selectedDossier}
         isOpen={Boolean(selectedDossier)}
         onClose={() => setSelectedDossier(null)}
+      />
+
+      <ApplicantEvaluationModal
+        candidate={selectedEvalCandidate}
+        isOpen={Boolean(selectedEvalCandidate)}
+        onClose={() => setSelectedEvalCandidate(null)}
+        onSaveEvaluation={handleSaveEvaluation}
       />
 
       <AssignedEmployeeModal

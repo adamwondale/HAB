@@ -11,6 +11,7 @@ import {
   SystemMasterConfig,
   TaxBracketRule
 } from '../types/masterConfig';
+import { ROLE_ALLOWED_TABS } from './roleTabs';
 
 export const DEFAULT_SYSTEM_MASTER_CONFIG: SystemMasterConfig = {
   version: '2026.4',
@@ -277,7 +278,17 @@ export const DEFAULT_SYSTEM_MASTER_CONFIG: SystemMasterConfig = {
       safetyBufferPercent: 10,
       contractWarningDays: 30
     }
-  ]
+  ],
+  roleTabPermissions: {
+    super_admin: 'ALL',
+    executive: [...(ROLE_ALLOWED_TABS.executive as string[])],
+    hr: [...(ROLE_ALLOWED_TABS.hr as string[])],
+    finance: [...(ROLE_ALLOWED_TABS.finance as string[])],
+    operations: [...(ROLE_ALLOWED_TABS.operations as string[])],
+    tech: [...(ROLE_ALLOWED_TABS.tech as string[])],
+    store: [...(ROLE_ALLOWED_TABS.store as string[])]
+  },
+  userTabOverrides: {}
 };
 
 /**

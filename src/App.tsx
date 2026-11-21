@@ -516,6 +516,18 @@ export default function App() {
     }));
   };
 
+  const handleAddOrUpdateAttendanceRecord = (record: AttendanceRecord) => {
+    setAttendance(prev => {
+      const idx = prev.findIndex(r => r.id === record.id || (r.employeeId === record.employeeId && r.date === record.date));
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = { ...next[idx], ...record };
+        return next;
+      }
+      return [record, ...prev];
+    });
+  };
+
   const handleApproveLeave = (leaveId: string, replacementEmployeeId: string, replacementEmployeeName: string) => {
     setLeaveRequests(prev => prev.map(req => {
       if (req.id === leaveId) {
@@ -850,6 +862,8 @@ export default function App() {
               onEnrollOnboardingChecklist={handleEnrollOnboarding}
               onUpdateClearance={handleUpdateClearance}
               onInitiateClearance={handleInitiateClearance}
+              onUpdateAttendanceStatus={handleUpdateAttendanceStatus}
+              onAddAttendanceRecord={handleAddOrUpdateAttendanceRecord}
             />
           )
         )}

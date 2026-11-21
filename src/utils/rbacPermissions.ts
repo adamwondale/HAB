@@ -1,5 +1,7 @@
 import { DepartmentRole, DepartmentalPermissions, ROLE_PERMISSIONS } from '../types/rbac';
-import { ROLE_ALLOWED_TABS } from './roleTabs';
+import { ManagementPerson } from '../types/hrm';
+import { SystemMasterConfig } from '../types/masterConfig';
+import { getEffectiveAllowedTabs } from './roleConfig';
 
 export function normalizeRole(roleOrId?: string): DepartmentRole {
   if (!roleOrId) return 'super_admin';
@@ -18,12 +20,13 @@ export function getPermissionsForRole(roleOrId?: string): DepartmentalPermission
   return ROLE_PERMISSIONS[normalized] || ROLE_PERMISSIONS.super_admin;
 }
 
-export function isTabAllowedForRole(roleOrId: string | undefined, tabId: string): boolean {
+export function isTabAllowedForRole(
+  roleOrPerson: string | ManagementPerson | undefined,
+  tabId: string,
+  masterConfig?: SystemMasterConfig
+): boolean {
   if (tabId === 'overview') return true;
-  const role = normalizeRole(roleOrId);
-  const tabsRecord = ROLE_ALLOWED_TABS as Record<string, string[] | 'ALL'>;
-  const allowed = tabsRecord[role] || (roleOrId ? tabsRecord[roleOrId] : undefined);
+  const allowed = getEffectiveAllowedTabs(roleOrPerson, masterConfig);
   if (allowed === 'ALL') return true;
-  if (Array.isArray(allowed)) return allowed.includes(tabId);
-  return false;
+  return Array.isArray(allowed) && allowed.includes(tabId);
 }

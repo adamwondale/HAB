@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LayoutDashboard, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { ServiceType, ManagementPerson } from '../types/hrm';
-import { getRoleAllowedTabs } from '../utils/roleConfig';
+import { getEffectiveAllowedTabs } from '../utils/roleConfig';
 import { HabMonogramIcon } from './HabLogo';
 import { buildNavCategories, NavCategory, SidebarProps } from './sidebar/sidebarNavigationData';
 import { SidebarUserFooter } from './sidebar/SidebarUserFooter';
@@ -19,10 +19,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isCollapsed = false,
   onToggleCollapse,
   activeUser,
+  masterConfig,
   onLogout
 }) => {
   const { t, i18n } = useTranslation();
-  const allowedTabs = getRoleAllowedTabs(activeUser?.role || activeUser?.id);
+  const allowedTabs = getEffectiveAllowedTabs(activeUser, masterConfig);
   const isAmharic = i18n.language === 'am';
 
   const [tooltip, setTooltip] = useState<{ text: string; top: number } | null>(null);

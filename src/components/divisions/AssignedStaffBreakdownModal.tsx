@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Users, Briefcase, FileCheck, Shield, Sparkles, Building, Home, CheckCircle2 } from 'lucide-react';
+import { X, Users, FileCheck, CheckCircle2 } from 'lucide-react';
 import { Division } from '../../types/division';
-import { Employee, ServiceType } from '../../types/hrm';
+import { Employee } from '../../types/hrm';
 
 interface AssignedStaffBreakdownModalProps {
   isOpen: boolean;
@@ -12,10 +12,7 @@ interface AssignedStaffBreakdownModalProps {
 }
 
 export const AssignedStaffBreakdownModal: React.FC<AssignedStaffBreakdownModalProps> = ({
-  isOpen,
-  onClose,
-  divisions,
-  employees
+  isOpen, onClose, divisions, employees
 }) => {
   const { t } = useTranslation();
   const [selectedDivision, setSelectedDivision] = useState<string>('All');
@@ -23,8 +20,7 @@ export const AssignedStaffBreakdownModal: React.FC<AssignedStaffBreakdownModalPr
 
   if (!isOpen) return null;
 
-  // 600-workforce target breakdown:
-  // 60% Security (360), 28% Cleaning (168), 10% Property Mgt (60), 2% Head Office (12)
+  // 600-workforce target breakdown (60% Sec, 28% Cln, 10% Prop, 2% HQ)
   const divisionTargets: Record<string, { total: number; permanent: number; contract: number; pct: number }> = {
     'Security': { total: 360, permanent: 250, contract: 110, pct: 60 },
     'Cleaning': { total: 168, permanent: 115, contract: 53, pct: 28 },
@@ -36,7 +32,6 @@ export const AssignedStaffBreakdownModal: React.FC<AssignedStaffBreakdownModalPr
   const totalPermanent = 422;
   const totalContract = 178;
 
-  // Filter actual employees roster
   const filteredEmployees = employees.filter((emp) => {
     if (selectedDivision !== 'All' && emp.serviceType !== selectedDivision) return false;
     const empType = emp.employmentType || (emp.role.includes('Lead') || emp.role.includes('Supervisor') ? 'Permanent' : 'Contract');

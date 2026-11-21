@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, Download, UploadCloud, Paperclip, FileSpreadsheet } from 'lucide-react';
+import { Search, Download, FileSpreadsheet, QrCode, ShieldCheck } from 'lucide-react';
 import { AttendanceRecord, AttendanceStatus, ClientSite, Employee } from '../types/hrm';
 import { AttendanceAttachmentModal } from './finance/AttendanceAttachmentModal';
 import { DailyAttendanceSheetModal } from './attendance/DailyAttendanceSheetModal';
 import { AttendanceUploadDropzone } from './attendance/AttendanceUploadDropzone';
+import { AttendanceQrScannerModal } from './attendance/AttendanceQrScannerModal';
 import { downloadCsv } from '../utils/csvExport';
 
 interface AttendanceViewProps {
@@ -19,7 +20,8 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
   attendanceRecords,
   sites,
   employees = [],
-  onUpdateAttendanceStatus
+  onUpdateAttendanceStatus,
+  onAddAttendanceRecord
 }) => {
   const { t } = useTranslation();
   const [selectedSiteId, setSelectedSiteId] = useState<string>('All');
@@ -27,7 +29,7 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDailySheetOpen, setIsDailySheetOpen] = useState(false);
-  const [uploadedScanNotice, setUploadedScanNotice] = useState<string | null>(null);
+  const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
 
   const filtered = attendanceRecords.filter((r) => {
     if (selectedSiteId !== 'All' && r.siteId !== selectedSiteId) return false;
@@ -44,23 +46,24 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
   const absentCount = filtered.filter((r) => r.status === 'Absent').length;
 
   const handleDownloadReport = () => {
-    const headers = ['No.', t('attendance.employee'), 'Code', t('attendance.workSite'), t('attendance.date'), t('attendance.checkIn'), t('attendance.checkOut'), t('attendance.status')];
-    const rows = filtered.map((r, i) => [i + 1, r.employeeName, r.employeeCode, r.siteName, r.date, r.checkInTime || '--', r.checkOutTime || '--', r.status]);
+    const headers = ['No.', t('attendance.employee'), 'Code', t('attendance.workSite'), t('attendance.date'), t('attendance.checkIn'), t('attendance.checkOut'), t('attendance.status'), 'Fayda Verified'];
+    const rows = filtered.map((r, i) => [i + 1, r.employeeName, r.employeeCode, r.siteName, r.date, r.checkInTime || '--', r.checkOutTime || '--', r.status, r.verifiedByFayda ? 'Yes' : 'No']);
     downloadCsv(`HAB_Attendance_${selectedDate}.csv`, headers, rows);
-  };
-
-  const handleFileDrop = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setUploadedScanNotice(`"${e.target.files[0].name}" loaded.`);
-      setTimeout(() => setUploadedScanNotice(null), 4000);
-    }
   };
 
   const effectiveEmployees: Employee[] = employees.length > 0 ? employees : filtered.map((r, i) => ({
     id: r.employeeId || `emp-${i}`, employeeCode: r.employeeCode, firstName: r.employeeName.split(' ')[0] || 'Staff',
-    lastName: r.employeeName.split(' ')[1] || 'Member', role: 'Staff', department: r.serviceType, siteId: r.siteId,
-    currentSiteName: r.siteName, status: 'Active', hiredDate: '2024-01-01', baseSalaryETB: 4500
+    lastName: r.employeeName.split(' ')[1] || 'Member', role: 'Staff', serviceType: r.serviceType,
+    currentSiteName: r.siteName, status: 'Active', hireDate: '2024-01-01'
   } as unknown as Employee));
+
+  const handleRecordFromQr = (record: AttendanceRecord) => {
+    if (onAddAttendanceRecord) {
+      onAddAttendanceRecord(record);
+    } else {
+      onUpdateAttendanceStatus(record.id, record.status, record.overtimeHours);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -80,7 +83,7 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
           <button
             type="button"
             onClick={handleDownloadReport}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs font-semibold cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>{t('attendance.downloadReport')}</span>
@@ -88,15 +91,23 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
           <button
             type="button"
             onClick={() => setIsDailySheetOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] font-bold text-xs shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs font-semibold cursor-pointer"
           >
             <FileSpreadsheet className="w-3.5 h-3.5" />
-            <span>Daily Sheet & Excel Sync</span>
+            <span>Daily Sheet & Excel</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsQrScannerOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F2C46A] hover:bg-[#e6b758] text-[#4C4541] font-bold text-xs shadow-xs transition-colors cursor-pointer"
+          >
+            <QrCode className="w-3.5 h-3.5 text-[#4C4541]" />
+            <span>⚡ Scan QR Badge</span>
           </button>
         </div>
       </div>
 
-      {/* Summary KPI Cards: Typography-first, no saturated squares */}
+      {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-xs">
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('attendance.present')}</p>
@@ -140,7 +151,7 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
         </div>
       </div>
 
-      {/* Attendance Table: Eye-Friendly Calm Slate Header */}
+      {/* Attendance Table */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto bg-white dark:bg-slate-900">
         <table className="w-full text-left text-xs min-w-[760px]">
           <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 font-semibold">
@@ -160,11 +171,21 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
                 <td className="py-2 px-3 font-mono text-slate-400">{idx + 1}</td>
                 <td className="py-2 px-3">
                   <div className="font-semibold text-slate-900 dark:text-slate-100">{r.employeeName}</div>
-                  <div className="text-[10px] font-mono text-slate-400">{r.employeeCode} · {r.serviceType}</div>
+                  <div className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+                    <span>{r.employeeCode} · {r.serviceType}</span>
+                    {r.verifiedByFayda && (
+                      <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold text-[9px]">
+                        <ShieldCheck className="w-2.5 h-2.5 text-emerald-600" /> Fayda
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td className="py-2 px-3 font-mono text-slate-600 dark:text-slate-400">{r.date}</td>
                 <td className="py-2 px-3 text-slate-700 dark:text-slate-300 max-w-xs truncate">{r.siteName}</td>
-                <td className="py-2 px-3 font-mono tabular-nums text-slate-600 dark:text-slate-400">{r.checkInTime || '08:00'} - {r.checkOutTime || '17:00'}</td>
+                <td className="py-2 px-3 font-mono tabular-nums text-slate-600 dark:text-slate-400">
+                  {r.checkInTime || '08:00'} - {r.checkOutTime || '17:00'}
+                  {r.overtimeHours > 0 && <span className="ml-1 text-[10px] text-amber-600 font-bold">(+{r.overtimeHours}h OT)</span>}
+                </td>
                 <td className="py-2 px-3">
                   <button
                     type="button"
@@ -213,6 +234,13 @@ export const AttendanceView: React.FC<AttendanceViewProps> = ({
         onSaveDailySheet={(records) => {
           records.forEach(r => onUpdateAttendanceStatus(r.id, r.status));
         }}
+      />
+      <AttendanceQrScannerModal
+        isOpen={isQrScannerOpen}
+        onClose={() => setIsQrScannerOpen(false)}
+        employees={effectiveEmployees}
+        attendanceRecords={attendanceRecords}
+        onRecordAttendance={handleRecordFromQr}
       />
     </div>
   );

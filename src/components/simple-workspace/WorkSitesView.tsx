@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserPlus } from 'lucide-react';
-import { ClientSite, Deployment, Employee } from '../../types/hrm';
+import { UserPlus, Sparkles } from 'lucide-react';
+import { ClientSite, Deployment, DeploymentProposal, Employee } from '../../types/hrm';
 import { downloadCsv } from '../../utils/csvExport';
 import { StandardPageLayout } from './StandardPageLayout';
 import { UnassignedDispatchDock } from './UnassignedDispatchDock';
 import { WorkSiteAssignForm } from './WorkSiteAssignForm';
 import { WorkSitesTable } from './WorkSitesTable';
 import { SiteTransferCard } from './SiteTransferCard';
+import { PersonaFitDeploymentModal } from '../deployment/PersonaFitDeploymentModal';
 
 interface WorkSitesViewProps {
   sites: ClientSite[];
@@ -27,6 +28,7 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
   const [statusTab, setStatusTab] = useState<'Active' | 'Inactive'>('Active');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isInlineFormOpen, setIsInlineFormOpen] = useState<boolean>(false);
+  const [isPersonaModalOpen, setIsPersonaModalOpen] = useState<boolean>(false);
 
   // Drag & drop state
   const [draggedEmployee, setDraggedEmployee] = useState<Employee | null>(null);
@@ -84,6 +86,14 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
     setDraggedEmployee(null);
     setHoveredSiteId(null);
     setIsInlineFormOpen(false);
+  };
+
+  const handleProposalSubmit = (proposal: DeploymentProposal) => {
+    const emp = employees.find((e) => e.id === proposal.employeeId);
+    const site = sites.find((s) => s.id === proposal.toSiteId);
+    if (emp && site) {
+      handleAssign(emp.id, site.id, 'Main Client Entrance Post');
+    }
   };
 
   const handleDownload = () => {
@@ -165,6 +175,25 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
       }
       extraWidget={
         <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-[#FCF0DA]/40 dark:bg-slate-900 border border-[#F2C46A]/50 rounded-xl shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[#F2C46A] text-[#4C4541] flex items-center justify-center font-bold shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100">Operations Persona-Fit Deployment</h3>
+                <p className="text-[11px] text-slate-500">Vet candidate fitness, health, and subcity proximity before proposing site deployment to HR</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsPersonaModalOpen(true)}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-[#F2C46A] hover:bg-[#e0b257] text-[#4C4541] font-bold text-xs rounded-lg transition-colors shadow-xs cursor-pointer shrink-0"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Persona-Fit Deploy</span>
+            </button>
+          </div>
           <SiteTransferCard sites={sites} employees={employees} />
           <UnassignedDispatchDock
             unassignedEmployees={unassignedEmployees}
@@ -189,6 +218,13 @@ export const WorkSitesView: React.FC<WorkSitesViewProps> = ({
         hoveredSiteId={hoveredSiteId}
         onHoverSite={setHoveredSiteId}
         onAssign={handleAssign}
+      />
+      <PersonaFitDeploymentModal
+        isOpen={isPersonaModalOpen}
+        onClose={() => setIsPersonaModalOpen(false)}
+        sites={sites}
+        employees={employees}
+        onSubmitProposal={handleProposalSubmit}
       />
     </StandardPageLayout>
   );

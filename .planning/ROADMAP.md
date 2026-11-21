@@ -19,7 +19,10 @@ Transforming the enterprise ERP design system into a warm, cohesive earth-tone v
 - [x] **Phase 11: Full Codebase Internationalization & Zero Hardcoded UI Strings** - Scaffold modular i18n domain namespaces, enforce strict TypeScript CustomTypeOptions, and eliminate hardcoded UI copy across all screens in 4 domain waves.
 - [x] **Phase 12: Super Admin Executive Observatory & Cross-Department In-Place Cockpits** - Incorporate team wireframes (CEO 36-KPI health matrix, management notification triage rail, integrated in-place editing across all roles, sequential 3-stage exit clearance, field technical dispatch, biometric attendance dropzone, and finance/store wireframe parity).
 - [x] **Phase 13: 16-Column Grouped Payroll Engine, Automated Allowance Splitting & HR Attendance Sync** - Implement the team's two-tier 16-column payroll sheet, automated statutory allowance splitting (non-taxable vs taxable based on ETB 1,600 transport / ETB 2,000 mobile thresholds), and 1-click HR attendance import / Excel reconciliation.
+- [x] **Phase 14: Enterprise Workforce Scale (600 Staff), Persona-Fit Site Deployment, Smart Attendance Grid & HR Document Suite** - Scale operational workforce to 600 staff across 4 divisions with Permanent/Contract classification, Fayda & QR verification, Operations Manager persona-fit site governance with HR acknowledgment gate, smart daily attendance grid with Excel upload, searchable leave booking, and bilingual work letter document writer.
 - [x] **Phase 15: Wireframe Specification Parity & Multi-Role Cockpit Realization** - Deliver 100% specification parity with CEO & Technical Manager Cockpits, 7-column Finance & Store tracking grid, 36 Departmental KPIs in ETB, and the 9-screen HR & Operations wireframe suite.
+- [x] **Phase 16: Fayda Digital QR Identification & Smart Attendance Scanner Terminal** - 16-digit Fayda ID capture in employee registration, scannable digital QR badge with national registry link, and interactive supervisor scanner terminal with clock-in/clock-out and overtime calculation.
+- [ ] **Phase 17: Dynamic Tab-Based Access Matrix & Navigation Filtering** - Dynamic tab-based RBAC, hiding unauthorized tabs from navigation to eliminate 403 Forbidden states, with auto-redirect to Overview, a unified calculation engine for effective permissions, and a dedicated side-by-side Access Matrix in System Master Setup.
 
 ## Phase Details
 
@@ -296,5 +299,69 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 14-01: 600-Staff Workforce Scaling, Permanent/Contract Classification, Fayda & QR Verification, Recruitment Questionnaires & Operations Persona-Fit Deployment Gate (REQ-HR-014).
-- [ ] 14-02: Smart Daily Attendance Grid & Excel Upload, Searchable Leave Booking, Sidebar Consolidation & Editable Work Letter Document Writer (REQ-HR-015).
+- [x] 14-01: 600-Staff Workforce Scaling, Permanent/Contract Classification, Fayda & QR Verification, Recruitment Questionnaires & Operations Persona-Fit Deployment Gate (REQ-HR-014).
+- [x] 14-02: Smart Daily Attendance Grid & Excel Upload, Searchable Leave Booking, Sidebar Consolidation & Editable Work Letter Document Writer (REQ-HR-015).
+
+---
+
+### Phase 16: Fayda Digital QR Identification & Smart Attendance Scanner Terminal
+
+**Goal:** Deliver end-to-end demo-ready digital identification and attendance scanning linking Ethiopian National Fayda ID to scannable employee QR badges, with an interactive supervisor scanner terminal supporting live camera and 1-click simulation, automated clock-in/clock-out state transitions, and statutory overtime calculation under Proclamation 1156/2019.
+**Depends on:** Phase 15
+**Requirements:** REQ-ATT-002
+**Success Criteria** (what must be TRUE):
+  1. Add Employee modal captures 16-digit Ethiopian Fayda ID with 1-click "⚡ Auto-Generate" for live demos.
+  2. Employee Profile drawer displays an authentic scannable QR badge encoding employee credentials, Fayda ID, and site assignment.
+  3. Attendance view features a "Scan QR Badge" terminal with both live camera reading and 1-click "Quick Demo Scan" selector.
+  4. Terminal handles dual-scan daily lifecycle: First scan = Clock-In (Present, timestamped); Second scan = Clock-Out (calculates shift duration and flags overtime exceeding 8 hours).
+  5. All new/modified components strictly adhere to <= 250 lines and Warm Earth design tokens.
+  6. TypeScript compiles with zero errors (`npx tsc --noEmit`) and production build succeeds.
+
+**Plans:** 1 plan
+
+Plans:
+- [x] 16-01: Fayda ID Capture, Scannable QR Badge & Attendance Clock-In/Clock-Out Terminal (REQ-ATT-002).
+
+---
+
+### Phase 17: Dynamic Tab-Based Access Matrix & Navigation Filtering
+
+**Goal:** Implement dynamic tab-based RBAC that completely hides unauthorized tabs from navigation to eliminate 403 Forbidden states, auto-redirects unauthorized navigation attempts to Overview, unifies tab calculation into a single source of truth, and provides a dedicated side-by-side Access Matrix in System Master Setup for role baselines and user overrides.
+**Depends on:** Phase 8, Phase 15
+**Requirements:** REQ-RBAC-002
+**Success Criteria** (what must be TRUE):
+  1. Zero 403 Forbidden screens during normal usage; unauthorized tabs and empty categories are completely hidden in `Sidebar.tsx`.
+  2. Attempted direct navigation to an unauthorized tab automatically redirects to `overview`.
+  3. Single source of truth calculation engine `getEffectiveAllowedTabs(personOrRole, masterConfig)` eliminates desynchronization between `roleConfig.ts` and `rbacPermissions.ts`.
+  4. Dedicated "Access Matrix" subtab in `SystemMasterSetupView` allowing Super Admins to view and toggle allowed tabs by Role and assign granular overrides per User account, with "Reset to Baseline Defaults" and live session sync.
+  5. Component size budget strictly maintained (<= 250 lines per file), 0 TypeScript errors (`npm run lint`), and clean production build.
+
+**Plans:** 1 plan
+
+Plans:
+- [ ] 17-01: Dynamic Tab-Based Access Matrix, Navigation Filtering & Auto-Redirect (REQ-RBAC-002).
+
+---
+
+### Phase 18: Super Admin System Settings & Automated Probation-to-Permanent Engine
+
+**Goal:** Deliver a dedicated Super Admin "System Settings" view (Wireframe Image 1) featuring dual control centers for Appearance & Security (Theme, Accent Color, Language, Password & Credentials) and HR & Labor Rules (60-day probation duration, editable statutory annual leave progression formula, standard work shifts & duty times, configurable leave types), coupled with live operational integration in Onboarding (Wireframe Image 7) featuring a 60-day probation countdown clock and 1-click "Permanent Confirmation" approval button that updates the employee's status and workforce classification.
+**Depends on:** Phase 16, Phase 17
+**Requirements:** REQ-SYS-001
+**Success Criteria** (what must be TRUE):
+  1. A dedicated "System Settings" navigation item is available in the sidebar for Super Admin (`activeTab === 'settings'`).
+  2. `SystemSettingsView.tsx` renders two tabs: `Appearance & Security` and `HR & Labor Rules`.
+  3. `Appearance & Security` provides live switching for Theme (Light/Dark/System), Accent color palette, Language (English/Amharic), and password updates with audit trail logging.
+  4. `HR & Labor Rules` provides interactive, editable controls for Probation Duration (default 60 days), statutory Leave Progression Formula (Base days, Years per step, Increment per step, Max cap), Working hours (8h daily, 24h/48h security shift), and Leave types.
+  5. Onboarding roster displays a 60-day probation countdown timer per candidate, alerting when probation is completed.
+  6. 1-Click `⚡ Confirm Permanent Status` button in Onboarding transitions the employee to `Permanent`, updates contract counts, and records an audit log entry.
+  7. Leave Management automatically recalculates available annual leave balance using the active statutory formula.
+  8. Every created and modified file adheres strictly to the $\le 250$ line limit and Warm Earth design tokens.
+  9. TypeScript compilation passes cleanly (`npx tsc --noEmit`) with 0 errors.
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 18-01: Dedicated Super Admin System Settings View (Appearance & Security + HR & Labor Rules) (REQ-SYS-001).
+- [ ] 18-02: Live Integration — Dynamic Leave Recalculation & 1-Click Permanent Confirmation in Onboarding (REQ-SYS-001).
+

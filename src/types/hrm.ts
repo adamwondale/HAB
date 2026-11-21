@@ -54,6 +54,8 @@ export interface EmployeeExitDetails {
   rehireEligibility: 'Eligible' | 'Ineligible';
   notes?: string;
   exitLetterIssued?: boolean;
+  clearanceApproved?: boolean;
+  serviceCertificateIssued?: boolean;
 }
 
 export interface EmployeePersona {
@@ -217,6 +219,8 @@ export interface AttendanceRecord {
   checkOutTime?: string;
   overtimeHours: number;
   markedBy: string;
+  verifiedByFayda?: boolean;
+  faydaNumber?: string;
   notes?: string;
 }
 

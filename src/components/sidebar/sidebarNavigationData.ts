@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 
 import { ServiceType, ManagementPerson } from '../../types/hrm';
+import { SystemMasterConfig } from '../../types/masterConfig';
 
 export interface SidebarProps {
   activeTab: string;
@@ -26,6 +27,7 @@ export interface SidebarProps {
   darkMode?: boolean;
   onToggleDarkMode?: () => void;
   activeUser?: ManagementPerson;
+  masterConfig?: SystemMasterConfig;
   onLogout?: () => void;
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Phone, ArrowRight, FileText } from 'lucide-react';
+import { Search, Phone, ArrowRight, FileText, ShieldCheck } from 'lucide-react';
 import { Candidate, ServiceType } from '../../types/hrm';
 
 interface CandidateIntakeGridProps {
@@ -7,13 +7,15 @@ interface CandidateIntakeGridProps {
   onAdvanceStage: (candidateId: string, nextStage: Candidate['stage']) => void;
   onSendToOnboarding: (candidate: Candidate) => void;
   onPreviewDossier: (candidate: Candidate) => void;
+  onEvaluateCandidate?: (candidate: Candidate) => void;
 }
 
 export const CandidateIntakeGrid: React.FC<CandidateIntakeGridProps> = ({
   candidates,
   onAdvanceStage,
   onSendToOnboarding,
-  onPreviewDossier
+  onPreviewDossier,
+  onEvaluateCandidate
 }) => {
   const [selectedService, setSelectedService] = useState<'All' | ServiceType>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,15 +89,27 @@ export const CandidateIntakeGrid: React.FC<CandidateIntakeGridProps> = ({
                 {cand.interviewScore && <div className="flex justify-between"><span className="text-slate-500">Interview:</span><span className="font-bold text-emerald-700">{cand.interviewScore}/100</span></div>}
               </div>
 
-              {/* Clickable CV & Dossier Link */}
-              <button
-                type="button"
-                onClick={() => onPreviewDossier(cand)}
-                className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 px-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-[#4C4541] dark:text-[#F2C46A] font-semibold text-[11px] rounded-lg transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>Preview CV & Credentials</span>
-              </button>
+              {/* Actions: CV Dossier & Questionnaire Evaluation */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => onPreviewDossier(cand)}
+                  className="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-[#4C4541] dark:text-[#F2C46A] font-semibold text-[11px] rounded-lg transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>CV Dossier</span>
+                </button>
+                {onEvaluateCandidate && (
+                  <button
+                    type="button"
+                    onClick={() => onEvaluateCandidate(cand)}
+                    className="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-[#FCF0DA] hover:bg-[#F2C46A]/40 dark:bg-slate-800 dark:hover:bg-slate-700 text-[#4C4541] dark:text-[#F2C46A] font-semibold text-[11px] rounded-lg transition-colors border border-[#F2C46A]/60 cursor-pointer"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Evaluate</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
